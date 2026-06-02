@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אישור לימודים — היחידה ללימודי חוץ</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #1a1a2e;
+    --accent: #e63946;
+    --accent2: #457b9d;
+    --light: #f8f9fa;
+    --border: #e0e0e0;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --success: #2d6a4f;
+    --success-bg: #d8f3dc;
+  }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 20px;
+    color: var(--text);
+  }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .logo-circle {
+    width: 48px; height: 48px;
+    background: var(--brand);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-circle svg { width: 28px; height: 28px; fill: white; }
+  .site-name { font-size: 15px; font-weight: 700; color: var(--brand); line-height: 1.3; }
+  .site-sub  { font-size: 12px; color: var(--muted); font-weight: 400; }
+
+  /* ===== CARD ===== */
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .card-top {
+    background: var(--brand);
+    padding: 28px 32px 24px;
+    color: white;
+  }
+  .card-top h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .card-top p  { font-size: 13px; opacity: 0.65; font-weight: 300; }
+
+  .card-body { padding: 32px; }
+
+  /* ===== STEP INDICATOR ===== */
+  .steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+  .step {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    flex: 1;
+    position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .step.done:not(:last-child)::after { background: var(--accent2); }
+  .step-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--muted);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .step.active .step-dot  { background: var(--accent); color: white; }
+  .step.done .step-dot    { background: var(--accent2); color: white; }
+  .step-label { font-size: 11px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+  .step.active .step-label { color: var(--accent); }
+  .step.done .step-label   { color: var(--accent2); }
+
+  /* ===== FORM ===== */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.35s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .form-group { margin-bottom: 20px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .label-hint { font-size: 11px; color: var(--muted); font-weight: 400; margin-right: 6px; }
+
+  input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--light);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    direction: rtl;
+  }
+  input:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(69,123,157,0.15);
+    background: white;
+  }
+  input.error { border-color: var(--accent); }
+
+  .error-msg { font-size: 12px; color: var(--accent); margin-top: 5px; display: none; }
+  .error-msg.show { display: block; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 8px;
+  }
+  .btn:hover   { background: #2d2d4e; }
+  .btn:active  { transform: scale(0.99); }
+  .btn.loading { opacity: 0.7; pointer-events: none; }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .btn.loading .spinner { display: block; }
+  .btn.loading .btn-text { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== VERIFICATION SCREEN ===== */
+  .verify-card {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+  .verify-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; font-size: 11px; }
+  .verify-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .verify-row:last-child { border-bottom: none; }
+  .verify-key   { font-size: 13px; color: var(--muted); }
+  .verify-value { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .status-badge.active { background: var(--success-bg); color: var(--success); }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  /* ===== SUCCESS SCREEN ===== */
+  .success-icon {
+    width: 64px; height: 64px;
+    background: var(--success-bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .success-icon svg { width: 32px; height: 32px; stroke: var(--success); fill: none; stroke-width: 2.5; }
+  .success-title { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .success-sub   { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  /* ===== PDF PREVIEW ===== */
+  .pdf-preview {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    background: white;
+    position: relative;
+    margin-bottom: 20px;
+    font-family: 'Heebo', sans-serif;
+  }
+  .pdf-watermark {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 52px;
+    font-weight: 900;
+    color: rgba(230,57,70,0.06);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+  .pdf-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 3px solid var(--brand);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+  .pdf-logo-name { font-size: 13px; font-weight: 700; color: var(--brand); line-height: 1.4; }
+  .pdf-logo-sub  { font-size: 10px; color: var(--muted); }
+  .pdf-doc-num   { font-size: 10px; color: var(--muted); text-align: left; direction: ltr; }
+  .pdf-title { text-align: center; font-size: 18px; font-weight: 900; color: var(--brand); margin-bottom: 18px; letter-spacing: 0.03em; }
+  .pdf-intro { font-size: 12px; color: var(--text); line-height: 1.8; margin-bottom: 18px; }
+  .pdf-intro strong { font-weight: 700; }
+  .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+  .pdf-table td { padding: 8px 10px; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
+  .pdf-table td:first-child { font-weight: 700; color: var(--muted); width: 38%; }
+  .pdf-table td:last-child  { font-weight: 600; color: var(--text); }
+  .pdf-seal-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .pdf-sig { text-align: center; }
+  .pdf-sig-line { width: 100px; height: 1px; background: var(--text); margin: 0 auto 4px; }
+  .pdf-sig-name  { font-size: 10px; color: var(--muted); }
+  .pdf-seal {
+    width: 64px; height: 64px;
+    border: 2px solid var(--brand);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--brand);
+    line-height: 1.3;
+    opacity: 0.6;
+    padding: 6px;
+  }
+
+  .btn-outline {
+    width: 100%;
+    padding: 13px;
+    background: white;
+    color: var(--brand);
+    border: 1.5px solid var(--brand);
+    border-radius: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s;
+  }
+  .btn-outline:hover { background: var(--light); }
+  .btn-outline svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .timer-bar {
+    background: var(--success-bg);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--success);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .timer-bar span { font-size: 18px; font-weight: 900; display: block; }
+
+  /* ===== FOOTER ===== */
+  .card-footer {
+    padding: 14px 32px;
+    background: var(--light);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* mobile */
+  @media (max-width: 480px) {
+    .card-body { padding: 24px 20px; }
+    .card-top  { padding: 22px 20px 18px; }
+    .pdf-preview { padding: 20px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-circle">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div>
+    <div class="site-name">היחידה ללימודי חוץ</div>
+    <div class="site-sub">מרכז הפקת מסמכים דיגיטלי</div>
+  </div>
+</header>
+
+<div class="card">
+  <div class="card-top">
+    <h1>אישור לימודים דיגיטלי</h1>
+    <p>הפקת אישור מיידית — ללא המתנה, ללא פניה לשירות</p>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Step Indicator -->
+    <div class="steps">
+      <div class="step active" id="step1">
+        <div class="step-dot">1</div>
+        <div class="step-label">זיהוי</div>
+      </div>
+      <div class="step" id="step2">
+        <div class="step-dot">2</div>
+        <div class="step-label">אימות</div>
+      </div>
+      <div class="step" id="step3">
+        <div class="step-dot">✓</div>
+        <div class="step-label">אישור</div>
+      </div>
+    </div>
+
+    <!-- SCREEN 1: ID Input -->
+    <div class="screen active" id="screen-id">
+      <div class="form-group">
+        <label>מספר תעודת זהות <span class="label-hint">ללא ספרה מובילה</span></label>
+        <input type="text" id="id-input" placeholder="123456789" maxlength="9" inputmode="numeric" />
+        <div class="error-msg" id="id-error">נא להזין מספר ת.ז תקין (9 ספרות)</div>
+      </div>
+      <div class="form-group">
+        <label>כתובת מייל לקבלת האישור</label>
+        <input type="email" id="email-input" placeholder="student@example.com" />
+        <div class="error-msg" id="email-error">נא להזין כתובת מייל תקינה</div>
+      </div>
+      <button class="btn" id="btn-verify" onclick="goVerify()">
+        <span class="btn-text">חפש פרטי לימודים ←</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+    <!-- SCREEN 2: Verification -->
+    <div class="screen" id="screen-verify">
+      <div class="verify-card">
+        <h3>פרטים שנמצאו במערכת</h3>
+        <div class="verify-row">
+          <span class="verify-key">שם מלא</span>
+          <span class="verify-value" id="v-name"></span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-key">תעודת זהות</span>
+          <span class="verify-value" id="v-id"></span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-key">קורס</span>
+          <span class="verify-value" id="v-course"></span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-key">שנת לימודים</span>
+          <span class="verify-value" id="v-year"></span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-key">מספר שעות</span>
+          <span class="verify-value" id="v-hours"></span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-key">ציון סופי</span>
+          <span class="verify-value" id="v-grade"></span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-key">סטטוס</span>
+          <span class="verify-value">
+            <span class="status-badge active"><span class="status-dot"></span>סטודנט פעיל</span>
+          </span>
+        </div>
+      </div>
+      <button class="btn" id="btn-generate" onclick="goGenerate()">
+        <span class="btn-text">הפק אישור לימודים ←</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+    <!-- SCREEN 3: Success + PDF Preview -->
+    <div class="screen" id="screen-success">
+      <div class="timer-bar">
+        זמן הפקה: <span id="timer-display">—</span>
+      </div>
+
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="success-title">האישור הופק בהצלחה!</div>
+      <div class="success-sub">נשלח לכתובת <strong id="success-email"></strong></div>
+
+      <!-- PDF Preview -->
+      <div class="pdf-preview" id="pdf-preview">
+        <div class="pdf-watermark">DRAFT</div>
+
+        <div class="pdf-header">
+          <div>
+            <div class="pdf-logo-name">היחידה ללימודי חוץ<br>אוניברסיטת בר אילן</div>
+            <div class="pdf-logo-sub">limudey-hutz.co.il</div>
+          </div>
+          <div class="pdf-doc-num" id="pdf-docnum"></div>
+        </div>
+
+        <div class="pdf-title">אישור לימודים</div>
+
+        <div class="pdf-intro">
+          אנו מאשרים בזאת כי <strong id="pdf-name"></strong>,
+          בעל/ת תעודת זהות <strong id="pdf-id"></strong>,
+          למד/ה במסגרת <strong id="pdf-course"></strong>
+          בשנת הלימודים <strong id="pdf-year"></strong>,
+          במשך <strong id="pdf-hours"></strong> שעות לימוד.
+        </div>
+
+        <table class="pdf-table">
+          <tr><td>שם מלא</td><td id="pt-name"></td></tr>
+          <tr><td>תעודת זהות</td><td id="pt-id"></td></tr>
+          <tr><td>שם הקורס</td><td id="pt-course"></td></tr>
+          <tr><td>שנת לימודים</td><td id="pt-year"></td></tr>
+          <tr><td>שעות לימוד</td><td id="pt-hours"></td></tr>
+          <tr><td>ציון סופי</td><td id="pt-grade"></td></tr>
+          <tr><td>תאריך הנפקה</td><td id="pt-date"></td></tr>
+          <tr><td>מספר מסמך</td><td id="pt-docnum"></td></tr>
+        </table>
+
+        <div class="pdf-seal-row">
+          <div class="pdf-sig">
+            <div class="pdf-sig-line"></div>
+            <div class="pdf-sig-name">ד"ר שגיב אדרי<br>ראש היחידה ללימודי חוץ</div>
+          </div>
+          <div class="pdf-seal">היחידה<br>ללימודי<br>חוץ<br>✦</div>
+        </div>
+      </div>
+
+      <button class="btn" onclick="downloadPDF()">
+        <svg style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        הורד PDF
+      </button>
+      <div class="divider"></div>
+      <button class="btn-outline" onclick="resetForm()">
+        הפק אישור נוסף
+      </button>
+    </div>
+
+  </div>
+  <div class="card-footer">
+    🔒 המידע מוצפן ומוגן | מסמך זה מייצג דמו בלבד לצורכי הצגה
+  </div>
+</div>
+
+<script>
+// ===== DEMO DATA =====
+const DEMO_STUDENTS = {
+  "123456782": { name: "יעל כהן",    course: "עיצוב פנים — תואר ראשון", year: "תשפ״ד (2023–2024)", hours: "840", grade: "88" },
+  "987654321": { name: "דניאל לוי",  course: "ניהול עסקי — תעודה מקצועית", year: "תשפ״ד (2023–2024)", hours: "360", grade: "91" },
+  "111111118": { name: "מיכל אברהם", course: "רובוטיקה ואוטומציה — תעודה", year: "תשפ״ד (2023–2024)", hours: "480", grade: "95" },
+};
+const DEFAULT_STUDENT = { name: "סטודנט לדוגמה", course: "ניהול עסקי — תעודה מקצועית", year: "תשפ״ד (2023–2024)", hours: "360", grade: "85" };
+
+let currentStudent = null;
+let startTime = null;
+
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('step'+i);
+    el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+    if (i < n) el.querySelector('.step-dot').textContent = '✓';
+    else el.querySelector('.step-dot').textContent = i;
+  });
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function validateID(v) { return /^\d{8,9}$/.test(v.trim()); }
+function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+function goVerify() {
+  const idVal    = document.getElementById('id-input').value.trim();
+  const emailVal = document.getElementById('email-input').value.trim();
+  let ok = true;
+
+  document.getElementById('id-error').classList.remove('show');
+  document.getElementById('email-error').classList.remove('show');
+  document.getElementById('id-input').classList.remove('error');
+  document.getElementById('email-input').classList.remove('error');
+
+  if (!validateID(idVal)) {
+    document.getElementById('id-error').classList.add('show');
+    document.getElementById('id-input').classList.add('error');
+    ok = false;
+  }
+  if (!validateEmail(emailVal)) {
+    document.getElementById('email-error').classList.add('show');
+    document.getElementById('email-input').classList.add('error');
+    ok = false;
+  }
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-verify');
+  btn.classList.add('loading');
+  startTime = Date.now();
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    currentStudent = DEMO_STUDENTS[idVal] || { ...DEFAULT_STUDENT, name: 'סטודנט מספר ' + idVal };
+    currentStudent.id = idVal;
+    currentStudent.email = emailVal;
+
+    document.getElementById('v-name').textContent   = currentStudent.name;
+    document.getElementById('v-id').textContent     = idVal;
+    document.getElementById('v-course').textContent = currentStudent.course;
+    document.getElementById('v-year').textContent   = currentStudent.year;
+    document.getElementById('v-hours').textContent  = currentStudent.hours + ' שעות';
+    document.getElementById('v-grade').textContent  = currentStudent.grade;
+
+    setStep(2);
+    showScreen('verify');
+  }, 1200);
+}
+
+function goGenerate() {
+  const btn = document.getElementById('btn-generate');
+  btn.classList.add('loading');
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    const docNum  = 'YHL-' + new Date().getFullYear() + '-' + Math.floor(Math.random()*90000+10000);
+    const today   = new Date().toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'numeric' });
+
+    document.getElementById('timer-display').textContent = elapsed + ' שניות';
+    document.getElementById('success-email').textContent = currentStudent.email;
+
+    // Fill PDF
+    document.getElementById('pdf-name').textContent   = currentStudent.name;
+    document.getElementById('pdf-id').textContent     = currentStudent.id;
+    document.getElementById('pdf-course').textContent = currentStudent.course;
+    document.getElementById('pdf-year').textContent   = currentStudent.year;
+    document.getElementById('pdf-hours').textContent  = currentStudent.hours;
+
+    document.getElementById('pt-name').textContent   = currentStudent.name;
+    document.getElementById('pt-id').textContent     = currentStudent.id;
+    document.getElementById('pt-course').textContent = currentStudent.course;
+    document.getElementById('pt-year').textContent   = currentStudent.year;
+    document.getElementById('pt-hours').textContent  = currentStudent.hours + ' שעות';
+    document.getElementById('pt-grade').textContent  = currentStudent.grade;
+    document.getElementById('pt-date').textContent   = today;
+    document.getElementById('pt-docnum').textContent = docNum;
+    document.getElementById('pdf-docnum').textContent = 'מסמך: ' + docNum + '\nתאריך: ' + today;
+
+    setStep(3);
+    showScreen('success');
+  }, 1600);
+}
+
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const s = currentStudent;
+  const today = new Date().toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const docNum = 'YHL-' + new Date().getFullYear() + '-' + Math.floor(Math.random()*90000+10000);
+
+  doc.setFont('helvetica');
+
+  // Header bar
+  doc.setFillColor(26, 26, 46);
+  doc.rect(0, 0, 210, 28, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14); doc.setFont('helvetica','bold');
+  doc.text('Student Study Certificate', 105, 12, { align:'center' });
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text('Limudey Hutz — Bar Ilan University Extension', 105, 20, { align:'center' });
+
+  // Title
+  doc.setTextColor(26, 26, 46);
+  doc.setFontSize(18); doc.setFont('helvetica','bold');
+  doc.text('CERTIFICATE OF STUDY', 105, 45, { align:'center' });
+
+  // Line
+  doc.setDrawColor(26, 26, 46); doc.setLineWidth(0.5);
+  doc.line(20, 50, 190, 50);
+
+  // Intro paragraph
+  doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.setTextColor(60, 60, 80);
+  const intro = `This is to certify that ${s.name} (ID: ${s.id}) has completed the course "${s.course}" during the academic year ${s.year}, totaling ${s.hours} hours of study, with a final grade of ${s.grade}.`;
+  const lines = doc.splitTextToSize(intro, 170);
+  doc.text(lines, 105, 62, { align:'center' });
+
+  // Table
+  const rows = [
+    ['Full Name', s.name],
+    ['ID Number', s.id],
+    ['Course', s.course],
+    ['Academic Year', s.year],
+    ['Study Hours', s.hours + ' hours'],
+    ['Final Grade', s.grade],
+    ['Issue Date', today],
+    ['Document No.', docNum],
+  ];
+  let y = 90;
+  rows.forEach(([k, v], i) => {
+    if (i % 2 === 0) { doc.setFillColor(245,246,250); doc.rect(20, y-5, 170, 10, 'F'); }
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(100,100,120);
+    doc.text(k + ':', 22, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(26,26,46);
+    doc.text(v, 80, y);
+    y += 12;
+  });
+
+  // Footer
+  doc.setFillColor(26, 26, 46);
+  doc.rect(0, 272, 210, 25, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(8);
+  doc.text('limudey-hutz.co.il  |  *3068  |  This document was generated automatically', 105, 282, { align:'center' });
+  doc.text('For verification: contact@limudey-hutz.co.il', 105, 289, { align:'center' });
+
+  doc.save('student-certificate-' + s.id + '.pdf');
+}
+
+function resetForm() {
+  document.getElementById('id-input').value = '';
+  document.getElementById('email-input').value = '';
+  currentStudent = null;
+  startTime = null;
+  setStep(1);
+  showScreen('id');
+}
+</script>
+</body>
+</html>
