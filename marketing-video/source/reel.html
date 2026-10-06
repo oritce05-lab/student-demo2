@@ -3,260 +3,284 @@
 <head>
 <meta charset="UTF-8">
 <style>
-@font-face{font-family:H;src:url(heebo-200.ttf);font-weight:200}
-@font-face{font-family:H;src:url(heebo-300.ttf);font-weight:300}
 @font-face{font-family:H;src:url(heebo-400.ttf);font-weight:400}
+@font-face{font-family:H;src:url(heebo-500.ttf);font-weight:500}
 @font-face{font-family:H;src:url(heebo-700.ttf);font-weight:700}
-@font-face{font-family:H;src:url(heebo-800.ttf);font-weight:800}
-@font-face{font-family:M;src:url(mono-400.ttf);font-weight:400}
-@font-face{font-family:M;src:url(mono-600.ttf);font-weight:600}
-:root{--bg:#070b0f;--card:#0d141b;--line:rgba(56,189,222,.35);--cyan:#22b8db;--amber:#f2a33a;--text:#eef3f6;--muted:#8d9aa6}
+@font-face{font-family:H;src:url(heebo-900.ttf);font-weight:900}
+@font-face{font-family:Mo;src:url(montserrat-500.ttf);font-weight:500}
+@font-face{font-family:Mo;src:url(montserrat-600.ttf);font-weight:600}
+:root{--cobalt:#1452ff;--cobalt2:#0b3fd6;--navy:#0a1435;--cyan:#22d3f6;--lime:#d8ff3e;--yellow:#ffe500;--bg:#f4f6fb}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-family:H,sans-serif;color:var(--text)}
-#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:radial-gradient(900px 700px at 50% 38%,#0f2430 0%,#0a1218 45%,#070b0f 100%)}
-canvas#bg{position:absolute;inset:0}
-.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 70px;opacity:0}
-.l{display:block;will-change:transform,opacity}
-.hl{font-weight:200;line-height:1.08;letter-spacing:-1px}
-.hl b{font-weight:800}
-.dot{color:var(--cyan)}
-.mono{direction:ltr;unicode-bidi:isolate;font-family:M,monospace;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);font-size:28px}
-.mono.amber{color:var(--amber)}
-.sub{font-weight:300;color:#c9d3da;font-size:42px;line-height:1.4}
-/* pill */
-#pill{position:absolute;top:120px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:22px;padding:18px 34px;border:2px solid var(--line);border-radius:999px;background:rgba(13,20,27,.8);font-size:30px;white-space:nowrap;opacity:0;box-shadow:0 0 40px rgba(34,184,219,.15)}
-#pill .sq{width:14px;height:14px;border-radius:3px;background:var(--cyan)}
-#pill .sep{width:2px;height:28px;background:rgba(255,255,255,.2)}
-#pill .yr{direction:ltr;unicode-bidi:isolate;font-family:M;color:var(--cyan);letter-spacing:.08em}
-/* site-style card */
-.card{position:relative;background:linear-gradient(180deg,#0f1922,#0b1117);border:2px solid var(--line);border-radius:28px;box-shadow:0 0 60px rgba(34,184,219,.12),inset 0 1px 0 rgba(255,255,255,.05);text-align:right}
-.card.amber{border-color:rgba(242,163,58,.45);background:linear-gradient(180deg,#22180c,#120d07);box-shadow:0 0 70px rgba(242,163,58,.18)}
-.chead{display:flex;align-items:center;gap:18px;padding:0 0 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:22px}
-.chead .rule{flex:1;height:1px;background:rgba(255,255,255,.12)}
-/* gap card */
-#gap{width:900px;padding:40px 46px;margin-top:80px}
-.trk{position:relative;height:90px;margin:10px 0 24px}
-.trk .base{position:absolute;top:44px;right:0;left:0;height:2px;background:rgba(255,255,255,.12)}
-.trk .run{position:absolute;top:43px;right:0;height:4px;width:0}
-.trk .lbl{display:flex;justify-content:space-between;font-size:32px;font-weight:700}
-.trk .lbl span:last-child{font-family:M;font-weight:600}
-/* need cards */
-.needs{display:flex;flex-direction:column;gap:30px;margin-top:80px;width:900px}
-.need{padding:34px 40px;display:flex;align-items:center;gap:34px}
-.need .t{font-size:50px;font-weight:700;line-height:1.15}
-.need .t b{color:var(--cyan)}
-.need svg{width:140px;height:110px;flex-shrink:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#fff;font-family:H,sans-serif;color:var(--navy)}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#fff}
+.scene{position:absolute;inset:0;overflow:hidden;opacity:0}
+.inner{position:absolute;inset:0;transform-origin:50% 40%}
+.abs{position:absolute}
+.hd{font-weight:900;line-height:.98;letter-spacing:-2px}
+.txt{position:absolute;right:70px;left:70px;text-align:right}
+.ln{display:block;overflow:hidden;padding:0 4px 10px}
+.ln>span{display:inline-block;will-change:transform;position:relative;z-index:0}
+.cob{color:var(--cobalt)} .wht{color:#fff} .cy{color:var(--cyan)} .nv{color:var(--navy)}
+.ph{position:absolute;overflow:hidden}
+.ph img{position:absolute;width:100%;height:100%;object-fit:cover;will-change:transform}
+.shape{position:absolute;background:var(--cobalt)}
+.brush{position:absolute;height:44px;background:var(--yellow);clip-path:polygon(0 30%,4% 12%,30% 18%,60% 6%,96% 14%,100% 40%,97% 78%,70% 92%,40% 84%,8% 96%,1% 72%)}
+.hlbox{position:relative;display:inline-block;padding:6px 26px 14px}
+.hlbox>i{position:absolute;inset:0;background:var(--lime);transform-origin:100% 50%;transform:skewX(-8deg) scaleX(0)}
+.hlbox>b{position:relative;font-weight:900}
+.chip{display:inline-block;background:var(--lime);color:var(--navy);font-weight:900;font-size:46px;padding:10px 28px 16px;transform:skewX(-8deg)}
+.chip>span{display:inline-block;transform:skewX(8deg)}
+.card{position:absolute;background:#fff;border-radius:30px;box-shadow:0 24px 70px rgba(10,20,53,.28)}
+.cta{position:absolute;left:70px;right:70px;height:150px;border-radius:30px;background:linear-gradient(90deg,#1e6bff,#1452ff 60%,#0f46e6);
+  box-shadow:0 20px 60px rgba(20,82,255,.5),inset 0 2px 0 rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;gap:20px;color:#fff;font-weight:900;font-size:41px;white-space:nowrap}
+.cta .chev{font-size:64px;letter-spacing:-12px;margin-top:-8px}
+.logo{position:absolute;direction:ltr}
+.grad-navy{background:linear-gradient(160deg,#0b1846 0%,#08112e 60%,#050b20 100%)}
+.duo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,82,255,.0),rgba(20,82,255,.35));mix-blend-mode:multiply}
 /* domain cards */
-.doms{display:flex;flex-direction:column;gap:24px;width:940px}
-.dom{height:196px;padding:30px 40px;display:flex;align-items:center;gap:34px}
-.dom .txt{flex:1}
-.dom .t{font-size:58px;font-weight:800;line-height:1.1;margin-top:10px}
-.dom .ico{width:132px;height:132px;border-radius:22px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  background-image:radial-gradient(rgba(255,255,255,.12) 1.2px,transparent 1.2px);background-size:14px 14px}
-.dom .ico svg{width:96px;height:96px;fill:none;stroke:var(--cyan);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.dom.amber .ico svg{stroke:var(--amber)}
-.dom .n{direction:ltr;unicode-bidi:isolate;text-transform:uppercase;text-align:right;font-family:M;color:var(--cyan);font-size:26px;letter-spacing:.2em}
-.dom.amber .n{color:var(--amber)}
-/* screenshots */
-.shot{position:absolute;border-radius:26px;overflow:hidden;border:2px solid var(--line);box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 80px rgba(34,184,219,.18)}
-.shot img{display:block;width:100%}
-.shot.amber{border-color:rgba(242,163,58,.5);box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 80px rgba(242,163,58,.22)}
-/* stats */
-.stats{display:grid;grid-template-columns:1fr 1fr;width:940px;margin-top:80px;border-top:1px solid rgba(255,255,255,.12)}
-.stat{padding:44px 20px 40px;border-bottom:1px solid rgba(255,255,255,.12)}
-.stat:nth-child(odd){border-left:1px solid rgba(255,255,255,.12)}
-.stat .v{font-weight:200;font-size:132px;line-height:1;direction:ltr}
-.stat .k{font-weight:800;font-size:38px;margin-top:14px}
-.stat .d{font-weight:300;font-size:27px;color:var(--muted);margin-top:6px}
-/* end */
-.btns{display:flex;gap:26px;margin-top:80px}
-.btn{font-size:42px;font-weight:800;padding:32px 56px;border-radius:22px;white-space:nowrap}
-.btn.p{background:var(--cyan);color:#06222b;box-shadow:0 0 70px rgba(34,184,219,.45)}
-.url{margin-top:40px;font-family:M;font-size:30px;color:var(--muted);direction:ltr;letter-spacing:.04em}
-.partners{position:absolute;bottom:230px;left:70px;right:70px;background:#fff;border-radius:28px;padding:30px 26px 26px;opacity:0}
-.partners .mono{color:#4b5a66;font-size:24px;text-align:center;margin-bottom:22px;display:block}
-.partners .lg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}.partners .lg div{height:96px;display:flex;align-items:center;justify-content:center}.partners .lg img{max-height:84px;max-width:270px}
-#flash{position:absolute;inset:0;background:var(--cyan);opacity:0;mix-blend-mode:screen}
-#prog{position:absolute;bottom:0;right:0;height:8px;background:var(--cyan);width:0;box-shadow:0 0 20px var(--cyan)}
+.dom{position:absolute;right:90px;left:90px;height:176px;background:#fff;border-radius:28px;display:flex;align-items:center;gap:36px;padding:0 40px;box-shadow:0 18px 50px rgba(5,20,80,.35)}
+.dom .ic{width:116px;height:116px;border-radius:24px;border:4px solid var(--cobalt);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff}
+.dom .ic svg{width:70px;height:70px;fill:none;stroke:var(--cobalt);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.dom .w{font-weight:900;font-size:76px;line-height:1}
+.dom .en{font-family:Mo;font-weight:600;font-size:22px;letter-spacing:.22em;color:var(--cobalt);margin-top:10px;direction:ltr;text-align:right}
+/* ui agent card */
+.flow{display:flex;align-items:center;justify-content:center;gap:0}
+.fbox{width:104px;height:104px;border-radius:22px;border:4px solid var(--cobalt);display:flex;align-items:center;justify-content:center;background:#fff}
+.fbox svg{width:58px;height:58px;fill:none;stroke:var(--cobalt);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.fbox.bot{border-color:#9be22d;box-shadow:0 0 0 8px rgba(216,255,62,.45),0 0 40px rgba(155,226,45,.6)}
+.arr{width:70px;height:4px;background:var(--cobalt);position:relative}
+.arr::after{content:'';position:absolute;left:-2px;top:-9px;border:11px solid transparent;border-right:14px solid var(--cobalt);border-left:0}
+/* stat */
+.stat{position:absolute;background:#fff;border:6px solid var(--cobalt);padding:26px 36px 30px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.stat .v{font-weight:900;font-size:140px;line-height:.95;color:var(--cobalt);direction:ltr}
+.stat .k{font-weight:900;font-size:46px;white-space:nowrap;line-height:1.05;color:var(--navy)}
+.stat .d{font-weight:500;font-size:32px;color:var(--navy);margin-top:6px}
+canvas#grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.16}
+#wipe{position:absolute;inset:-200px;background:var(--cobalt);transform:translateX(150%) skewX(-14deg)}
+#wipe2{position:absolute;inset:-200px;background:var(--cyan);transform:translateX(150%) skewX(-14deg)}
 </style>
 </head>
 <body>
 <div id="stage">
-  <canvas id="bg" width="1080" height="1920"></canvas>
 
-  <div id="pill"><span class="sq"></span><b>המחלקה העסקית</b><span class="sep"></span><span style="color:#c9d3da">הכשרות לארגונים</span><span class="sep"></span><span class="yr">2026–2027</span></div>
-
-  <!-- S1 -->
-  <div class="scene" id="s1">
-    <span class="l mono" id="s1m" style="margin-bottom:60px">Technology is moving fast_</span>
-    <span class="l hl" id="s1a" style="font-size:132px">העולם הטכנולוגי</span>
-    <span class="l hl" id="s1b" style="font-size:132px">משתנה</span>
-    <span class="l hl" id="s1c" style="font-size:150px;margin-top:6px"><b>בקצב מטורף</b><b class="dot">.</b></span>
+<!-- ===== S1 HOOK ===== -->
+<div class="scene grad-navy" id="s1"><div class="inner">
+  <div class="abs" id="s1beam" style="left:-300px;top:820px;width:1800px;height:14px;background:linear-gradient(90deg,transparent,#22d3f6 40%,#8ff0ff 55%,transparent);transform:rotate(-28deg);filter:blur(1px);box-shadow:0 0 40px #22d3f6"></div>
+  <div class="shape" id="s1sh" style="left:240px;top:960px;width:1000px;height:1100px;clip-path:polygon(18% 0,100% 0,100% 100%,0 100%);opacity:.9"></div>
+  <div class="ph duo" id="s1ph" style="left:300px;top:1000px;width:780px;height:920px;clip-path:polygon(16% 0,100% 0,100% 100%,0 100%)"><img src="p_laptop.jpg" style="object-position:50% 30%"></div>
+  <div class="abs" style="left:0;right:0;bottom:0;height:360px;background:linear-gradient(0deg,rgba(5,11,32,.85),transparent)"></div>
+  <div class="txt" style="top:300px">
+    <span class="ln hd wht" style="font-size:120px"><span id="s1a">העולם הטכנולוגי</span></span>
+    <span class="ln hd wht" style="font-size:120px"><span id="s1b">משתנה</span></span>
+    <span class="ln hd cy" style="font-size:168px"><span id="s1c">בקצב מטורף</span></span>
   </div>
+</div></div>
 
-  <!-- S2 -->
-  <div class="scene" id="s2">
-    <span class="l hl" id="s2a" style="font-size:84px;white-space:nowrap">אבל האם העובדים שלכם</span>
-    <span class="l hl" id="s2b" style="font-size:132px;margin-top:8px"><b>מתקדמים איתו</b><b class="dot">?</b></span>
-    <div class="card" id="gap">
-      <div class="chead"><span class="mono" style="font-size:24px">Gap Analysis</span><span class="rule"></span><b style="font-size:32px">ציר הפער</b></div>
-      <div class="trk"><div class="lbl"><span>הטכנולוגיה</span><span id="p1" style="color:var(--amber)">0%</span></div><div class="base"></div><div class="run" id="r1" style="background:var(--amber)"></div><div id="m1"></div></div>
-      <div class="trk"><div class="lbl"><span>העובדים</span><span id="p2" style="color:var(--cyan)">0%</span></div><div class="base"></div><div class="run" id="r2" style="background:var(--cyan)"></div><div id="m2"></div></div>
+<!-- ===== S2 QUESTION ===== -->
+<div class="scene" id="s2" style="background:#fff"><div class="inner">
+  <div class="shape" id="s2sh" style="left:-100px;top:930px;width:1400px;height:520px;clip-path:polygon(0 60%,100% 0,100% 100%,0 100%)"></div>
+  <div class="ph" id="s2ph" style="left:0;top:1080px;width:1080px;height:840px;clip-path:polygon(0 18%,100% 0,100% 100%,0 100%)"><img src="p_duo.jpg" style="object-position:58% 40%"></div>
+  <div class="txt" style="top:250px">
+    <span class="ln hd nv" style="font-size:84px"><span id="s2a">אבל האם העובדים שלכם</span></span>
+    <span class="ln hd cob" style="font-size:182px;margin-top:10px"><span id="s2b">מתקדמים</span></span>
+    <span class="ln hd nv" style="font-size:182px;padding-bottom:40px"><span id="s2c" style="position:relative"><span class="brush" id="s2br" style="right:-10px;left:-10px;bottom:-26px;height:40px;z-index:-1"></span>איתו?</span></span>
+  </div>
+  
+  <div class="logo" id="lg2" style="left:60px;top:70px;width:330px"></div>
+</div></div>
+
+<!-- ===== S3 WHO ===== -->
+<div class="scene" id="s3" style="background:#fff"><div class="inner">
+  <div class="abs" id="s3bg" style="left:0;top:0;width:1080px;height:1280px;background:var(--cyan);clip-path:polygon(0 0,100% 0,100% 82%,0 100%)"></div>
+  <div class="ph" id="s3ph" style="left:0;top:1120px;width:1080px;height:800px;clip-path:polygon(0 22%,100% 0,100% 100%,0 100%)"><img src="p_team.jpg" style="object-position:40% 30%"></div>
+  <div class="txt" style="top:200px">
+    <div id="s3chip" style="margin-bottom:34px"><span class="chip"><span>ביחידה ללימודי חוץ</span></span></div>
+    <span class="ln hd nv" style="font-size:112px"><span id="s3a">אנחנו בונים</span></span>
+    <span class="ln hd nv" style="font-size:112px"><span id="s3b">הכשרות טכנולוגיות</span></span>
+    <span class="ln hd cob" style="font-size:150px"><span id="s3c">לארגונים</span></span>
+  </div>
+  <div class="abs" id="s3band" style="right:0;width:1040px;top:930px;height:250px;background:var(--navy);clip-path:polygon(4% 0,100% 0,100% 100%,0 100%)">
+    <div style="position:absolute;right:70px;top:34px;font-weight:900;font-size:68px;color:#fff;white-space:nowrap" id="c1">מותאמות <span style="color:var(--lime)">לצרכים</span> שלכם</div>
+    <div style="position:absolute;right:70px;top:126px;font-weight:900;font-size:68px;color:var(--cyan);white-space:nowrap" id="c2">ולמטרות העסקיות שלכם</div>
+  </div>
+  <div class="logo" id="lg3" style="left:60px;top:70px;width:330px"></div>
+</div></div>
+
+<!-- ===== S4 DOMAINS ===== -->
+<div class="scene" id="s4" style="background:linear-gradient(170deg,#1e5dff,#1452ff 45%,#0b3fd6)"><div class="inner">
+  <div class="abs" id="s4s1" style="left:-200px;top:-100px;width:900px;height:2200px;background:rgba(255,255,255,.07);transform:skewX(-18deg)"></div>
+  <div class="abs" id="s4s2" style="right:-300px;top:-100px;width:500px;height:2200px;background:rgba(34,211,246,.18);transform:skewX(-18deg)"></div>
+  <div class="txt" style="top:230px"><span class="ln hd wht" style="font-size:84px"><span id="s4t">מה לומדים?</span></span></div>
+  <div class="dom" id="d1" style="top:400px"><div class="ic"><svg viewBox="0 0 70 70"><rect x="17" y="17" width="36" height="36" rx="6"/><path d="M27 6v11M43 6v11M27 53v11M43 53v11M6 27h11M6 43h11M53 27h11M53 43h11"/><path d="M28 43l5-16 5 16M30 38h6M45 27v16" stroke-width="4"/></svg></div><div><div class="w">AI</div><div class="en">ARTIFICIAL INTELLIGENCE</div></div></div>
+  <div class="dom" id="d2" style="top:600px"><div class="ic"><svg viewBox="0 0 70 70"><path d="M35 6l23 8v17c0 16-10 26-23 32C22 57 12 47 12 31V14z"/><path d="M25 35l7 7 13-14"/></svg></div><div><div class="w">סייבר</div><div class="en">CYBERSECURITY</div></div></div>
+  <div class="dom" id="d3" style="top:800px"><div class="ic"><svg viewBox="0 0 70 70"><path d="M8 60h54"/><rect x="13" y="38" width="9" height="16"/><rect x="30" y="26" width="9" height="28"/><rect x="47" y="12" width="9" height="42"/></svg></div><div><div class="w">דאטה</div><div class="en">DATA &amp; ANALYTICS</div></div></div>
+  <div class="dom" id="d4" style="top:1000px"><div class="ic"><svg viewBox="0 0 70 70"><rect x="7" y="12" width="56" height="36" rx="5"/><path d="M24 60h22M35 48v12M27 25l-7 6 7 6M43 25l7 6-7 6M38 21l-6 20"/></svg></div><div><div class="w">טכנולוגיה</div><div class="en">TECHNOLOGY</div></div></div>
+  <div class="dom" id="d5" style="top:1200px"><div class="ic"><svg viewBox="0 0 70 70"><path d="M35 8l6 15 15 6-15 6-6 15-6-15-15-6 15-6z"/><path d="M54 44l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></svg></div><div><div class="w">כלים מתקדמים</div><div class="en">ADVANCED TOOLS</div></div></div>
+  <div class="txt" style="top:1470px;text-align:center"><span id="s4f" style="display:inline-block;font-weight:700;font-size:46px;color:#fff;opacity:.95"><b style="font-weight:900;color:var(--lime)">61</b> קורסים · <b style="font-weight:900;color:var(--lime)">7</b> תחומים · <b style="font-weight:900;color:var(--lime)">40–60</b> שעות לקורס</span></div>
+  <div class="logo" id="lg4" style="left:60px;top:70px;width:330px"></div>
+</div></div>
+
+<!-- ===== S5 PRACTICAL ===== -->
+<div class="scene" id="s5" style="background:#fff"><div class="inner">
+  <div class="shape" id="s5sh" style="left:-100px;top:1010px;width:1400px;height:500px;clip-path:polygon(0 0,100% 45%,100% 100%,0 100%)"></div>
+  <div class="ph" id="s5ph" style="left:0;top:1120px;width:1080px;height:800px;clip-path:polygon(0 0,100% 20%,100% 100%,0 100%)"><img src="p_women.jpg" style="object-position:60% 35%"></div>
+  <div class="txt" style="top:240px">
+    <span class="ln hd nv" style="font-size:112px"><span id="s5a">עם תוכן</span></span>
+    <span class="ln hd cob" style="font-size:200px"><span id="s5b">פרקטי</span></span>
+    <div id="s5c" style="margin-top:20px"><span class="hlbox" style="font-size:66px"><i id="s5hl"></i><b>שאפשר לקחת ישר לעבודה</b></span></div>
+  </div>
+  <div class="card" id="s5card" style="left:70px;top:900px;width:640px;height:270px;padding:30px 34px">
+    <div style="font-family:Mo;font-weight:600;font-style:italic;font-size:30px;color:var(--cobalt);direction:ltr;letter-spacing:.04em">AI AGENT</div>
+    <div class="flow" style="margin-top:28px;direction:ltr">
+      <div class="fbox" id="f1"><svg viewBox="0 0 58 58"><path d="M10 12h38v26H24l-10 9v-9h-4z"/><path d="M19 22h20M19 29h13"/></svg></div>
+      <div class="arr" id="a1" style="transform:rotate(180deg)"></div>
+      <div class="fbox bot" id="f2"><svg viewBox="0 0 58 58"><rect x="12" y="18" width="34" height="26" rx="8"/><path d="M29 10v8"/><circle cx="22" cy="31" r="3" fill="#1452ff"/><circle cx="36" cy="31" r="3" fill="#1452ff"/></svg></div>
+      <div class="arr" id="a2" style="transform:rotate(180deg)"></div>
+      <div class="fbox" id="f3"><svg viewBox="0 0 58 58"><path d="M14 30l10 10 20-22"/></svg></div>
     </div>
   </div>
+  <div class="logo" id="lg5" style="left:60px;top:70px;width:330px"></div>
+</div></div>
 
-  <!-- S3 -->
-  <div class="scene" id="s3">
-    <span class="l sub" id="s3a" style="color:var(--cyan);font-weight:400">ביחידה ללימודי חוץ</span>
-    <span class="l hl" id="s3b" style="font-size:108px;margin-top:20px">בונים הכשרות<br><b>טכנולוגיות לארגונים</b><b class="dot">.</b></span>
-    <div class="needs">
-      <div class="card need" id="c1">
-        <svg viewBox="0 0 140 110"><g fill="none" stroke="#22b8db" stroke-width="3"><path d="M18 88 L52 62 L88 70 L122 24" stroke-dasharray="0"/><circle cx="18" cy="88" r="9" fill="#0d141b"/><circle cx="52" cy="62" r="9" fill="#0d141b"/><circle cx="88" cy="70" r="9" fill="#0d141b" stroke="#f2a33a"/><circle cx="122" cy="24" r="11" fill="#0d141b"/><circle cx="122" cy="24" r="4" fill="#22b8db"/></g></svg>
-        <div><div class="mono" style="font-size:22px;margin-bottom:8px">01 · Your needs</div><div class="t">מותאמות <b>לצרכים</b> שלכם</div></div>
-      </div>
-      <div class="card need" id="c2">
-        <svg viewBox="0 0 140 110"><g fill="none" stroke="#22b8db" stroke-width="3"><circle cx="70" cy="55" r="44"/><circle cx="70" cy="55" r="28"/><circle cx="70" cy="55" r="10" fill="#f2a33a" stroke="#f2a33a"/><path d="M70 55 L124 14" stroke="#f2a33a"/></g></svg>
-        <div><div class="mono" style="font-size:22px;margin-bottom:8px">02 · Business goals</div><div class="t">ולמטרות <b>העסקיות</b> שלכם</div></div>
-      </div>
-    </div>
+<!-- ===== S6 ADVANTAGE ===== -->
+<div class="scene grad-navy" id="s6"><div class="inner">
+  <div class="abs" id="s6beam" style="left:-300px;top:1040px;width:1800px;height:12px;background:linear-gradient(90deg,transparent,#22d3f6 40%,#8ff0ff 55%,transparent);transform:rotate(-24deg);box-shadow:0 0 40px #22d3f6"></div>
+  <div class="ph duo" id="s6ph" style="left:380px;top:1040px;width:700px;height:880px;clip-path:polygon(20% 0,100% 0,100% 100%,0 100%)"><img src="p_lean.jpg" style="object-position:50% 25%"></div>
+  <div class="txt" style="top:260px">
+    <span class="ln hd wht" style="font-size:96px"><span id="s6a">רוצים להפוך את הידע</span></span>
+    <span class="ln hd wht" style="font-size:96px"><span id="s6b">של העובדים שלכם</span></span>
+    <div id="s6c" style="margin-top:26px"><span class="hlbox" style="font-size:132px;line-height:1"><i id="s6hl"></i><b class="nv">ליתרון ארגוני?</b></span></div>
   </div>
+  <div class="stat" id="s6st" style="left:60px;top:1170px;width:470px"><div class="v" id="s6v">0</div><div class="k">סטודנטים בשנה</div><div class="d">5 קמפוסים בכל הארץ</div></div>
+  <div class="logo" id="lg6" style="left:60px;top:70px;width:330px"></div>
+</div></div>
 
-  <!-- S4: domains -->
-  <div class="scene" id="s4">
-    <div class="doms">
-      <div class="card dom amber" id="d1"><div class="ico"><svg viewBox="0 0 96 96"><circle cx="16" cy="28" r="6"/><circle cx="16" cy="48" r="6"/><circle cx="16" cy="68" r="6"/><circle cx="48" cy="20" r="6"/><circle cx="48" cy="48" r="6"/><circle cx="48" cy="76" r="6"/><circle cx="80" cy="38" r="6"/><circle cx="80" cy="58" r="6"/><path d="M22 28L42 20M22 28L42 48M22 48L42 20M22 48L42 76M22 68L42 48M22 68L42 76M54 20L74 38M54 48L74 38M54 48L74 58M54 76L74 58"/></svg></div><div class="txt"><div class="n">02 Artificial Intelligence</div><div class="t">AI ובינה מלאכותית</div></div></div>
-      <div class="card dom" id="d2"><div class="ico"><svg viewBox="0 0 96 96"><path d="M48 10l30 11v22c0 21-13 34-30 42C31 77 18 64 18 43V21z"/><path d="M34 47l10 10 18-20"/></svg></div><div class="txt"><div class="n">01 Cybersecurity</div><div class="t">סייבר ואבטחת מידע</div></div></div>
-      <div class="card dom" id="d3"><div class="ico"><svg viewBox="0 0 96 96"><path d="M12 82h72"/><path d="M18 70l20-22 16 12 26-34" stroke="#f2a33a"/><rect x="18" y="58" width="10" height="20"/><rect x="40" y="46" width="10" height="32"/><rect x="62" y="34" width="10" height="44"/></svg></div><div class="txt"><div class="n">03 Data</div><div class="t">דאטה</div></div></div>
-      <div class="card dom" id="d4"><div class="ico"><svg viewBox="0 0 96 96"><rect x="10" y="16" width="76" height="50" rx="6"/><path d="M34 82h28M48 66v16M36 34l-9 8 9 8M60 34l9 8-9 8M52 30l-8 24"/></svg></div><div class="txt"><div class="n">04 Technology</div><div class="t">טכנולוגיה</div></div></div>
-      <div class="card dom" id="d5"><div class="ico"><svg viewBox="0 0 96 96"><path d="M48 10l8 20 20 8-20 8-8 20-8-20-20-8 20-8z"/><path d="M76 60l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" stroke="#f2a33a"/></svg></div><div class="txt"><div class="n">05 Advanced Tools</div><div class="t">כלים מתקדמים</div></div></div>
-    </div>
+<!-- ===== S7 END ===== -->
+<div class="scene" id="s7" style="background:#fff"><div class="inner">
+  <div class="shape" id="s7sh" style="left:-100px;top:1000px;width:1400px;height:520px;clip-path:polygon(0 55%,100% 0,100% 100%,0 100%)"></div>
+  <div class="ph" id="s7ph" style="left:0;top:1110px;width:1080px;height:810px;clip-path:polygon(0 16%,100% 0,100% 100%,0 100%)"><img src="p_wide.jpg" style="object-position:45% 30%"></div>
+  <div class="abs" style="left:0;right:0;bottom:0;height:420px;background:linear-gradient(0deg,rgba(10,20,53,.75),transparent)"></div>
+  <div class="logo" id="lg7" style="left:50%;top:150px;width:640px;margin-left:-320px"></div>
+  <div class="txt" style="top:420px;text-align:center">
+    <span class="ln hd nv" style="font-size:124px"><span id="e1">מכשירים את</span></span>
+    <span class="ln hd cob" style="font-size:136px"><span id="e2">הארגון שלכם</span></span>
+    <span class="ln hd nv" style="font-size:136px;padding-bottom:40px"><span id="e3">לעולם של <span style="position:relative;display:inline-block"><span class="brush" id="e3br" style="right:-14px;left:-14px;bottom:-24px;height:40px;z-index:-1"></span>מחר</span></span></span>
   </div>
+  
+  <div class="cta" id="cta" style="top:1640px"><span>בואו נבנה יחד את ההכשרה שמתאימה לכם</span><svg width="70" height="50" viewBox="0 0 70 50" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M30 8L12 25l18 17M58 8L40 25l18 17"/></svg></div>
+  <div class="abs" id="url" style="left:0;right:0;top:1830px;text-align:center;font-family:Mo;font-weight:600;font-size:32px;color:#fff;direction:ltr;letter-spacing:.03em">tesi-b2b-preview.netlify.app</div>
+</div></div>
 
-  <!-- S5: practical -->
-  <div class="scene" id="s5">
-    <div class="shot amber" id="sh1" style="width:860px;top:330px;right:40px"><img src="aimap.png"></div>
-    <div class="shot" id="sh2" style="width:860px;top:770px;left:40px"><img src="cyber.png"></div>
-    <div id="s5t" style="position:absolute;bottom:250px;left:0;right:0;text-align:center">
-      <span class="l hl" id="s5a" style="font-size:104px">תוכן <b>פרקטי</b></span>
-      <span class="l hl" id="s5b" style="font-size:76px;margin-top:10px">שאפשר לקחת <b>ישר לעבודה</b><b class="dot">.</b></span>
-    </div>
-  </div>
-
-  <!-- S6: advantage + stats -->
-  <div class="scene" id="s6">
-    <span class="l hl" id="s6a" style="font-size:80px">רוצים להפוך את הידע<br>של העובדים שלכם</span>
-    <span class="l hl" id="s6b" style="font-size:128px;margin-top:14px"><b>ליתרון ארגוני</b><b class="dot">?</b></span>
-    <div class="stats">
-      <div class="stat" id="st1"><div class="v" id="v1">0</div><div class="k">סטודנטים בשנה</div><div class="d">קהילה של למידה והתפתחות</div></div>
-      <div class="stat" id="st2"><div class="v" id="v2">0</div><div class="k">קורסים לארגונים</div><div class="d">בשבעה תחומים טכנולוגיים</div></div>
-      <div class="stat" id="st3"><div class="v" id="v3">40–60</div><div class="k">שעות לקורס</div><div class="d">לפי הרמה ומטרות ההכשרה</div></div>
-      <div class="stat" id="st4"><div class="v" id="v4">0</div><div class="k">קמפוסים</div><div class="d">חיפה, רמת גן, רחובות, אשדוד, אשקלון</div></div>
-    </div>
-  </div>
-
-  <!-- S7: end -->
-  <div class="scene" id="s7" style="justify-content:flex-start;padding-top:400px">
-    <span class="l hl" id="e1" style="font-size:96px"><b>היחידה ללימודי חוץ</b></span>
-    <span class="l hl" id="e2" style="font-size:72px;margin-top:40px">מכשירים את הארגון שלכם</span>
-    <span class="l hl" id="e3" style="font-size:118px;margin-top:4px"><b>לעולם של מחר</b><b class="dot">.</b></span>
-    <div class="btns" id="e4"><div class="btn p">לתיאום פגישת אפיון ←</div></div>
-    <div class="url" id="e5">tesi-b2b-preview.netlify.app</div>
-  </div>
-  <div class="partners" id="partners"><span class="mono">In partnership with</span><div class="lg"><div><img src="logo1.png"></div><div><img src="logo2.png"></div><div><img src="logo3.png"></div><div><img src="logo4.png"></div><div><img src="logo5.png"></div><div><img src="logo6.png"></div></div></div>
-
-  <div id="flash"></div>
-  <div id="prog"></div>
+<div id="wipe"></div><div id="wipe2"></div>
+<canvas id="grain" width="540" height="960" style="width:1080px;height:1920px"></canvas>
 </div>
 
 <script>
-const DUR=30;
+const DUR=29.5;
 const $=id=>document.getElementById(id);
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
 const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const ex=x=>x===1?1:1-Math.pow(2,-10*x);          // easeOutExpo
 const eo=x=>1-Math.pow(1-x,3);
-const eb=x=>{const c1=1.4,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
-const S={s1:[0,3.6],s2:[3.6,7.2],s3:[7.2,13.2],s4:[13.2,16.3],s5:[16.3,19.3],s6:[19.3,23.5],s7:[23.5,30.5]};
-const alpha=(t,[a,b])=>Math.min(lin(t,a,a+0.3),1-lin(t,b-0.25,b));
-function enter(el,t,s,d=0.55,dy=70){const p=lin(t,s,s+d),e=eo(p);el.style.opacity=clamp(p*1.6);el.style.transform=`translateY(${(1-e)*dy}px)`;el.style.filter=`blur(${(1-e)*10}px)`}
-function pop(el,t,s,d=0.5){const p=lin(t,s,s+d),e=eb(p);el.style.opacity=clamp(p*2);el.style.transform=`scale(${0.7+0.3*e})`}
+const sm=x=>x*x*(3-2*x);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
 
-// timeline markers for gap card
-function markers(id,n,shape,color){const box=$(id);box.style.cssText='position:absolute;inset:0';for(let i=0;i<n;i++){const m=document.createElement('div');const x=4+i*(92/(n-1));
- m.style.cssText=`position:absolute;top:${shape==='d'?33:35}px;right:${x}%;width:22px;height:22px;margin-right:-11px;background:${color};${shape==='d'?'transform:rotate(45deg);border-radius:3px':'border-radius:50%'};opacity:0;box-shadow:0 0 14px ${color}`;m.dataset.x=x;box.appendChild(m);}}
-markers('m1',6,'d','#f2a33a');markers('m2',6,'c','#22b8db');
-
-// background
-const cv=$('bg'),cx=cv.getContext('2d');
-const R=i=>{const r=Math.sin(i*99.13+1.7)*43758.5453;return r-Math.floor(r)};
-const P=[...Array(46)].map((_,i)=>({x:Math.round(R(i)*30)*36,y:R(i+300)*1920,v:0.6+R(i+600),a:R(i+900)>.75}));
-function drawBg(t){
-  cx.clearRect(0,0,1080,1920);
-  // dot grid
-  cx.fillStyle='rgba(255,255,255,0.07)';
-  for(let y=18;y<1920;y+=36)for(let x=18;x<1080;x+=36){cx.fillRect(x-1.2,y-1.2,2.4,2.4)}
-  // perspective floor
-  const hz=1560, sp=t<3.6?3.2:t<7.2?1.4:0.5;
-  cx.strokeStyle='rgba(34,184,219,0.22)';cx.lineWidth=1.5;
-  for(let i=-14;i<=14;i++){cx.beginPath();cx.moveTo(540+i*20,hz);cx.lineTo(540+i*170,1920);cx.stroke()}
-  const ph=(t*sp)%1;
-  for(let k=0;k<9;k++){const z=(k+ph)/9;const y=hz+(1920-hz)*z*z;cx.globalAlpha=z;cx.beginPath();cx.moveTo(0,y);cx.lineTo(1080,y);cx.stroke()}
-  cx.globalAlpha=1;
-  const fg=cx.createLinearGradient(0,hz-60,0,hz+120);fg.addColorStop(0,'rgba(7,11,15,1)');fg.addColorStop(1,'rgba(7,11,15,0)');cx.fillStyle=fg;cx.fillRect(0,hz-60,1080,180);
-  // data streaks along dot columns
-  const speed=t<3.6?900:t<7.2?380:140;
-  for(const p of P){const y=((p.y-t*speed*p.v)%2100+2100)%2100-90;const len=t<3.6?220:110;
-    const g=cx.createLinearGradient(0,y,0,y+len);const c=p.a?'242,163,58':'34,184,219';g.addColorStop(0,`rgba(${c},0)`);g.addColorStop(1,`rgba(${c},0.8)`);
-    cx.strokeStyle=g;cx.lineWidth=2.4;cx.beginPath();cx.moveTo(p.x+18,y);cx.lineTo(p.x+18,y+len);cx.stroke();
-    cx.fillStyle=`rgba(${c},0.95)`;cx.fillRect(p.x+16,y+len-2,4,4)}
+// --- TESI logo (vector rebuild) ---
+function logoSVG(dark){
+  const tc=dark?'#ffffff':'#3b4048', sc=dark?'rgba(255,255,255,.85)':'#3b4048';
+  return `<svg viewBox="0 0 1000 205" width="100%" style="display:block;overflow:visible">
+  <defs>
+   <linearGradient id="g1${dark}" x1="0" x2="1"><stop offset="0" stop-color="#f6c32c"/><stop offset=".55" stop-color="#e98a2b"/><stop offset="1" stop-color="#d9631f"/></linearGradient>
+   <linearGradient id="g2${dark}" x1="0" x2="1"><stop offset="0" stop-color="#1b3caa"/><stop offset=".5" stop-color="#2b7de6"/><stop offset="1" stop-color="#3fb4ff"/></linearGradient>
+   <linearGradient id="g3${dark}" x1="0" x2="1"><stop offset="0" stop-color="#7d838b"/><stop offset=".55" stop-color="#e4e7ea"/><stop offset="1" stop-color="#b9bec4"/></linearGradient>
+  </defs>
+  <g transform="translate(0,2) scale(.5) translate(-117,-87)" fill="none" stroke-width="27">
+    <path d="M128 100H500A50 50 0 0 1 500 200H128" stroke="url(#g1${dark})"/>
+    <path d="M640 232H250A49 49 0 0 0 250 330H640" stroke="url(#g2${dark})"/>
+    <path d="M128 362H500A51.5 51.5 0 0 1 500 465H128" stroke="url(#g3${dark})"/>
+  </g>
+  <text x="300" y="118" font-family="Mo" font-weight="500" font-size="132" letter-spacing="74" fill="${tc}">TESI</text>
+  <text x="304" y="190" font-family="Mo" font-weight="600" font-size="35.5" letter-spacing="4.2" fill="${sc}">THE EXTERNAL STUDIES INSTITUTE</text>
+  </svg>`;
 }
+['lg2','lg3','lg5','lg7'].forEach(id=>$(id).innerHTML=logoSVG(false));
+['lg4','lg6'].forEach(id=>$(id).innerHTML=logoSVG(true));
 
-function count(el,t,s,d,to,fmt){const v=Math.round(eo(lin(t,s,s+d))*to);el.textContent=fmt?v.toLocaleString('en-US'):v}
+// scene windows (synced to voice-over, which starts at 0.3s)
+const S={s1:[0,3.25],s2:[3.25,5.3],s3:[5.3,12.0],s4:[12.0,16.3],s5:[16.3,19.1],s6:[19.1,22.5],s7:[22.5,30]};
+const XF=0.45;
+
+// line reveal: slide up from mask + blur → slow, cinematic
+function rise(el,t,s,d=0.9){const p=lin(t,s,s+d),e=ex(p);el.style.transform=`translateY(${(1-e)*110}%)`;el.style.filter=`blur(${(1-sm(p))*8}px)`;el.style.opacity=clamp(p*3)}
+function fadeUp(el,t,s,d=0.8,dy=60){const p=lin(t,s,s+d),e=ex(p);el.style.opacity=clamp(p*2);el.style.transform=`translateY(${(1-e)*dy}px)`;el.style.filter=`blur(${(1-sm(p))*10}px)`}
+function popIn(el,t,s,d=0.7){const p=lin(t,s,s+d),e=ex(p);el.style.opacity=clamp(p*2.5);el.style.transform=`scale(${0.82+0.18*e})`}
+// photo: slow-motion push-in (Ken Burns) + reveal
+function photo(ph,t,[a,b],dir=1,reveal=0.9){const img=ph.querySelector('img');const p=lin(t,a,b+0.5);
+  img.style.transform=`scale(${1.06+0.10*p}) translate(${dir*(-14+28*p)}px,${-10*p}px)`;
+  const r=ex(lin(t,a+0.05,a+0.05+reveal));ph.style.opacity=r;ph.style.transform=`translateY(${(1-r)*120}px)`}
+function shape(el,t,[a,b],dx=40){const r=ex(lin(t,a,a+1.0));const p=lin(t,a,b);el.style.transform=`translate(${(1-r)*600+dx*p}px,${-20*p}px)`}
+function brush(el,t,s,d=0.55){const p=eio(lin(t,s,s+d));el.style.opacity=p>0?1:0;
+  // reveal from right (RTL) via mask
+  el.style.webkitMaskImage=`linear-gradient(270deg,#000 ${p*100}%,transparent ${p*100+2}%)`}
+function hl(el,t,s,d=0.6){const p=eio(lin(t,s,s+d));el.style.transform=`skewX(-8deg) scaleX(${p})`}
+function logoIn(el,t,s){const p=ex(lin(t,s,s+0.8));el.style.opacity=p;el.style.transform=`translateY(${(1-p)*-30}px)`}
+
+// grain
+const gc=$('grain').getContext('2d');const tiles=[];
+for(let k=0;k<6;k++){const id=gc.createImageData(540,960);let seed=k*7919+13;for(let i=0;i<id.data.length;i+=4){seed=(seed*16807)%2147483647;const v=seed%255;id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=255}tiles.push(id)}
 
 function render(t){
-  drawBg(t);
-  for(const k in S)$(k).style.opacity=alpha(t,S[k]);
-  // pill: from S3 through end
-  {const a=Math.min(lin(t,7.3,7.8),1-lin(t,13.0,13.2))+lin(t,23.6,24.0);$('pill').style.opacity=clamp(a);}
+  // scenes: cross-dissolve + continuous slow push-in
+  for(const k in S){const[a,b]=S[k];const el=$(k);
+    const inA=k==='s1'?1:sm(lin(t,a-XF/2,a+XF/2)), outA=k==='s7'?1:1-sm(lin(t,b-XF/2,b+XF/2));
+    el.style.opacity=Math.min(inA,outA);el.style.visibility=(t>a-XF&&t<b+XF)?'visible':'hidden';
+    const p=lin(t,a-XF/2,b+XF/2);el.querySelector('.inner').style.transform=`scale(${1.0+0.035*p})`;}
 
   // S1
-  enter($('s1m'),t,0.0,0.4,30);enter($('s1a'),t,0.1,0.5);enter($('s1b'),t,0.55,0.5);
-  {const p=lin(t,1.0,1.5),e=eb(p),el=$('s1c');el.style.opacity=clamp(p*2);const j=(t>1.5&&t<3.4)?Math.sin(t*80)*2.5:0;el.style.transform=`scale(${0.6+0.4*e}) translateX(${j}px)`}
-
+  {const r=[0,3.25];photo($('s1ph'),t,r,1,1.2);shape($('s1sh'),t,r,-30);
+   const bp=lin(t,0,3.6);$('s1beam').style.transform=`rotate(-28deg) translateX(${-500+900*bp}px)`;$('s1beam').style.opacity=sm(lin(t,0.1,0.8));
+   rise($('s1a'),t,0.30);rise($('s1b'),t,0.85);rise($('s1c'),t,1.55,1.0);}
   // S2
-  enter($('s2a'),t,3.7,0.5);enter($('s2b'),t,4.15,0.5);enter($('gap'),t,4.5,0.6,90);
-  {const a=eo(lin(t,4.8,6.4)),b=eo(lin(t,4.8,6.9));const A=a*95,B=b*38;
-   $('r1').style.width=A+'%';$('r2').style.width=B+'%';$('p1').textContent=Math.round(A)+'%';$('p2').textContent=Math.round(B)+'%';
-   [...$('m1').children].forEach(m=>m.style.opacity=(+m.dataset.x<=A)?1:0);[...$('m2').children].forEach(m=>m.style.opacity=(+m.dataset.x<=B)?1:0);}
-
+  {const r=[3.25,5.3];photo($('s2ph'),t,r,-1,0.9);shape($('s2sh'),t,r);
+   rise($('s2a'),t,3.34,0.8);rise($('s2b'),t,4.0,0.8);rise($('s2c'),t,4.35,0.8);brush($('s2br'),t,4.75);logoIn($('lg2'),t,3.4);}
   // S3
-  enter($('s3a'),t,7.35,0.5);enter($('s3b'),t,7.8,0.6);
-  enter($('c1'),t,9.5,0.55,90);enter($('c2'),t,10.8,0.55,90);
-
-  // S4 domains: cascade in with 3D tilt, highlight as mentioned
-  ['d1','d2','d3','d4','d5'].forEach((id,i)=>{const el=$(id),s=13.3+i*0.5,p=lin(t,s,s+0.5),e=eo(p);
-    el.style.opacity=clamp(p*1.8);el.style.transform=`perspective(1400px) rotateX(${(1-e)*-55}deg) translateY(${(1-e)*60}px)`;
-    const hot=Math.max(0,1-Math.abs(t-(s+0.35))/0.6);el.style.filter=`brightness(${1+hot*0.35})`;});
-
-  // S5 practical: screenshots slide in tilted
-  {const p1=eo(lin(t,16.35,17.0)),p2=eo(lin(t,16.65,17.3)),dr=(t-16.3)*6;
-   $('sh1').style.opacity=clamp(p1*1.5);$('sh1').style.transform=`perspective(1600px) rotateY(${-14+(1-p1)*-20}deg) translateX(${(1-p1)*-200}px) translateY(${-dr}px)`;
-   $('sh2').style.opacity=clamp(p2*1.5);$('sh2').style.transform=`perspective(1600px) rotateY(${14+(1-p2)*20}deg) translateX(${(1-p2)*200}px) translateY(${dr}px)`;}
-  enter($('s5a'),t,17.0,0.5);enter($('s5b'),t,17.6,0.5);
-
-  // S6 stats
-  enter($('s6a'),t,19.4,0.5);enter($('s6b'),t,20.2,0.55);
-  ['st1','st2','st3','st4'].forEach((id,i)=>enter($(id),t,20.6+i*0.18,0.5,40));
-  count($('v1'),t,20.7,1.6,7000,true);count($('v2'),t,20.9,1.4,61);count($('v4'),t,21.2,1.0,5);
-
+  {const r=[5.3,12.0];photo($('s3ph'),t,[5.3,12.0],1,1.1);
+   $('s3bg').style.transform=`translateY(${(1-ex(lin(t,5.2,6.2)))*-300}px)`;
+   fadeUp($('s3chip'),t,5.39,0.7,40);rise($('s3a'),t,5.75);rise($('s3b'),t,6.45);rise($('s3c'),t,7.25,1.0);
+   {const p=ex(lin(t,8.9,9.8));$('s3band').style.transform=`translateX(${(1-p)*-1100}px)`;}
+   fadeUp($('c1'),t,9.3,0.8,40);fadeUp($('c2'),t,10.66,0.8,40);logoIn($('lg3'),t,5.5);}
+  // S4 domains: each card slides in when spoken, active one glows
+  {const T=[12.47,13.18,13.89,14.49,15.30];
+   ['d1','d2','d3','d4','d5'].forEach((id,i)=>{const el=$(id),s=T[i]-0.15,p=ex(lin(t,s,s+0.8));
+     el.style.opacity=clamp(p*2);el.style.transform=`translateX(${(1-p)*(i%2?-700:700)}px) rotate(${(1-p)*(i%2?-3:3)}deg)`;
+     const act=t>=T[i]-0.1&&(i===4||t<T[i+1]-0.1);const ic=el.querySelector('.ic');
+     ic.style.background=act?'#d8ff3e':'#fff';ic.style.boxShadow=act?'0 0 0 10px rgba(216,255,62,.35)':'none';el.style.outline=act?'6px solid #d8ff3e':'none';});
+   fadeUp($('s4t'),t,12.1,0.8,40);fadeUp($('s4f'),t,15.7,0.8,30);logoIn($('lg4'),t,12.1);
+   const p=lin(t,12,16.3);$('s4s1').style.transform=`skewX(-18deg) translateX(${120*p}px)`;$('s4s2').style.transform=`skewX(-18deg) translateX(${-160*p}px)`;}
+  // S5
+  {const r=[16.3,19.1];photo($('s5ph'),t,r,-1,0.9);shape($('s5sh'),t,r);
+   rise($('s5a'),t,16.4,0.8);rise($('s5b'),t,16.85,0.9);fadeUp($('s5c'),t,17.35,0.6,20);hl($('s5hl'),t,17.35,0.7);
+   popIn($('s5card'),t,17.6,0.8);
+   const f=[['f1',17.9],['a1',18.1],['f2',18.25],['a2',18.45],['f3',18.6]];f.forEach(([id,s])=>{const p=ex(lin(t,s,s+0.4));$(id).style.opacity=p;$(id).style.transform=(id[0]==='a'?'rotate(180deg) ':'')+`scale(${0.6+0.4*p})`});
+   $('s5card').style.marginTop=(Math.sin(t*1.6)*6)+'px';logoIn($('lg5'),t,16.4);}
+  // S6
+  {const r=[19.1,22.5];photo($('s6ph'),t,r,1,1.0);
+   const bp=lin(t,19.1,22.6);$('s6beam').style.transform=`rotate(-24deg) translateX(${-400+700*bp}px)`;
+   rise($('s6a'),t,19.2,0.8);rise($('s6b'),t,19.75,0.8);fadeUp($('s6c'),t,20.45,0.6,20);hl($('s6hl'),t,20.45,0.7);
+   popIn($('s6st'),t,21.0,0.8);$('s6v').textContent=Math.round(eo(lin(t,21.0,22.3))*7000).toLocaleString('en-US');
+   logoIn($('lg6'),t,19.2);}
   // S7 end
-  enter($('e1'),t,23.7,0.55);enter($('e2'),t,24.3,0.55);enter($('e3'),t,24.8,0.55);
-  pop($('e4'),t,26.0,0.5);if(t>26.6)$('e4').style.transform=`scale(${1+0.03*Math.sin((t-26.6)*6)})`;
-  enter($('e5'),t,26.4,0.5,20);
-  {const p=eo(lin(t,26.8,27.5));const el=$('partners');el.style.opacity=p;el.style.transform=`translateY(${(1-p)*60}px)`}
+  {const r=[22.5,29.5];photo($('s7ph'),t,r,1,1.1);shape($('s7sh'),t,r);
+   logoIn($('lg7'),t,22.6);{const p=ex(lin(t,22.6,23.6));$('lg7').style.transform=`scale(${0.9+0.1*p})`;$('lg7').style.opacity=p}
+   rise($('e1'),t,24.2,0.9);rise($('e2'),t,24.75,0.9);rise($('e3'),t,25.3,1.0);brush($('e3br'),t,26.0,0.6);
+   {const p=ex(lin(t,26.5,27.4));$('cta').style.opacity=p;$('cta').style.transform=`translateY(${(1-p)*80}px) scale(${t>27.4?1+0.02*Math.sin((t-27.4)*5):1})`}
+   fadeUp($('url'),t,27.0,0.7,20);}
 
-  const fl=[3.6,7.2,13.2,16.3,19.3,23.5].map(x=>Math.max(0,1-Math.abs(t-x)/0.1)).reduce((a,b)=>Math.max(a,b),0);
-  $('flash').style.opacity=fl*0.18;
-  $('prog').style.width=(t/DUR*100)+'%';
+  // diagonal wipes on two big transitions
+  for(const [id,at] of [['wipe',12.0],['wipe2',22.5]]){const p=lin(t,at-0.42,at+0.42);$(id).style.transform=`translateX(${150-300*eio(p)}%) skewX(-14deg)`;}
+
+  // grain
+  gc.putImageData(tiles[Math.floor(t*24)%tiles.length],0,0);
 }
 window.render=render;window.DUR=DUR;
 if(!window.__capture){const t0=performance.now();(function loop(){render(((performance.now()-t0)/1000)%DUR);requestAnimationFrame(loop)})()}
