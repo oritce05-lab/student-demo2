@@ -42,12 +42,12 @@ n=convolve(n,np.ones(8)/8,'same')
 add(0.12*(tt/3.6)**2*n,0)
 sw=np.sin(2*np.pi*np.cumsum(200+600*(tt/3.6)**2)/sr); add(0.05*(tt/3.6)**2*sw,0)
 # whooshes at transitions
-for x in [3.6,7.2,13.2,19.2,23.4]:
+for x in [3.6,7.2,13.2,16.3,19.3,23.5]:
     L=0.6; tt=np.arange(int(L*sr))/sr; n=convolve(rng.standard_normal(len(tt)),np.ones(12)/12,'same')
     env=np.sin(np.pi*tt/L)**2; add(0.18*env*n,x-L/2)
 # end hit
 tt=np.arange(int(4*sr))/sr; env=np.exp(-tt*1.2)
-add(0.15*env*sum(np.sin(2*np.pi*note(m)*tt) for m in [45,57,60,64,69]),23.4)
+add(0.15*env*sum(np.sin(2*np.pi*note(m)*tt) for m in [45,57,60,64,69]),23.5)
 # fade out
 fo=np.minimum((D-t)/1.5,1)[:,None]; out*=fo
 out/=np.max(np.abs(out))*1.12
