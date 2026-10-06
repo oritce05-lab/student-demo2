@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face{font-family:H;src:url(heebo-300.ttf);font-weight:300}
+@font-face{font-family:H;src:url(heebo-400.ttf);font-weight:400}
+@font-face{font-family:H;src:url(heebo-700.ttf);font-weight:700}
+@font-face{font-family:H;src:url(heebo-900.ttf);font-weight:900}
+:root{--navy:#1a1a2e;--deep:#0d0d1c;--red:#e63946;--blue:#457b9d;--sky:#8ecae6;--white:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--deep);font-family:H,sans-serif;color:#fff}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;
+  background:radial-gradient(1200px 1200px at 50% 30%,#23234a 0%,#1a1a2e 45%,#0d0d1c 100%)}
+canvas#bg{position:absolute;inset:0}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 90px;opacity:0}
+.big{font-weight:900;line-height:1.05;letter-spacing:-1px}
+.mid{font-weight:700;line-height:1.2}
+.thin{font-weight:300}
+.red{color:var(--red)} .sky{color:var(--sky)}
+.line{display:block;will-change:transform,opacity}
+/* brand tag top */
+#brand{position:absolute;top:90px;right:80px;display:flex;align-items:center;gap:22px;opacity:0}
+.logo{width:92px;height:92px;border-radius:24px;background:#fff;display:flex;align-items:center;justify-content:center}
+.logo svg{width:56px;height:56px}
+.bname{font-weight:700;font-size:38px;line-height:1.15;text-align:right}
+.bsub{font-weight:300;font-size:26px;opacity:.7}
+/* progress bars */
+.bars{width:820px;margin-top:90px;display:flex;flex-direction:column;gap:46px}
+.barrow{display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.barlbl{font-size:36px;font-weight:700;display:flex;justify-content:space-between}
+.track{height:34px;border-radius:17px;background:rgba(255,255,255,.1);overflow:hidden}
+.fill{height:100%;border-radius:17px;width:0}
+/* chips */
+.chips{display:flex;flex-direction:column;gap:28px;margin-top:70px;align-items:center}
+.chip{font-size:44px;font-weight:700;padding:22px 48px;border-radius:999px;border:3px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06)}
+.chip b{color:var(--red)}
+/* tiles */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;width:880px;margin-top:20px}
+.tile{height:250px;border-radius:36px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border:2px solid rgba(255,255,255,.16);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font-size:54px;font-weight:900}
+.tile svg{width:96px;height:96px;stroke:var(--sky);fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.tile.wide{grid-column:1 / span 2;height:210px;flex-direction:row;gap:30px}
+.tile.ai{background:linear-gradient(160deg,var(--red),#b5202c);border-color:transparent}
+.tile.ai svg{stroke:#fff}
+.practical{margin-top:70px;font-size:56px;font-weight:700}
+.practical span{background:var(--red);padding:4px 26px;border-radius:14px}
+/* growth chart */
+svg#chart{width:820px;height:520px;margin-top:70px;overflow:visible}
+/* end card */
+.endlogo{width:200px;height:200px;border-radius:52px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 30px 80px rgba(230,57,70,.35)}
+.endlogo svg{width:122px;height:122px}
+.cta{margin-top:80px;font-size:50px;font-weight:900;background:var(--red);padding:34px 70px;border-radius:999px;box-shadow:0 20px 60px rgba(230,57,70,.45)}
+.url{margin-top:36px;font-size:34px;font-weight:400;opacity:.75;direction:ltr}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+#prog{position:absolute;bottom:0;right:0;height:10px;background:var(--red);width:0}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bg" width="1080" height="1920"></canvas>
+
+  <div id="brand">
+    <div class="logo"><svg viewBox="0 0 24 24"><path fill="#1a1a2e" d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+    <div><div class="bname">היחידה ללימודי חוץ</div><div class="bsub">הכשרות טכנולוגיות לארגונים</div></div>
+  </div>
+
+  <!-- S1 hook -->
+  <div class="scene" id="s1">
+    <span class="line big" id="s1a" style="font-size:118px">העולם הטכנולוגי</span>
+    <span class="line big" id="s1b" style="font-size:118px;margin-top:10px">משתנה</span>
+    <span class="line big red" id="s1c" style="font-size:150px;margin-top:10px">בקצב מטורף.</span>
+  </div>
+
+  <!-- S2 question -->
+  <div class="scene" id="s2">
+    <span class="line mid" id="s2a" style="font-size:76px;white-space:nowrap">אבל האם העובדים שלכם</span>
+    <span class="line big" id="s2b" style="font-size:120px;margin-top:16px">מתקדמים <span class="red">איתו?</span></span>
+    <div class="bars">
+      <div class="barrow"><div class="barlbl"><span>הטכנולוגיה</span><span id="p1" class="sky">0%</span></div><div class="track"><div class="fill" id="f1" style="background:linear-gradient(90deg,var(--blue),var(--sky))"></div></div></div>
+      <div class="barrow"><div class="barlbl"><span>העובדים</span><span id="p2" class="red">0%</span></div><div class="track"><div class="fill" id="f2" style="background:var(--red)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- S3 who we are -->
+  <div class="scene" id="s3">
+    <span class="line mid thin" id="s3a" style="font-size:58px;font-weight:300">ביחידה ללימודי חוץ</span>
+    <span class="line big" id="s3b" style="font-size:98px;margin-top:22px">בונים הכשרות<br>טכנולוגיות <span class="red">לארגונים</span></span>
+    <div class="chips">
+      <div class="chip" id="c1">מותאמות <b>לצרכים</b> שלכם</div>
+      <div class="chip" id="c2">ולמטרות <b>העסקיות</b> שלכם</div>
+    </div>
+  </div>
+
+  <!-- S4 topics -->
+  <div class="scene" id="s4">
+    <div class="grid">
+      <div class="tile ai" id="t1"><svg viewBox="0 0 64 64"><rect x="16" y="16" width="32" height="32" rx="6"/><path d="M24 4v12M32 4v12M40 4v12M24 48v12M32 48v12M40 48v12M4 24h12M4 32h12M4 40h12M48 24h12M48 32h12M48 40h12"/><text x="32" y="38" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" stroke="none" font-family="H">AI</text></svg>AI</div>
+      <div class="tile" id="t2"><svg viewBox="0 0 64 64"><path d="M32 4l22 8v16c0 16-10 26-22 32C20 54 10 44 10 28V12z"/><path d="M22 32l7 7 13-14"/></svg>סייבר</div>
+      <div class="tile" id="t3"><svg viewBox="0 0 64 64"><path d="M8 56h48"/><rect x="12" y="34" width="9" height="18"/><rect x="27" y="22" width="9" height="30"/><rect x="42" y="10" width="9" height="42"/></svg>דאטה</div>
+      <div class="tile" id="t4"><svg viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="34" rx="4"/><path d="M22 56h20M32 44v12M20 24l-6 6 6 6M44 24l6 6-6 6M36 20l-8 20"/></svg>טכנולוגיה</div>
+      <div class="tile wide" id="t5"><svg viewBox="0 0 64 64"><path d="M32 6l6 14 14 6-14 6-6 14-6-14-14-6 14-6z"/><path d="M50 42l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>כלים מתקדמים</div>
+    </div>
+    <div class="practical" id="s4p">תוכן פרקטי — <span>ישר לעבודה</span></div>
+  </div>
+
+  <!-- S5 advantage -->
+  <div class="scene" id="s5">
+    <span class="line mid" id="s5a" style="font-size:74px">רוצים להפוך את הידע<br>של העובדים שלכם</span>
+    <span class="line big" id="s5b" style="font-size:126px;margin-top:22px">ליתרון <span class="red">ארגוני?</span></span>
+    <svg id="chart" viewBox="0 0 820 520">
+      <g id="cbars"></g>
+      <path id="cline" d="" fill="none" stroke="#e63946" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="carrow" d="M-34 -22 L0 0 L-34 22" fill="none" stroke="#e63946" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- S6 end card -->
+  <div class="scene" id="s6">
+    <div class="endlogo" id="e1"><svg viewBox="0 0 24 24"><path fill="#1a1a2e" d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+    <span class="line big" id="e2" style="font-size:96px;margin-top:60px">היחידה ללימודי חוץ</span>
+    <span class="line mid" id="e3" style="font-size:58px;margin-top:30px;font-weight:400">מכשירים את הארגון שלכם<br><b class="red" style="font-weight:900">לעולם של מחר.</b></span>
+    <div class="cta" id="e4">לבניית הכשרה לארגון ←</div>
+    <div class="url" id="e5">tesi-b2b-preview.netlify.app</div>
+  </div>
+
+  <div id="flash"></div>
+  <div id="prog"></div>
+</div>
+
+<script>
+const DUR = 30;
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const lin = (t,a,b)=>clamp((t-a)/(b-a));
+const eo = x=>1-Math.pow(1-x,3);              // easeOutCubic
+const eb = x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)}; // easeOutBack
+const ei = x=>x*x*x;
+
+// scene windows [in, out]
+const S = {s1:[0,3.6], s2:[3.6,7.2], s3:[7.2,13.2], s4:[13.2,19.2], s5:[19.2,23.4], s6:[23.4,30.5]};
+function sceneAlpha(t,[a,b]){ return Math.min(lin(t,a,a+0.35), 1-lin(t,b-0.3,b)); }
+
+// enter: slide up + fade with optional back easing
+function enter(el,t,start,dur=0.55,dy=80,back=false){
+  const p=lin(t,start,start+dur), e=back?eb(p):eo(p);
+  el.style.opacity=clamp(p*1.6);
+  el.style.transform=`translateY(${(1-e)*dy}px)`;
+}
+function pop(el,t,start,dur=0.5){
+  const p=lin(t,start,start+dur), e=eb(p);
+  el.style.opacity=clamp(p*2);
+  el.style.transform=`scale(${0.6+0.4*e})`;
+}
+
+// ---------- background: moving grid + particles (deterministic) ----------
+const cv=$('bg'), cx=cv.getContext('2d');
+const P=[...Array(70)].map((_,i)=>{const r=Math.sin(i*99.13)*43758.5453;const f=r-Math.floor(r);const r2=Math.sin(i*12.7)*9631.1;const g=r2-Math.floor(r2);return{x:f*1080,y:g*1920,s:1+((i*7)%5),v:40+((i*13)%60)}});
+function drawBg(t){
+  cx.clearRect(0,0,1080,1920);
+  // speed: fast in hook, calmer later
+  const speed = t<3.6 ? 520 : t<7.2 ? 260 : 90;
+  // perspective-ish horizontal lines
+  cx.strokeStyle='rgba(142,202,230,0.10)'; cx.lineWidth=2;
+  const off = (t*speed)%120;
+  for(let y=-120;y<2040;y+=120){ cx.beginPath(); cx.moveTo(0,y+off); cx.lineTo(1080,y+off); cx.stroke(); }
+  for(let x=0;x<=1080;x+=120){ cx.beginPath(); cx.moveTo(x,0); cx.lineTo(x,1920); cx.stroke(); }
+  // particles streaking
+  for(const p of P){
+    const y=((p.y - t*(p.v+speed*0.6))%1920+1920)%1920;
+    const len = Math.min(140, speed*0.18);
+    const grd=cx.createLinearGradient(p.x,y,p.x,y+len);
+    grd.addColorStop(0,'rgba(230,57,70,0.0)');
+    grd.addColorStop(1, p.s>3?'rgba(230,57,70,0.55)':'rgba(142,202,230,0.45)');
+    cx.strokeStyle=grd; cx.lineWidth=p.s; cx.beginPath(); cx.moveTo(p.x,y); cx.lineTo(p.x,y+len+4); cx.stroke();
+  }
+  // vignette glow
+  const g=cx.createRadialGradient(540,1700,50,540,1700,900);
+  g.addColorStop(0,'rgba(230,57,70,0.18)'); g.addColorStop(1,'rgba(230,57,70,0)');
+  cx.fillStyle=g; cx.fillRect(0,0,1080,1920);
+}
+
+// growth chart geometry
+const bars=[90,140,120,210,260,340,420];
+const cb=$('cbars');
+bars.forEach((h,i)=>{const r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',30+i*112);r.setAttribute('width',72);r.setAttribute('rx',14);r.setAttribute('fill',i>=5?'#457b9d':'rgba(255,255,255,0.18)');r.dataset.h=h;cb.appendChild(r);});
+const pts=bars.map((h,i)=>[66+i*112, 500-h-40]);
+
+function render(t){
+  drawBg(t);
+  for(const k in S) $(k).style.opacity = sceneAlpha(t,S[k]);
+
+  // brand tag: visible from s3 to before s6
+  $('brand').style.opacity = Math.min(lin(t,7.4,7.9), 1-lin(t,23.0,23.4));
+
+  // S1
+  enter($('s1a'),t,0.05,0.5,120); enter($('s1b'),t,0.55,0.5,120);
+  { const p=lin(t,1.05,1.6), e=eb(p); const el=$('s1c'); el.style.opacity=clamp(p*2);
+    const shake = t>1.6&&t<3.5 ? Math.sin(t*90)*3 : 0;
+    el.style.transform=`scale(${0.5+0.5*e}) translateX(${shake}px) skewX(${-6*(1-e)}deg)`; }
+
+  // S2
+  enter($('s2a'),t,3.7,0.5); pop($('s2b'),t,4.2,0.55);
+  { const a=eo(lin(t,4.6,6.4)), b=eo(lin(t,4.6,6.9));
+    const v1=Math.round(a*95), v2=Math.round(b*38);
+    $('f1').style.width=v1+'%'; $('f2').style.width=v2+'%';
+    $('p1').textContent=v1+'%'; $('p2').textContent=v2+'%'; }
+
+  // S3
+  enter($('s3a'),t,7.4,0.5); enter($('s3b'),t,7.9,0.6,100,true);
+  pop($('c1'),t,9.6,0.5); pop($('c2'),t,10.9,0.5);
+
+  // S4 topics pop in sequence matching narration
+  ['t1','t2','t3','t4','t5'].forEach((id,i)=>pop($(id),t,13.35+i*0.55,0.5));
+  enter($('s4p'),t,16.4,0.6,60,true);
+
+  // S5
+  enter($('s5a'),t,19.35,0.5); pop($('s5b'),t,20.4,0.55);
+  { const rects=[...cb.children];
+    rects.forEach((r,i)=>{const p=eo(lin(t,19.6+i*0.12,20.2+i*0.12)); const h=r.dataset.h*p; r.setAttribute('y',500-h); r.setAttribute('height',h);});
+    const lp=lin(t,20.6,22.2); const n=lp*(pts.length-1); const k=Math.floor(n), f=n-k;
+    let d=`M${pts[0][0]} ${pts[0][1]}`; let last=pts[0];
+    for(let i=1;i<=Math.min(k,pts.length-1);i++){ d+=` L${pts[i][0]} ${pts[i][1]}`; last=pts[i]; }
+    let ang=Math.atan2(pts[1][1]-pts[0][1],pts[1][0]-pts[0][0]);
+    if(k<pts.length-1){ const a=pts[k], b=pts[k+1]; last=[a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f]; d+=` L${last[0]} ${last[1]}`; ang=Math.atan2(b[1]-a[1],b[0]-a[0]); }
+    else { const a=pts[pts.length-2], b=pts[pts.length-1]; ang=Math.atan2(b[1]-a[1],b[0]-a[0]); }
+    $('cline').setAttribute('d',d);
+    const ar=$('carrow'); ar.setAttribute('transform',`translate(${last[0]} ${last[1]}) rotate(${ang*180/Math.PI})`); ar.style.opacity = lp>0?1:0; }
+
+  // S6
+  pop($('e1'),t,23.6,0.6); enter($('e2'),t,24.1,0.55); enter($('e3'),t,24.8,0.6);
+  pop($('e4'),t,26.0,0.55);
+  { const pulse = t>26.6 ? 1+0.035*Math.sin((t-26.6)*6) : 1; const el=$('e4'); if(t>26.6) el.style.transform=`scale(${pulse})`; }
+  enter($('e5'),t,26.5,0.5,30);
+
+  // transition flashes
+  const fl=[3.6,7.2,13.2,19.2,23.4].map(x=>Math.max(0,1-Math.abs(t-x)/0.12)).reduce((a,b)=>Math.max(a,b),0);
+  $('flash').style.opacity = fl*0.22;
+  $('prog').style.width = (t/DUR*100)+'%';
+}
+window.render=render;
+window.DUR=DUR;
+// live preview when opened directly
+if(!window.__capture){ const t0=performance.now(); (function loop(){ render(((performance.now()-t0)/1000)%DUR); requestAnimationFrame(loop); })(); }
+</script>
+</body>
+</html>
