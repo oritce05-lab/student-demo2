@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>
+@font-face{font-family:H;src:url(heebo-900.ttf);font-weight:900}
+@font-face{font-family:H;src:url(heebo-700.ttf);font-weight:700}
+@font-face{font-family:H;src:url(heebo-500.ttf);font-weight:500}
+@font-face{font-family:Mo;src:url(montserrat-500.ttf);font-weight:500}
+@font-face{font-family:Mo;src:url(montserrat-600.ttf);font-weight:600}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;background:transparent;overflow:hidden;font-family:H,sans-serif}
+#shade{position:absolute;left:0;right:0;bottom:0;height:640px;background:linear-gradient(0deg,rgba(6,12,30,.62),rgba(6,12,30,0));}
+#logo{position:absolute;top:70px;left:56px;width:300px;padding:16px 22px 12px;background:rgba(255,255,255,.92);border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.18);direction:ltr}
+#sub{position:absolute;left:70px;right:70px;top:1440px;text-align:center;font-weight:900;font-size:66px;line-height:1.15;text-wrap:balance;color:#fff;
+  text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 18px rgba(0,0,0,.45),0 0 4px rgba(0,0,0,.7)}
+#sub .w{display:inline-block;margin:0 .1em;unicode-bidi:isolate;will-change:transform,opacity}
+#sub .hl{color:#ffe500}
+.chip{position:absolute;right:46px;display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.95);border-radius:999px;padding:12px 28px 12px 14px;
+  box-shadow:0 12px 34px rgba(0,0,0,.22);font-weight:900;font-size:40px;color:#0a1435;white-space:nowrap;opacity:0}
+.chip .ic{width:62px;height:62px;border-radius:50%;background:#1452ff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chip .ic svg{width:36px;height:36px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.stars{display:flex;gap:6px;direction:ltr}
+.stars svg{width:52px;height:52px}
+#end{position:absolute;inset:0;opacity:0;background:linear-gradient(180deg,rgba(8,17,46,.55),rgba(8,17,46,.92) 55%,rgba(8,17,46,.97));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff}
+#end .lg{width:620px;margin-bottom:70px;direction:ltr}
+#end .t1{font-weight:500;font-size:52px;color:#9fdcff;margin-bottom:14px}
+#end .t2{font-weight:900;font-size:120px;line-height:1}
+#end .t3{font-weight:900;font-size:72px;margin-top:12px}
+#end .cta{margin-top:80px;background:linear-gradient(90deg,#1e6bff,#1452ff);border-radius:26px;padding:30px 60px;font-weight:900;font-size:50px;box-shadow:0 18px 50px rgba(20,82,255,.5)}
+</style></head><body>
+<div id="shade"></div>
+<div id="logo"></div>
+<div id="chips"></div>
+<div id="sub"></div>
+<div id="end"><div class="lg" id="endlogo"></div><div class="t1">המלצת בוגרת</div><div class="t2">קורס AI Agents</div><div class="t3">ביחידה ללימודי חוץ</div><div class="cta">לפרטים והרשמה ←</div></div>
+<script>
+const TL={"subs": [[0.05, 2.6, "אני סיימתי עכשיו קורס *AI Agents*"], [2.6, 4.66, "ביחידה *ללימודי חוץ*"], [4.66, 7.88, "הגעתי לכאן בהמלצה של חבר"], [8.12, 9.64, "ואני *מאוד מרוצה*"], [9.88, 12.46, "קודם כל, גם מהחומר שהעבירו לנו"], [12.46, 14.46, "גם מהמרצה אלכס, שמאוד *מקצועי*"], [14.46, 17.28, "מאוד *סבלני*, עם המון ידע טכני"], [17.52, 19.28, "וזה נתן לי *הרבה כלים*"], [19.28, 21.38, "אני רוצה לבנות *אפליקציות* בעצמי"], [21.38, 22.82, "למרות שאין לי רקע טכני"], [23.06, 24.9, "אני עושה דברים עם בן הזוג שלי"], [24.9, 26.38, "ובונה *אוטומציות*"], [26.62, 29.14, "זה באמת נתן לי *המון כלים*"], [29.14, 30.74, "כדי להתקדם"], [30.74, 32.94, "גם בעבודה, אני עושה את זה בעבודה"], [32.94, 34.92, "או כדי להיות *עצמאית* אפילו"], [35.16, 37.42, "אז אני מאוד *ממליצה* על הקורס הזה"], [37.42, 39.6, "ועל היחידה, ואני מודה לכולם"]], "chips": [[1.4, 4.6, "bot", "AI Agents"], [5.3, 7.88, "heart", "בהמלצת חבר"], [13.36, 17.28, "check", "מקצועי"], [14.66, 17.28, "check", "סבלני"], [19.78, 22.82, "phone", "אפליקציות"], [25.0, 26.38, "gear", "אוטומציות"], [33.04, 34.92, "rocket", "עצמאות"], [35.62, 39.72, "stars", ""]], "end": 39.85};
+function logoSVG(dark){
+  const tc=dark?'#ffffff':'#3b4048', sc=dark?'rgba(255,255,255,.85)':'#3b4048';
+  return `<svg viewBox="0 0 1000 205" width="100%" style="display:block;overflow:visible">
+  <defs>
+   <linearGradient id="g1${dark}" x1="0" x2="1"><stop offset="0" stop-color="#f6c32c"/><stop offset=".55" stop-color="#e98a2b"/><stop offset="1" stop-color="#d9631f"/></linearGradient>
+   <linearGradient id="g2${dark}" x1="0" x2="1"><stop offset="0" stop-color="#1b3caa"/><stop offset=".5" stop-color="#2b7de6"/><stop offset="1" stop-color="#3fb4ff"/></linearGradient>
+   <linearGradient id="g3${dark}" x1="0" x2="1"><stop offset="0" stop-color="#7d838b"/><stop offset=".55" stop-color="#e4e7ea"/><stop offset="1" stop-color="#b9bec4"/></linearGradient>
+  </defs>
+  <g transform="translate(0,2) scale(.5) translate(-117,-87)" fill="none" stroke-width="27">
+    <path d="M128 100H500A50 50 0 0 1 500 200H128" stroke="url(#g1${dark})"/>
+    <path d="M640 232H250A49 49 0 0 0 250 330H640" stroke="url(#g2${dark})"/>
+    <path d="M128 362H500A51.5 51.5 0 0 1 500 465H128" stroke="url(#g3${dark})"/>
+  </g>
+  <text x="300" y="118" font-family="Mo" font-weight="500" font-size="132" letter-spacing="74" fill="${tc}">TESI</text>
+  <text x="304" y="190" font-family="Mo" font-weight="600" font-size="35.5" letter-spacing="4.2" fill="${sc}">THE EXTERNAL STUDIES INSTITUTE</text>
+  </svg>`;
+}
+
+document.getElementById('logo').innerHTML=logoSVG(false);
+document.getElementById('endlogo').innerHTML=logoSVG(true);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), lin=(t,a,b)=>clamp((t-a)/(b-a)), eo=x=>1-Math.pow(1-x,3), sm=x=>x*x*(3-2*x);
+const ICON={bot:'<rect x="9" y="14" width="30" height="22" rx="7"/><path d="M24 7v7M17 25h.01M31 25h.01"/><path d="M18 31h12"/>',
+ heart:'<path d="M24 39s-13-8-13-18a7 7 0 0 1 13-4 7 7 0 0 1 13 4c0 10-13 18-13 18z"/>',
+ check:'<path d="M12 25l8 8 16-17"/>', phone:'<rect x="15" y="7" width="18" height="34" rx="4"/><path d="M22 35h4"/>',
+ gear:'<circle cx="24" cy="24" r="6"/><path d="M24 7v6M24 35v6M7 24h6M35 24h6M12 12l4 4M32 32l4 4M36 12l-4 4M16 32l-4 4"/>',
+ rocket:'<path d="M24 6c7 5 9 13 7 21l-7 7-7-7c-2-8 0-16 7-21z"/><circle cx="24" cy="19" r="3"/><path d="M17 27l-6 3 3 6 5-3M31 27l6 3-3 6-5-3"/>'};
+const STAR='<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z" fill="#ffc400" stroke="#e0a800" stroke-width=".6"/></svg>';
+// build chips; stack simultaneous chips
+const chipsEl=document.getElementById('chips');const C=TL.chips.map((c,k)=>{const d=document.createElement('div');d.className='chip';
+  if(c[2]==='stars'){d.innerHTML='<div class="stars">'+STAR.repeat(5)+'</div>';d.style.padding='16px 26px'}
+  else d.innerHTML=`<div class="ic"><svg viewBox="0 0 48 48">${ICON[c[2]]}</svg></div><span>${c[3]}</span>`;
+  chipsEl.appendChild(d);return {el:d,a:c[0],b:c[1],k}});
+C.forEach(c=>{const prev=C.filter(o=>o.k<c.k&&o.b>c.a);c.slot=prev.length});
+// subtitles: words
+const subEl=document.getElementById('sub');
+const S=TL.subs.map(([a,b,t])=>{const words=t.split(' ');let hl=false;const raw=words.map(w=>{let on=w.startsWith('*')||hl;if(w.startsWith('*'))hl=true;const end=w.endsWith('*')||w.endsWith('*,');let clean=w.replace(/\*/g,'');const r={t:clean,hl:on};if(end)hl=false;return r});
+  const ws=[];raw.forEach(r=>{const lat=/^[A-Za-z]/.test(r.t);const last=ws[ws.length-1];if(lat&&last&&last.lat){last.t+=' '+r.t}else ws.push({...r,lat})});return {a,b,ws}});
+let cur=-1;
+function render(t){
+  // logo
+  {const p=eo(lin(t,0.3,1.1));const q=1-lin(t,TL.end-0.2,TL.end+0.3);const el=document.getElementById('logo');el.style.opacity=p*q;el.style.transform=`translateY(${(1-p)*-24}px)`}
+  // shade
+  document.getElementById('shade').style.opacity=sm(lin(t,0,0.6))*(1-lin(t,TL.end,TL.end+0.4));
+  // subtitles
+  const i=S.findIndex(s=>t>=s.a&&t<s.b);
+  if(i!==cur){cur=i;subEl.innerHTML=i<0?'':S[i].ws.map(w=>`<span class="w${w.hl?' hl':''}" dir="auto">${w.t}</span>`).join(' ')}
+  if(i>=0){const s=S[i],n=s.ws.length,span=Math.min(s.b-s.a,2.2)*0.7;[...subEl.children].forEach((el,k)=>{const st=s.a+k*span/n;const p=eo(lin(t,st,st+0.22));
+     const out=1-lin(t,s.b-0.12,s.b);el.style.opacity=p*out;el.style.transform=`translateY(${(1-p)*16}px) scale(${0.96+0.04*p})`;el.style.filter=`blur(${(1-p)*3}px)`})}
+  // chips
+  C.forEach(c=>{const p=eo(lin(t,c.a,c.a+0.45)),q=1-sm(lin(t,c.b-0.3,c.b));const y=760+c.slot*104;c.el.style.top=y+'px';c.el.style.opacity=p*q;
+    c.el.style.transform=`translateX(${(1-p)*40}px) scale(${0.9+0.1*p})`;
+    if(c.el.querySelector('.stars'))[...c.el.querySelectorAll('svg')].forEach((s,k)=>{const r=eo(lin(t,c.a+0.25+k*0.14,c.a+0.55+k*0.14));s.style.transform=`scale(${r})`;s.style.opacity=r})});
+  // end card
+  {const p=sm(lin(t,TL.end-0.15,TL.end+0.6));const e=document.getElementById('end');e.style.opacity=p;
+   [...e.children].forEach((el,k)=>{const r=eo(lin(t,TL.end+0.2+k*0.18,TL.end+0.9+k*0.18));el.style.opacity=r;el.style.transform=`translateY(${(1-r)*30}px)`})}
+}
+window.render=render;window.DUR=TL.end+3.2;
+</script></body></html>
