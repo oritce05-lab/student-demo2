@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face{font-family:R;src:url(rubik-900.ttf);font-weight:900}
+@font-face{font-family:R;src:url(rubik-800.ttf);font-weight:800}
+@font-face{font-family:H;src:url(heebo-700.ttf);font-weight:700}
+@font-face{font-family:H;src:url(heebo-900.ttf);font-weight:900}
+@font-face{font-family:A;src:url(amaticsc-700.ttf);font-weight:700}
+@font-face{font-family:Mo;src:url(montserrat-600.ttf);font-weight:600}
+:root{--paper:#fff4e2;--ink:#1b1340;--vio:#7b2ff7;--pink:#ff3d8b;--lime:#c8ff3d;--cyan:#22d3f6;--yel:#ffd60a;--org:#ff7a1a}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--paper);font-family:R,H,sans-serif;color:var(--ink)}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--paper)}
+#paper{position:absolute;inset:0;opacity:.55;mix-blend-mode:multiply}
+.scene{position:absolute;inset:0;display:none}
+.a{position:absolute;will-change:transform}
+.stk{background:#fff;border-radius:34px;box-shadow:0 0 0 8px #fff,0 10px 0 8px rgba(27,19,64,.12),0 22px 40px rgba(27,19,64,.18)}
+.big{font-weight:900;line-height:1;letter-spacing:-1px}
+.pill{border-radius:999px;padding:18px 40px 24px;font-weight:900;font-size:64px;white-space:nowrap}
+.doodle{font-family:A;font-weight:700;color:var(--ink)}
+.emo{font-family:'Noto Color Emoji';line-height:1}
+svg.dr{position:absolute;overflow:visible}
+svg.dr path{fill:none;stroke:var(--ink);stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+/* phone */
+#phone{position:absolute;width:560px;height:1120px;left:260px;top:520px;border-radius:78px;background:#16112e;padding:22px;box-shadow:0 0 0 8px #fff,0 30px 60px rgba(27,19,64,.35)}
+#screen{position:relative;width:100%;height:100%;border-radius:58px;overflow:hidden;background:#fff}
+#notch{position:absolute;top:14px;left:50%;width:150px;height:36px;margin-left:-75px;background:#16112e;border-radius:20px;z-index:5}
+#site{position:absolute;left:0;right:0;top:0}
+.s-hero{height:520px;background:linear-gradient(150deg,#2a1b6e,#7b2ff7 55%,#ff3d8b);color:#fff;padding:110px 34px 0;text-align:right;position:relative;overflow:hidden}
+.s-hero .k{font-family:Mo;font-size:18px;letter-spacing:.2em;opacity:.8;direction:ltr;text-align:right}
+.s-hero h1{font-weight:900;font-size:50px;line-height:1.05;margin-top:16px}
+.s-hero p{font-family:H;font-weight:700;font-size:24px;opacity:.9;margin-top:14px}
+.s-hero .b{display:inline-block;margin-top:26px;background:var(--lime);color:var(--ink);font-weight:900;font-size:26px;padding:14px 28px;border-radius:999px}
+.s-hero .orb{position:absolute;left:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#8ff0ff,#22d3f6 40%,rgba(34,211,246,0) 70%);opacity:.8}
+.s-sec{padding:30px 28px;background:#faf7ff}
+.s-sec h2{font-weight:900;font-size:34px;margin-bottom:18px}
+.s-card{display:flex;align-items:center;gap:18px;background:#fff;border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 6px 18px rgba(27,19,64,.08)}
+.s-card .ic{width:76px;height:76px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:42px;flex-shrink:0}
+.s-card b{display:block;font-weight:900;font-size:27px}
+.s-card span{font-family:H;font-weight:700;font-size:19px;color:#6b6585}
+#tap{position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(123,47,247,.25);border:5px solid var(--vio);display:none}
+/* captions */
+#cap{position:absolute;left:60px;right:60px;top:1700px;text-align:center;font-family:H;font-weight:900;font-size:54px;line-height:1.2;color:var(--ink)}
+#cap span.c{background:#fff;box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:4px 18px 10px;border-radius:16px;box-shadow:0 6px 0 rgba(27,19,64,.1)}
+#cap b{color:var(--vio)}
+</style>
+</head>
+<body>
+<div id="stage">
+<canvas id="paper" width="540" height="960" style="width:1080px;height:1920px"></canvas>
+
+<!-- S1: hook -->
+<div class="scene" id="s1">
+  <div class="a stk" id="h1" style="left:90px;right:90px;top:250px;padding:40px 40px 52px;text-align:center"><div class="big" style="font-size:96px">תגידו,</div><div class="big" style="font-size:66px;margin-top:14px">גם אתם מרגישים שה־<span style="color:var(--vio)">AI</span><br>נכנס <span style="background:var(--lime);padding:0 12px">לכל תחום</span> בחיים?</div></div>
+  <div class="a emo" id="i1" style="font-size:150px;left:130px;top:800px">📱</div>
+  <div class="a emo" id="i2" style="font-size:150px;left:450px;top:760px">💼</div>
+  <div class="a emo" id="i3" style="font-size:150px;left:770px;top:820px">🏠</div>
+  <div class="a emo" id="i4" style="font-size:150px;left:250px;top:1060px">🎨</div>
+  <div class="a emo" id="i5" style="font-size:150px;left:640px;top:1080px">🚗</div>
+  <div class="a pill" id="h2" style="left:110px;right:110px;top:1330px;background:var(--ink);color:#fff;text-align:center;white-space:normal;font-size:60px;line-height:1.15">אבל לא תמיד יודעים<br>איך <span style="color:var(--lime)">באמת</span> להשתמש בו?</div>
+  <div class="a emo" id="q1" style="font-size:170px;left:800px;top:1240px">🤔</div>
+</div>
+
+<!-- S2-S4: phone -->
+<div class="scene" id="sP">
+  <div class="a big" id="p1" style="left:70px;right:70px;top:150px;text-align:center;font-size:92px">מצאתי לכם אתר<br><span style="background:var(--pink);color:#fff;padding:0 18px;border-radius:14px">ששווה להכיר!</span></div>
+  <svg class="dr a" id="arrow" width="300" height="300" style="left:760px;top:390px"><path id="arrowp" d="M40 20 C 160 40, 230 120, 200 250 M 160 215 L 200 255 L 240 205"/></svg>
+  <div class="a emo" id="sp1" style="font-size:90px;left:110px;top:500px">✨</div>
+  <div class="a" id="phoneWrap" style="left:0;top:0;width:1080px;height:1920px">
+    <div id="phone"><div id="notch"></div><div id="screen"><div id="site">
+      <div class="s-hero"><div class="orb"></div><div class="k">APPLIED AI ACADEMY</div><h1>האקדמיה לבינה מלאכותית יישומית</h1><p>מבית היחידה ללימודי חוץ</p><div class="b" id="sbtn">למסלולים ←</div></div>
+      <div class="s-sec"><h2>קורסים מעשיים</h2>
+        <div class="s-card"><div class="ic" style="background:#ffe1ee">🎬</div><div><b>יצירת תוכן וסרטונים</b><span>מהרעיון ועד הסרטון</span></div></div>
+        <div class="s-card"><div class="ic" style="background:#ece2ff">🤖</div><div><b>סוכני AI</b><span>בונים עוזרים חכמים</span></div></div>
+        <div class="s-card"><div class="ic" style="background:#e2fbff">⚡</div><div><b>ייעול תהליכי עבודה</b><span>אוטומציות שחוסכות זמן</span></div></div>
+        <div class="s-card"><div class="ic" style="background:#f3ffd6">📊</div><div><b>ניתוח נתונים</b><span>מהדאטה להחלטות</span></div></div>
+        <div class="s-card"><div class="ic" style="background:#fff1d6">🎨</div><div><b>קורסים יצירתיים לנוער</b><span>AI בגובה העיניים</span></div></div>
+        <div class="s-card"><div class="ic" style="background:#ffe9dc">💛</div><div><b>AI לגיל השלישי</b><span>בקצב שלכם</span></div></div>
+      </div></div><div id="tap"></div></div></div>
+  </div>
+  <div class="a stk" id="t1" style="right:40px;top:300px;padding:22px 30px 30px;font-size:46px;font-weight:900;transform-origin:center">קורסים <span style="color:var(--vio)">מעשיים</span> ✓</div>
+  <div class="a stk" id="t2" style="left:40px;top:430px;padding:20px 28px 28px;font-size:40px;font-weight:900;background:var(--lime)">AI צעד קדימה 🚀</div>
+  <div class="a stk" id="c1" style="right:40px;top:620px;padding:20px 28px 26px;font-size:44px;font-weight:900"><span class="emo">🎬</span> תוכן וסרטונים</div>
+  <div class="a stk" id="c2" style="left:40px;top:830px;padding:20px 28px 26px;font-size:44px;font-weight:900;background:#efe4ff"><span class="emo">🤖</span> סוכני AI</div>
+  <div class="a stk" id="c3" style="right:30px;top:1040px;padding:20px 28px 26px;font-size:44px;font-weight:900;background:#dcf9ff"><span class="emo">⚡</span> ייעול תהליכים</div>
+  <div class="a stk" id="c4" style="left:40px;top:1250px;padding:20px 28px 26px;font-size:44px;font-weight:900;background:#f3ffd6"><span class="emo">📊</span> ניתוח נתונים</div>
+  <div class="a doodle" id="c5" style="right:70px;top:1430px;font-size:96px;transform:rotate(-6deg)">ועוד...!</div>
+</div>
+
+<!-- S5: no code -->
+<div class="scene" id="s5">
+  <div class="a big" id="n1" style="left:70px;right:70px;top:260px;text-align:center;font-size:96px">והקטע<br>הכי טוב?</div>
+  <div class="a" id="n2" style="left:290px;top:640px;width:500px;height:360px;border-radius:40px;background:#16112e;color:#8ff0ff;font-family:Mo;font-size:120px;font-weight:600;display:flex;align-items:center;justify-content:center;direction:ltr;box-shadow:0 0 0 8px #fff,0 20px 40px rgba(0,0,0,.25)">&lt;/&gt;</div>
+  <svg class="dr a" id="xx" width="560" height="420" style="left:260px;top:610px"><path id="x1" d="M40 40 L 520 380" style="stroke:var(--pink);stroke-width:30"/><path id="x2" d="M520 40 L 40 380" style="stroke:var(--pink);stroke-width:30"/></svg>
+  <div class="a" id="n3" style="left:100px;right:100px;top:1130px;text-align:center"><span class="pill" style="display:inline-block;background:var(--lime);font-size:84px;transform:rotate(-3deg)">בלי לתכנת!</span></div>
+  <div class="a big" id="n4" style="left:80px;right:80px;top:1340px;text-align:center;font-size:58px;line-height:1.2">ובלי רקע קודם בתוכנה <span class="emo">😎</span></div>
+</div>
+
+<!-- S6: tracks -->
+<div class="scene" id="s6">
+  <div class="a big" id="m0" style="left:70px;right:70px;top:200px;text-align:center;font-size:88px">יש מסלול <span style="color:var(--vio)">לכל אחד</span></div>
+  <div class="a stk" id="m1" style="left:90px;width:420px;top:450px;height:440px;padding:40px 30px;text-align:center;background:#efe4ff"><div class="emo" style="font-size:130px">📈</div><div style="font-weight:900;font-size:50px;margin-top:20px;line-height:1.1">להתפתח<br>מקצועית</div></div>
+  <div class="a stk" id="m2" style="left:570px;width:420px;top:500px;height:440px;padding:40px 30px;text-align:center;background:#dcf9ff"><div class="emo" style="font-size:130px">🚀</div><div style="font-weight:900;font-size:50px;margin-top:20px;line-height:1.1">לשדרג<br>יכולות</div></div>
+  <div class="a stk" id="m3" style="left:90px;width:420px;top:990px;height:440px;padding:40px 30px;text-align:center;background:#fff1d6"><div class="emo" style="font-size:130px">🎨</div><div style="font-weight:900;font-size:50px;margin-top:20px;line-height:1.1">קורסים<br>לנוער</div></div>
+  <div class="a stk" id="m4" style="left:570px;width:420px;top:1040px;height:440px;padding:40px 30px;text-align:center;background:#ffe1ee"><div class="emo" style="font-size:130px">💛</div><div style="font-weight:900;font-size:50px;margin-top:20px;line-height:1.1">לגיל<br>השלישי</div></div>
+</div>
+
+<!-- S7: stop hearing, start doing -->
+<div class="scene" id="s7">
+  <div class="a stk" id="k1" style="left:120px;right:120px;top:230px;padding:36px 40px 46px;text-align:center"><div class="big" style="font-size:66px;text-decoration:line-through;text-decoration-color:var(--pink);text-decoration-thickness:12px">רק לשמוע על AI <span class="emo">👂</span></div></div>
+  <div class="a stk" id="k2" style="left:120px;right:120px;top:470px;padding:36px 40px 46px;text-align:center;background:var(--lime)"><div class="big" style="font-size:66px">להבין מה עושים איתו <span class="emo">💡</span></div></div>
+  <div class="a" id="k3" style="left:0;right:0;top:760px;text-align:center">
+    <div class="big" style="font-size:62px;line-height:1.5"><span style="background:#fff;padding:6px 26px;border-radius:999px;box-shadow:0 8px 0 rgba(27,19,64,.12)">1. היכנסו לאתר <span class="emo">🌐</span></span></div>
+  </div>
+  <div class="a" id="k4" style="left:0;right:0;top:920px;text-align:center"><div class="big" style="font-size:62px;line-height:1.5"><span style="background:#fff;padding:6px 26px;border-radius:999px;box-shadow:0 8px 0 rgba(27,19,64,.12)">2. תכירו את הקורסים <span class="emo">👀</span></span></div></div>
+  <div class="a" id="k5" style="left:0;right:0;top:1080px;text-align:center"><div class="big" style="font-size:62px;line-height:1.5"><span style="background:var(--vio);color:#fff;padding:6px 26px;border-radius:999px;box-shadow:0 8px 0 rgba(27,19,64,.18)">3. מצאו את המסלול שלכם <span class="emo">🎯</span></span></div></div>
+  <div class="a emo" id="k6" style="left:780px;top:1270px;font-size:170px">👆</div>
+</div>
+
+<!-- S8: end -->
+<div class="scene" id="s8">
+  <div class="a big" id="e1" style="left:60px;right:60px;top:300px;text-align:center;font-size:120px">העתיד<br><span style="background:var(--vio);color:#fff;padding:0 24px;border-radius:20px">כבר כאן</span></div>
+  <div class="a big" id="e2" style="left:60px;right:60px;top:720px;text-align:center;font-size:78px;line-height:1.15">השאלה היא<br>מה <span style="background:var(--lime);padding:0 14px">תעשו איתו</span>?</div>
+  <div class="a emo" id="e3" style="left:110px;top:640px;font-size:120px">🔮</div>
+  <div class="a stk" id="e4" style="left:110px;right:110px;top:1080px;padding:40px 40px 48px;text-align:center">
+    <div style="font-weight:900;font-size:50px;line-height:1.1">האקדמיה לבינה מלאכותית יישומית</div>
+    <div style="font-family:H;font-weight:700;font-size:36px;margin-top:10px;color:#6b6585">מבית היחידה ללימודי חוץ</div>
+    <div id="e5" style="display:inline-block;margin-top:30px;background:var(--pink);color:#fff;font-weight:900;font-size:40px;padding:18px 40px 22px;border-radius:999px;direction:ltr">ai-academy.limudey-hutz.co.il</div>
+  </div>
+</div>
+
+<div id="cap"></div>
+</div>
+
+<script>
+// ======= TIMING (seconds). Retime here when the voice-over arrives. =======
+const CUES=[
+ [0.0,3.5,'תגידו, גם אתם מרגישים שה־AI כבר נכנס לכל תחום בחיים שלנו,'],
+ [3.5,6.0,'אבל לא תמיד יודעים איך *באמת* להשתמש בו?'],
+ [6.2,8.2,'אז מצאתי לכם אתר *ששווה להכיר!*'],
+ [8.4,11.4,'האקדמיה לבינה מלאכותית יישומית מבית היחידה ללימודי חוץ'],
+ [11.4,14.8,'מציעה קורסים *מעשיים* שמלמדים איך לקחת את ה־AI צעד קדימה'],
+ [14.8,19.8,'ליצור תוכן וסרטונים, לבנות סוכני AI, לייעל תהליכי עבודה, לנתח נתונים ועוד'],
+ [20.2,22.0,'והקטע הכי טוב?'],
+ [22.0,24.8,'*לא צריך לדעת לתכנת* או להגיע עם רקע קודם בתוכנה'],
+ [25.0,28.6,'יש מסלולים לאנשים שרוצים להתפתח מקצועית, לשדרג את היכולות שלהם,'],
+ [28.6,31.2,'וגם קורסים יצירתיים לנוער או לגיל השלישי'],
+ [31.6,34.4,'אז אם בא לכם להפסיק רק לשמוע על AI'],
+ [34.4,36.8,'ולהתחיל להבין מה אפשר לעשות איתו *באמת*'],
+ [36.8,41.0,'היכנסו לאתר של האקדמיה, תכירו את הקורסים ותמצאו את המסלול שמתאים לכם'],
+ [41.4,42.8,'העתיד כבר כאן.'],
+ [42.8,44.4,'השאלה היא מה *תעשו איתו!*']];
+// beats used by the animation (derived from cues so retiming flows through)
+const C=i=>CUES[i][0];
+const B={ items:[15.0,16.2,17.6,18.8,19.5] };
+const DUR=47.0;
+const SC={s1:[0,C(2)],sP:[C(2),C(6)],s5:[C(6),C(8)],s6:[C(8),C(10)],s7:[C(10),C(13)],s8:[C(13),DUR+1]};
+
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),lin=(t,a,b)=>clamp((t-a)/(b-a));
+const back=x=>{const c1=2.2,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const eo=x=>1-Math.pow(1-x,3);
+// stop-motion: animation time advances in 12fps steps; each step gets a tiny random wobble
+const FPS=12;
+const hash=(a,b)=>{const s=Math.sin(a*127.1+b*311.7)*43758.5453;return s-Math.floor(s)};
+let STEP=0;
+function wob(el,k=1){const id=el.id.length*7+el.id.charCodeAt(0)+(el.id.charCodeAt(1)||0);return [(hash(STEP,id)-.5)*2.2*k,(hash(STEP+.5,id)-.5)*4*k,(hash(STEP+.9,id)-.5)*4*k]}
+// pop in with overshoot (sticker slap)
+function pop(el,t,s,d=0.42,rot=0,k=1){const p=lin(t,s,s+d);const sc=p<=0?0:back(p);const [r,x,y]=wob(el,k);el.style.opacity=p>0?1:0;el.style.transform=`translate(${x}px,${y}px) rotate(${rot+r}deg) scale(${sc})`}
+function slide(el,t,s,d,dx,dy,rot=0){const p=eo(lin(t,s,s+d));const [r,x,y]=wob(el);el.style.opacity=p>0?1:0;el.style.transform=`translate(${(1-p)*dx+x}px,${(1-p)*dy+y}px) rotate(${rot+r}deg)`}
+function out(el,t,s,d=0.3){if(t>s){const p=lin(t,s,s+d);el.style.opacity=1-p;el.style.transform+=` scale(${1-0.3*p})`}}
+function draw(path,t,s,d){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L*(1-lin(t,s,s+d))}
+
+// paper texture (static per step for a filmic stop-motion flicker)
+const pc=$('paper').getContext('2d');const tex=[];
+for(let k=0;k<3;k++){const id=pc.createImageData(540,960);let sd=k*977+7;for(let i=0;i<id.data.length;i+=4){sd=(sd*16807)%2147483647;const v=225+(sd%30);id.data[i]=v;id.data[i+1]=v-6;id.data[i+2]=v-18;id.data[i+3]=255}tex.push(id)}
+
+function caption(t){const c=CUES.find(c=>t>=c[0]&&t<c[1]+0.15);$('cap').innerHTML=c?`<span class="c">${c[2].replace(/\*(.+?)\*/g,'<b>$1</b>')}</span>`:''}
+
+function render(T){
+  const t=Math.floor(T*FPS)/FPS; STEP=Math.floor(T*FPS);
+  pc.putImageData(tex[STEP%3],0,0);
+  for(const k in SC){$(k).style.display=(t>=SC[k][0]&&t<SC[k][1])?'block':'none'}
+  caption(T);
+
+  // S1
+  pop($('h1'),t,0.1,0.45,-2);
+  ['i1','i2','i3','i4','i5'].forEach((id,i)=>pop($(id),t,1.2+i*0.38,0.4,(i%2?8:-8),1.4));
+  if(t>3.4){['i1','i2','i3','i4','i5'].forEach(id=>{$(id).style.filter='grayscale(.2)'})}
+  pop($('h2'),t,C(1)+0.1,0.45,2);pop($('q1'),t,C(1)+0.7,0.4,-10,1.5);
+
+  // phone section
+  {const s=C(2);pop($('p1'),t,s+0.05,0.45,-2);draw($('arrowp'),t,s+0.5,0.5);$('arrow').style.opacity=t>s+0.5?1:0;pop($('sp1'),t,s+0.9,0.35,0,2);
+   // phone enters as stop-motion slide from bottom
+   const pe=eo(lin(t,s+0.3,s+1.1));const [r,x,y]=wob($('phoneWrap'),.6);
+   const shrink=lin(t,C(3)-0.2,C(3)+0.3); // headline leaves, phone grows
+   $('phoneWrap').style.transform=`translate(${x}px,${(1-pe)*1200+y-60*shrink}px) rotate(${r+(1-pe)*-8}deg)`;
+   if(t>C(3)){$('p1').style.opacity=1-shrink;$('arrow').style.opacity=1-shrink;$('sp1').style.opacity=1-shrink}
+   // site scroll in steps
+   const sc1=lin(t,C(4)+0.2,C(4)+1.0),sc2=lin(t,C(5),B.items[4]+0.5);
+   $('site').style.transform=`translateY(${-Math.round((sc1*180+sc2*420)/40)*40}px)`;
+   pop($('t1'),t,C(4)+0.2,0.4,4);pop($('t2'),t,C(4)+1.4,0.4,-5);
+   const outT=C(5)-0.15;[$('t1'),$('t2')].forEach(e=>out(e,t,outT));
+   ['c1','c2','c3','c4','c5'].forEach((id,i)=>pop($(id),t,B.items[i],0.4,i%2?-4:4,1.2));}
+
+  // S5 no code
+  {const s=C(6);pop($('n1'),t,s+0.05,0.4,-2);pop($('n2'),t,s+0.6,0.4,3);
+   $('xx').style.opacity=t>C(7)?1:0;draw($('x1'),t,C(7)+0.05,0.25);draw($('x2'),t,C(7)+0.3,0.25);
+   pop($('n3'),t,C(7)+0.2,0.45,0,1.3);pop($('n4'),t,C(7)+1.3,0.4,-1);}
+
+  // S6 tracks: dealt like cards
+  {const s=C(8);pop($('m0'),t,s+0.05,0.4,-2);
+   [['m1',s+0.5,-4],['m2',s+1.6,3],['m3',C(9)+0.1,3],['m4',C(9)+1.1,-4]].forEach(([id,st,rt])=>slide($(id),t,st,0.35,id==='m1'||id==='m3'?-700:700,300,rt));}
+
+  // S7
+  {pop($('k1'),t,C(10)+0.1,0.4,-2);pop($('k2'),t,C(11)+0.05,0.45,2,1.2);
+   ['k3','k4','k5'].forEach((id,i)=>pop($(id),t,C(12)+0.1+i*1.2,0.4,i%2?1.5:-1.5));
+   pop($('k6'),t,C(12)+3.3,0.35,-10,1.5);}
+
+  // S8
+  {pop($('e1'),t,C(13)+0.05,0.45,-2);pop($('e3'),t,C(13)+0.6,0.4,-12,1.6);pop($('e2'),t,C(14)+0.05,0.45,2);pop($('e4'),t,C(14)+1.4,0.5,-1);
+   const p=lin(t,C(14)+2.2,DUR);$('e5').style.transform=`scale(${1+0.04*Math.sin(p*20)})`;}
+  $('cap').style.display=t>=C(13)?'none':'block';
+}
+window.render=render;window.DUR=DUR;
+if(!window.__capture){const t0=performance.now();(function loop(){render(((performance.now()-t0)/1000)%DUR);requestAnimationFrame(loop)})()}
+</script>
+</body>
+</html>
