@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #07162a; --blue: #2f8cff; --orange: #ff7a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; font-family: 'Heebo', sans-serif; color: #fff; }
+#stage { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; opacity: 0; }
+.full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.grid { position: absolute; inset: 0; background:
+  radial-gradient(ellipse at 50% 35%, rgba(47, 140, 255, .28), transparent 60%),
+  linear-gradient(rgba(90, 200, 255, .07) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(90, 200, 255, .07) 1px, transparent 1px), var(--navy);
+  background-size: auto, 54px 54px, 54px 54px, auto; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 30%, transparent 60%, rgba(0, 0, 0, .65)); }
+.vign { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, .65)); }
+.slam { position: absolute; left: 0; right: 0; text-align: center; font-weight: 900; line-height: .95; letter-spacing: -2px; }
+.o { color: var(--orange); }
+.hudbox { position: absolute; --c: var(--orange); --l: 60px; --w: 5px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat; }
+.hudbox .lbl { position: absolute; top: -58px; right: 0; direction: ltr; background: var(--orange); color: #000; font: 800 28px/1 'Heebo'; letter-spacing: 3px; padding: 10px 14px; }
+.scan { position: absolute; left: 0; right: 0; height: 200px; background: linear-gradient(transparent, rgba(90, 200, 255, .25)); border-bottom: 3px solid rgba(140, 220, 255, .8); }
+.card { position: absolute; left: 60px; top: 470px; width: 960px; height: 820px; }
+.card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.card .photo { border-radius: 26px; }
+.idx { position: absolute; top: 210px; right: 70px; direction: ltr; font-weight: 900; font-size: 210px; line-height: 1; color: transparent; -webkit-text-stroke: 4px rgba(90, 200, 255, .55); }
+.live { position: absolute; top: 140px; left: 60px; direction: ltr; display: flex; align-items: center; gap: 16px; background: #e8243c; padding: 14px 26px; border-radius: 10px; font: 900 44px/1 'Heebo'; letter-spacing: 5px; }
+.live i { width: 22px; height: 22px; border-radius: 50%; background: #fff; }
+.pip { position: absolute; right: 50px; bottom: 330px; width: 330px; height: 260px; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); border: 4px solid var(--orange); }
+.pip img { width: 100%; height: 100%; object-fit: contain; }
+.pname { position: absolute; right: 50px; bottom: 230px; width: 330px; text-align: center; font-size: 56px; font-weight: 900; text-shadow: 0 4px 20px rgba(0, 0, 0, .8); }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+#grain { position: absolute; inset: -200px; background: url('assets/grain.png'); opacity: .5; pointer-events: none; mix-blend-mode: overlay; }
+.wordmark { direction: ltr; display: flex; align-items: center; justify-content: center; gap: 26px; font-weight: 900; font-size: 150px; letter-spacing: -3px; }
+.wordmark .t { color: var(--blue); }
+.plate { background: #fff; border-radius: 22px; padding: 22px 40px; display: inline-block; }
+.plate img { height: 78px; display: block; }
+.url { direction: ltr; display: inline-block; border: 3px solid var(--orange); border-radius: 999px; padding: 16px 48px; font-size: 48px; font-weight: 800; }
+.tiles { position: absolute; left: 60px; right: 60px; top: 560px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tiles div { background: #fff; border-radius: 22px; height: 330px; overflow: hidden; }
+.tiles img { width: 100%; height: 100%; object-fit: contain; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="Lin"><div class="grid"></div><div class="tiles" id="tiles"></div><div class="shade" style="background:rgba(7,22,42,.55)"></div>
+    <div class="slam" id="h1" style="top:640px;font-size:150px">הכירו את</div>
+    <div class="slam o" id="h2" style="top:800px;font-size:210px">הצוות</div>
+    <div class="slam" id="h3" style="top:1000px;font-size:170px">החדש</div>
+  </div>
+  <div class="layer" id="Lph"><div class="grid"></div>
+    <div class="idx" id="ri">01</div>
+    <div class="card"><img id="rbp"><img class="photo" id="rph"><div class="scan" id="rscan"></div></div>
+    <div class="slam" id="rw" style="top:1390px;font-size:170px"></div>
+  </div>
+  <div class="layer" id="Llv"><img class="full" id="lv"><div class="shade"></div>
+    <div class="scan" id="lscan" style="height:240px"></div>
+    <div class="hudbox" id="box"><span class="lbl" id="boxl">TRACKING</span></div>
+    <div class="live" id="lbadge"><i id="ldot"></i>LIVE</div>
+    <div class="pip" id="pip"><img id="pipimg"></div><div class="pname" id="pname"></div>
+  </div>
+  <div class="layer" id="Lo"><div class="grid"></div>
+    <div style="position:absolute;left:0;right:0;top:700px;text-align:center">
+      <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
+      <div id="os" style="font-size:66px;font-weight:800;margin-top:30px">רובוטים <span class="o">בבנייה</span></div>
+      <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
+      <div id="ol" style="margin-top:240px"><span class="plate"><img src="assets/logos.png"></span></div>
+    </div>
+  </div>
+  <div class="vign"></div><div id="grain"></div><div id="flash"></div>
+</div>
+<script src="robots-data.js"></script>
+<script>
+const FPS = 30, PHOTO = 1.6, INTRO = 2.0, OUTRO = 4.0;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
+const frame = (c, lt) => `assets/clips-hd/${c}/${String(Math.max(1, Math.floor(lt * FPS) + 1)).padStart(4, '0')}.jpg`;
+
+// ציר זמן: פתיחה → לכל רובוט תמונה ואז לייב (אם יש קליפ) → סיום
+const SEG = [];
+let cur = INTRO;
+ROBOTS.forEach((r, i) => {
+  SEG.push({ kind: 'photo', r, i, a: cur, b: cur + PHOTO }); cur += PHOTO;
+  if (r.clip) { SEG.push({ kind: 'live', r, i, a: cur, b: cur + r.len }); cur += r.len; }
+});
+const OUT_AT = cur, DURATION = cur + OUTRO;
+const CUTS = [INTRO, ...SEG.map((s) => s.a).slice(1), OUT_AT];
+$('tiles').innerHTML = ROBOTS.slice(0, 4).map((r) => `<div><img src="assets/${r.photo}.jpg"></div>`).join('');
+
+function slam(el, t, at, out = 1e9) {
+  const k = t - at;
+  if (k < 0 || t > out) { el.style.opacity = 0; return; }
+  el.style.opacity = clamp(k / 0.06) * clamp((out - t) / 0.2);
+  const g = k < 0.3 ? (1 - k / 0.3) * (6 + rnd(Math.floor(t * FPS)) * 16) : 0;
+  el.style.textShadow = g ? `${g}px 0 rgba(255,40,110,.85), ${-g}px 0 rgba(40,240,255,.85)` : 'none';
+  el.style.transform = `scale(${1.8 - 0.8 * back(k / 0.22)})`;
+}
+
+window.render = async (t) => {
+  const f = Math.floor(t * FPS);
+  for (const id of ['Lin', 'Lph', 'Llv', 'Lo']) $(id).style.opacity = 0;
+
+  if (t < INTRO) {
+    $('Lin').style.opacity = 1;
+    [...$('tiles').children].forEach((d, i) => { const k = ease((t - i * 0.1) / 0.4); d.style.opacity = k; d.style.transform = `scale(${0.85 + 0.15 * k})`; });
+    slam($('h1'), t, 0.0); slam($('h2'), t, 0.5); slam($('h3'), t, 1.0);
+  }
+  const s = SEG.find((x) => t >= x.a && t < x.b);
+  if (s && s.kind === 'photo') {
+    const k = t - s.a, r = s.r;
+    $('Lph').style.opacity = 1;
+    await setImg($('rbp'), `assets/${r.photo}-bp.png`);
+    await setImg($('rph'), `assets/${r.photo}.jpg`);
+    const draw = ease(k / 0.35), reveal = ease((k - 0.35) / 0.45);
+    $('rbp').style.opacity = draw * (1 - reveal * 0.85);
+    $('rbp').style.clipPath = `inset(0 ${(1 - draw) * 100}% 0 0)`;
+    $('rph').style.clipPath = `inset(0 0 ${(1 - reveal) * 100}% 0 round 26px)`;
+    $('rscan').style.top = `${reveal * 820 - 200}px`;
+    $('rscan').style.opacity = reveal > 0 && reveal < 1 ? 1 : 0;
+    $('rph').style.transform = $('rbp').style.transform = `scale(${1 + k * 0.03})`;
+    $('ri').textContent = String(s.i + 1).padStart(2, '0');
+    $('ri').style.opacity = ease(k / 0.3);
+    $('rw').textContent = r.name;
+    slam($('rw'), k, 0.55, PHOTO - 0.05);
+  }
+  if (s && s.kind === 'live') {
+    const k = t - s.a, r = s.r, box = r.box;
+    $('Llv').style.opacity = 1;
+    await setImg($('lv'), frame(r.clip, r.from + k));
+    const bk = (t % 0.5) / 0.5;
+    $('lv').style.transform = `scale(${(1.08 + k * 0.02) * (1 + 0.03 * Math.exp(-bk * 6))})`;
+    $('lv').style.filter = k < 0.12 ? 'contrast(1.4) saturate(1.8) hue-rotate(-12deg)' : 'none';
+    $('lscan').style.top = `${((k * 900) % 2400) - 240}px`;
+    const grow = ease((k - 0.15) / 0.35), j = (n) => (rnd(f * 3 + n) - 0.5) * 8;
+    Object.assign($('box').style, { left: `${box[0] + j(1)}px`, top: `${box[1] + j(2)}px`, width: `${box[2]}px`, height: `${box[3]}px`, opacity: grow });
+    $('boxl').textContent = k > 1.5 ? 'LOCKED' : 'TRACKING';
+    slam($('lbadge'), k, 0.05);
+    $('ldot').style.opacity = f % 30 < 18 ? 1 : 0.25;
+    await setImg($('pipimg'), `assets/${r.photo}.jpg`);
+    const pk = ease((k - 0.3) / 0.4);
+    $('pip').style.opacity = $('pname').style.opacity = pk;
+    $('pip').style.transform = `translateX(${(1 - pk) * 120}px)`;
+    $('pname').textContent = r.name;
+  }
+  if (t >= OUT_AT) {
+    $('Lo').style.opacity = clamp((DURATION - t) / 0.6);
+    slam($('wm'), t, OUT_AT);
+    for (const [id, at] of [['os', 0.6], ['ou', 1.2], ['ol', 1.8]]) {
+      const k = ease((t - OUT_AT - at) / 0.4);
+      $(id).style.opacity = k; $(id).style.transform = `translateY(${(1 - k) * 40}px)`;
+    }
+  }
+  let fl = 0;
+  for (const c of [...CUTS, 0, 0.5, 1.0]) { const k = t - c; if (k >= 0 && k < 0.16) fl = Math.max(fl, (1 - k / 0.16) * 0.8); }
+  $('flash').style.opacity = fl;
+  let sh = 0;
+  for (const c of [0, 0.5, 1.0, OUT_AT, ...SEG.filter((x) => x.kind === 'photo').map((x) => x.a + 0.55)]) { const k = t - c; if (k >= 0 && k < 0.35) sh = Math.max(sh, (1 - k / 0.35) * 18); }
+  $('stage').style.transform = sh ? `translate(${(rnd(f) - .5) * sh}px, ${(rnd(f + 7) - .5) * sh}px)` : 'none';
+  $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
+};
+window.DURATION = DURATION;
+window.SIZE = [1080, 1920];
+</script>
+</body>
+</html>
