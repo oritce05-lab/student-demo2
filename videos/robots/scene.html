@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #0a1b31; --navy-2: #12305a; --blue: #2f8cff; --orange: #ee7d22; --orange-2: #ffb15c; --ink: #e9f1fb; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--navy); font-family: 'Heebo', sans-serif; color: var(--ink); }
+.stage { position: absolute; inset: 0; overflow: hidden; }
+.bg-grid {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 20%, rgba(47, 140, 255, .22), transparent 55%),
+    radial-gradient(ellipse at 15% 90%, rgba(238, 125, 34, .14), transparent 50%),
+    linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px),
+    var(--navy);
+  background-size: auto, auto, 60px 60px, 60px 60px, auto;
+}
+.scene { position: absolute; inset: 0; opacity: 0; }
+.abs { position: absolute; }
+.eyebrow { font-size: 30px; font-weight: 800; color: var(--orange); letter-spacing: 3px; display: flex; align-items: center; gap: 16px; }
+.eyebrow::before { content: ''; width: 18px; height: 18px; background: var(--orange); box-shadow: 26px 0 0 -4px var(--orange-2); margin-inline-end: 14px; }
+.title { font-size: 104px; font-weight: 900; line-height: 1.02; color: #fff; }
+.title .hl { color: var(--orange); }
+.sub { font-size: 40px; font-weight: 500; line-height: 1.45; color: #c9d8ea; }
+.panel { position: absolute; overflow: hidden; border-radius: 18px; box-shadow: 0 30px 80px rgba(0, 0, 0, .55); background: #000; }
+.panel img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hud { position: absolute; inset: 22px; pointer-events: none;
+  --c: var(--orange); --l: 46px; --w: 4px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat; }
+.scan { position: absolute; left: 0; right: 0; height: 160px; background: linear-gradient(transparent, rgba(47, 140, 255, .22), transparent); border-bottom: 2px solid rgba(110, 180, 255, .55); }
+.tag { position: absolute; top: 44px; right: 44px; direction: ltr; font: 700 24px/1 'Heebo'; letter-spacing: 3px; background: rgba(10, 27, 49, .7); padding: 10px 16px; border-radius: 6px; display: flex; gap: 10px; align-items: center; }
+.tag i { width: 14px; height: 14px; border-radius: 50%; background: #ff4d4d; display: inline-block; }
+.vign { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 27, 49, .25), transparent 30%, transparent 70%, rgba(10, 27, 49, .45)); }
+.blurbg { position: absolute; inset: -40px; background-size: cover; background-position: center; filter: blur(40px) brightness(.35) saturate(1.2); }
+.line { position: absolute; height: 4px; background: linear-gradient(90deg, var(--blue), var(--orange)); }
+.card { position: absolute; width: 470px; height: 380px; border-radius: 22px; background: linear-gradient(160deg, rgba(47, 140, 255, .16), rgba(255, 255, 255, .04)); border: 1.5px solid rgba(120, 180, 255, .35); padding: 46px 44px; }
+.card .ic { width: 86px; height: 86px; border-radius: 20px; background: rgba(238, 125, 34, .14); border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+.card .ic svg { width: 48px; height: 48px; stroke: var(--orange); }
+.card b { display: block; font-size: 56px; font-weight: 900; color: #fff; margin-bottom: 12px; }
+.card span { font-size: 32px; color: #c9d8ea; line-height: 1.4; }
+.studio { position: absolute; inset: 0; background: radial-gradient(ellipse at 35% 55%, #ffffff, #e7ebf0 70%); }
+.studio img { position: absolute; }
+.counter { direction: ltr; font: 800 34px/1 'Heebo'; color: var(--orange); letter-spacing: 4px; }
+.dark { color: var(--navy); }
+.wordmark { direction: ltr; display: flex; align-items: center; gap: 22px; font-weight: 900; font-size: 120px; letter-spacing: -2px; }
+.wordmark .h { color: #fff; }
+.wordmark .t { background: linear-gradient(90deg, #2f8cff, #59b0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.plate { background: #fff; border-radius: 16px; padding: 18px 34px; }
+.plate img { height: 62px; display: block; }
+.chip { display: inline-block; border: 2px solid var(--orange); color: var(--orange-2); border-radius: 999px; padding: 12px 34px; font-size: 34px; font-weight: 800; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bg-grid"></div>
+
+  <!-- 1. פתיחה -->
+  <section class="scene" id="s1">
+    <svg class="abs" id="net" viewBox="0 0 1920 1080" width="1920" height="1080"></svg>
+    <div class="abs" style="right:160px;top:330px;width:1600px">
+      <div class="eyebrow" id="s1e">HUBTECH · רובוטיקה לענף הבנייה</div>
+      <div class="title" id="s1t" style="font-size:150px;margin-top:30px">רובוטים <span class="hl">בבנייה</span></div>
+      <div class="sub" id="s1s" style="margin-top:26px;font-size:48px">העתיד של אתר הבנייה כבר עובד בשטח</div>
+    </div>
+  </section>
+
+  <!-- 2. התרוממות לגובה -->
+  <section class="scene" id="s2">
+    <div class="panel" id="p2" style="left:150px;top:60px;width:540px;height:960px"><img id="v2"><div class="scan" id="scan2"></div><div class="vign"></div><div class="hud"></div><div class="tag"><i></i>LIVE</div></div>
+    <div class="abs" style="right:150px;top:340px;width:960px">
+      <div class="eyebrow" id="s2e">רובוט גמר קירות</div>
+      <div class="title" id="s2t" style="margin-top:24px">מהרצפה<br><span class="hl">ועד התקרה</span></div>
+      <div class="sub" id="s2s" style="margin-top:30px">התורן מתרומם ומביא את ראש העבודה לכל גובה בקיר</div>
+    </div>
+  </section>
+
+  <!-- 3. עבודה על הקיר -->
+  <section class="scene" id="s3">
+    <div class="blurbg" id="bg3"></div>
+    <div class="panel" id="p3" style="right:150px;top:60px;width:540px;height:960px"><img id="v3"><div class="vign"></div><div class="hud"></div></div>
+    <div class="abs" style="right:820px;top:350px;width:950px">
+      <div class="eyebrow" id="s3e">דיוק רובוטי</div>
+      <div class="title" id="s3t" style="margin-top:24px">משטח אחיד<br><span class="hl">בכל מעבר</span></div>
+      <div class="sub" id="s3s" style="margin-top:30px">תנועה מבוקרת לאורך הקיר, בלי פיגומים ובלי סולמות</div>
+    </div>
+  </section>
+
+  <!-- 4. בשטח -->
+  <section class="scene" id="s4">
+    <div class="blurbg" id="bg4"></div>
+    <div class="panel" id="p4" style="left:150px;top:60px;width:540px;height:960px"><img id="v4"><div class="vign"></div><div class="hud"></div></div>
+    <div class="abs" style="right:150px;top:380px;width:960px">
+      <div class="eyebrow" id="s4e">מהמעבדה לאתר</div>
+      <div class="title" id="s4t" style="margin-top:24px">טכנולוגיה<br><span class="hl">שעובדת בשטח</span></div>
+    </div>
+  </section>
+
+  <!-- 5. גלריית רובוטים -->
+  <section class="scene" id="s5">
+    <div class="studio"><img id="g5" style="left:50px;top:150px;height:780px"></div>
+    <div class="abs" style="right:150px;top:360px;width:620px">
+      <div class="counter" id="g5c">01 / 04</div>
+      <div class="title dark" id="g5t" style="margin-top:28px;font-size:92px"></div>
+      <div class="sub" id="g5s" style="margin-top:24px;color:#41566f"></div>
+      <div class="line" id="g5l" style="right:0;top:-40px;width:200px"></div>
+    </div>
+  </section>
+
+  <!-- 6. יתרונות -->
+  <section class="scene" id="s6">
+    <div class="abs" style="right:150px;top:140px">
+      <div class="eyebrow" id="s6e">למה רובוטים באתר</div>
+      <div class="title" id="s6t" style="margin-top:20px;font-size:90px">בטוח יותר. מדויק יותר. <span class="hl">רציף יותר</span></div>
+    </div>
+    <div class="card" id="c1" style="right:150px;top:470px"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div><b>בטיחות</b><span>פחות עבודה ידנית בגובה ובמשימות שוחקות</span></div>
+    <div class="card" id="c2" style="right:725px;top:470px"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><b>דיוק</b><span>תוצאה אחידה שחוזרת על עצמה, משטח אחרי משטח</span></div>
+    <div class="card" id="c3" style="right:1300px;top:470px"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><b>רציפות</b><span>עבודה לצד הצוות, בקצב קבוע לאורך היום</span></div>
+  </section>
+
+  <!-- 7. סיום -->
+  <section class="scene" id="s7">
+    <div class="abs" id="hero" style="left:0;top:0;width:900px;height:1080px;overflow:hidden">
+      <img src="assets/yellow.jpg" id="heroimg" style="position:absolute;height:1080px;left:-180px;top:0">
+      <div style="position:absolute;inset:0;background:linear-gradient(270deg,var(--navy) 0%,rgba(10,27,49,.0) 40%)"></div>
+    </div>
+    <div class="abs" style="right:150px;top:250px;width:900px">
+      <div class="wordmark" id="wm"><svg width="130" height="100" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="5" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="9"/><circle cx="40" cy="40" r="10"/><circle cx="66" cy="22" r="9"/><circle cx="52" cy="70" r="7"/></g><circle cx="96" cy="58" r="12" fill="#ee7d22"/></svg><span><span class="h">HUB</span><span class="t">TECH</span></span></div>
+      <div class="sub" id="s7s" style="margin-top:20px;font-size:44px">המרכז להטמעת טכנולוגיות בענף הבנייה</div>
+      <div id="s7c" style="margin-top:50px"><span class="chip">רובוטים בבנייה · מהמעבדה לאתר</span></div>
+      <div id="s7l" style="margin-top:90px;display:inline-block" class="plate"><img src="assets/logos.png"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const FPS = 30;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
+const lerp = (a, b, x) => a + (b - a) * x;
+const $ = (id) => document.getElementById(id);
+
+// טווחי הסצנות בשניות
+const S = { s1: [0, 4.5], s2: [4.5, 11], s3: [11, 17], s4: [17, 21], s5: [21, 33], s6: [33, 38.5], s7: [38.5, 45] };
+const DURATION = 45;
+const CLIPS = { b: 195, c: 180, a: 135 };
+const GALLERY = [
+  { img: 'sanding', t: 'שיוף קירות ותקרות', s: 'ראש שיוף על זרוע אופקית ארוכה' },
+  { img: 'drilling', t: 'קידוח והתקנות', s: 'כלי עבודה מתחלפים על תורן אנכי' },
+  { img: 'blocks', t: 'בניית קירות בלוקים', s: 'הנחת בלוקים בשורות מדויקות' },
+  { img: 'finishing', t: 'יישום חומרים וגמר', s: 'יחידת יישום על גבי בסיס נייד' },
+];
+
+// רשת צמתים לפתיחה
+const nodes = Array.from({ length: 26 }, (_, i) => ({ x: (i * 737) % 1920, y: 80 + ((i * 389) % 920), r: 3 + (i % 4) }));
+function drawNet(t) {
+  const svg = $('net');
+  let h = '';
+  nodes.forEach((n, i) => {
+    const m = nodes[(i + 3) % nodes.length];
+    const a = clamp(t * 1.2 - i * 0.03);
+    h += `<line x1="${n.x}" y1="${n.y}" x2="${lerp(n.x, m.x, a)}" y2="${lerp(n.y, m.y, a)}" stroke="#2f8cff" stroke-opacity=".28" stroke-width="2"/>`;
+  });
+  nodes.forEach((n, i) => {
+    const a = clamp(t * 1.5 - i * 0.04);
+    h += `<circle cx="${n.x}" cy="${n.y}" r="${n.r * a}" fill="${i % 7 ? '#2f8cff' : '#ee7d22'}" fill-opacity=".7"/>`;
+  });
+  svg.innerHTML = h;
+}
+
+function sceneAlpha(id, t) {
+  const [a, b] = S[id];
+  if (t < a || t > b) return 0;
+  return Math.min(clamp((t - a) / 0.45), clamp((b - t) / 0.45));
+}
+// כניסת טקסט: הופעה + החלקה מלמטה
+function enter(el, lt, delay, dist = 50) {
+  const x = ease((lt - delay) / 0.7);
+  el.style.opacity = x;
+  el.style.transform = `translateY(${(1 - x) * dist}px)`;
+}
+async function setImg(el, src) {
+  if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); }
+}
+const frame = (clip, lt) => `assets/clips/${clip}/${String(clamp(Math.floor(lt * FPS) + 1, 1, CLIPS[clip])).padStart(4, '0')}.jpg`;
+
+window.render = async (t) => {
+  for (const id in S) $(id).style.opacity = sceneAlpha(id, t);
+
+  // 1
+  let lt = t - S.s1[0];
+  drawNet(lt / 2.5);
+  enter($('s1e'), lt, 0.5); enter($('s1t'), lt, 0.8); enter($('s1s'), lt, 1.3);
+
+  // 2
+  lt = t - S.s2[0];
+  if (lt > -0.5 && lt < 7) {
+    await setImg($('v2'), frame('b', lt));
+    $('v2').style.transform = `scale(${1.04 + lt * 0.006})`;
+    $('scan2').style.top = `${((lt * 260) % 1200) - 160}px`;
+    enter($('p2'), lt, 0, 80); enter($('s2e'), lt, 0.4); enter($('s2t'), lt, 0.7); enter($('s2s'), lt, 1.2);
+  }
+  // 3
+  lt = t - S.s3[0];
+  if (lt > -0.5 && lt < 6.5) {
+    const f = frame('c', lt);
+    await setImg($('v3'), f);
+    $('bg3').style.backgroundImage = `url('${f}')`;
+    $('v3').style.transform = `scale(${1.1 - lt * 0.01})`;
+    enter($('p3'), lt, 0, 80); enter($('s3e'), lt, 0.4); enter($('s3t'), lt, 0.7); enter($('s3s'), lt, 1.2);
+  }
+  // 4
+  lt = t - S.s4[0];
+  if (lt > -0.5 && lt < 4.5) {
+    const f = frame('a', lt);
+    await setImg($('v4'), f);
+    $('bg4').style.backgroundImage = `url('${f}')`;
+    enter($('p4'), lt, 0, 80); enter($('s4e'), lt, 0.4); enter($('s4t'), lt, 0.7);
+  }
+  // 5 – ארבעה רובוטים, 3 שניות לכל אחד
+  lt = t - S.s5[0];
+  if (lt > -0.5 && lt < 12.5) {
+    const i = clamp(Math.floor(lt / 3), 0, 3), k = lt - i * 3, g = GALLERY[i];
+    await setImg($('g5'), `assets/${g.img}.jpg`);
+    const io = Math.min(clamp(k / 0.35), i === 3 ? 1 : clamp((3 - k) / 0.35));
+    $('g5').style.opacity = io;
+    $('g5').style.transform = `scale(${1 + k * 0.025}) translateX(${(1 - ease(k / 0.8)) * -60}px)`;
+    $('g5c').textContent = `0${i + 1} / 04`;
+    $('g5t').textContent = g.t; $('g5s').textContent = g.s;
+    enter($('g5c'), k, 0.1, 30); enter($('g5t'), k, 0.25, 40); enter($('g5s'), k, 0.45, 40);
+    $('g5l').style.width = `${ease((k - 0.2) / 0.8) * 260}px`;
+  }
+  // 6
+  lt = t - S.s6[0];
+  enter($('s6e'), lt, 0.2); enter($('s6t'), lt, 0.45);
+  enter($('c1'), lt, 1.0, 70); enter($('c2'), lt, 1.3, 70); enter($('c3'), lt, 1.6, 70);
+  // 7
+  lt = t - S.s7[0];
+  $('heroimg').style.transform = `scale(${1.08 - clamp(lt / 6) * 0.08})`;
+  enter($('hero'), lt, 0, 0);
+  enter($('wm'), lt, 0.4); enter($('s7s'), lt, 0.8); enter($('s7c'), lt, 1.2); enter($('s7l'), lt, 1.7);
+};
+window.DURATION = DURATION;
+</script>
+</body>
+</html>
