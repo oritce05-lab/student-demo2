@@ -38,8 +38,8 @@ if (previewTimes) {
 }
 
 const out = join(ROOT, 'output', `${name}.mp4`);
-const music = join(ROOT, 'assets', 'music.wav');
-const withAudio = name === 'robots-reel' && existsSync(music);
+const music = join(ROOT, 'assets', base === 'reel' ? 'music.wav' : `music-${base}.wav`);
+const withAudio = base !== 'reel-wide' && base !== 'scene' && existsSync(music);
 const ff = spawn('ffmpeg', ['-y', '-v', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
   ...(withAudio ? ['-i', music, '-c:a', 'aac', '-b:a', '192k', '-shortest'] : []),
   '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });

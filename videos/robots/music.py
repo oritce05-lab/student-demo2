@@ -5,7 +5,11 @@ import numpy as np
 SR = 44100
 BPM = 120
 BEAT = 60 / BPM
-DUR = 24.0
+import sys
+DUR = float(sys.argv[1]) if len(sys.argv) > 1 else 24.0
+OUT = sys.argv[2] if len(sys.argv) > 2 else 'assets/music.wav'
+HITS = [float(x) for x in sys.argv[3].split(',')] if len(sys.argv) > 3 else [2.0, 8.0, 14.0]
+END = DUR - 4.0
 N = int(SR * DUR)
 t_all = np.arange(N) / SR
 out = np.zeros(N)
@@ -70,7 +74,7 @@ place(riser(2.0 - 0.05), 0.0, 0.5)
 beats = int(DUR / BEAT)
 for b in range(4, beats):
     at = b * BEAT
-    if at >= 20.0:
+    if at >= END:
         break
     place(kick(), at, 1.0)
     place(hat(), at + BEAT / 2, 0.22)
@@ -79,11 +83,11 @@ for b in range(4, beats):
 
 # בס בשמיניות עם דאקינג מהקיק
 roots = [55.0, 43.65, 65.41, 49.0]  # A1 F1 C2 G1
-for bar in range(1, 10):
+for bar in range(1, int(END / (4 * BEAT)) + 1):
     f = roots[bar % 4]
     for e in range(8):
         at = bar * 4 * BEAT + e * BEAT / 2
-        if at >= 20.0:
+        if at >= END:
             break
         note = lowpass(saw(f, BEAT / 2 * 0.9), 0.08)
         env = np.minimum(1, np.linspace(0, 12, len(note))) * np.exp(-np.linspace(0, 3, len(note)))
@@ -91,22 +95,21 @@ for bar in range(1, 10):
 
 # ארפג'יו בחלק הרובוטים (14–20)
 arp = [440.0, 523.25, 659.25, 880.0]
-for k in range(int(6 / (BEAT / 4))):
-    at = 14.0 + k * BEAT / 4
+for k in range(int((END - DUR / 2) / (BEAT / 4))):
+    at = DUR / 2 + k * BEAT / 4
     t = np.arange(int(SR * BEAT / 4)) / SR
     tone = np.sign(np.sin(2 * np.pi * arp[k % 4] * t)) * np.exp(-t * 18)
     place(lowpass(tone, 0.25), at, 0.12)
 
 # מעברים
-place(riser(1.5), 12.5, 0.35)
-place(riser(1.5), 18.5, 0.45)
-for at in (2.0, 8.0, 14.0):
+place(riser(1.5), END - 1.5, 0.45)
+for at in HITS:
     place(impact(1.2), at, 0.45)
-place(impact(3.5), 20.0, 1.0)
+place(impact(3.5), END, 1.0)
 
 # דאקינג (sidechain) מהקיק
 duck = np.ones(N)
-for b in range(4, int(20.0 / BEAT)):
+for b in range(4, int(END / BEAT)):
     i = int(b * BEAT * SR)
     L = int(0.22 * SR)
     duck[i:i + L] = np.minimum(duck[i:i + L], np.linspace(0.35, 1, L))
@@ -118,9 +121,9 @@ out *= fade
 out = np.tanh(out * 1.4)
 out /= np.max(np.abs(out)) * 1.05
 stereo = np.stack([out, np.roll(out, 90)], axis=1)
-with wave.open('assets/music.wav', 'wb') as w:
+with wave.open(OUT, 'wb') as w:
     w.setnchannels(2)
     w.setsampwidth(2)
     w.setframerate(SR)
     w.writeframes((stereo * 32767).astype(np.int16).tobytes())
-print('assets/music.wav', DUR, 's')
+print(OUT, DUR, 's')

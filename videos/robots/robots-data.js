@@ -1,32 +1,9 @@
-// רשימת הרובוטים לסרטון TikTok. clip = תיקייה ב-assets/clips-hd עם פריימים, from/len = שניות בתוך הקליפ, box = תיבת המעקב [x,y,w,h] על מסך 1080x1920. רובוט בלי clip יוצג רק בתמונה.
+// רשימת הרובוטים לסרטון TikTok.
+// focus = נקודת הראש העובד בתמונה (יחסי 0–1) לדחיפת המצלמה.
+// clip/from/len/box = קליפ לייב אופציונלי מ-assets/clips-hd (כשיהיה וידאו של הרובוט).
 window.ROBOTS = [
-  {
-    "photo": "yellow",
-    "name": "גמר קירות",
-    "clip": "b",
-    "from": 0.8,
-    "len": 3.5,
-    "box": [
-      60,
-      700,
-      520,
-      620
-    ]
-  },
-  {
-    "photo": "sanding",
-    "name": "שיוף"
-  },
-  {
-    "photo": "drilling",
-    "name": "קידוח"
-  },
-  {
-    "photo": "blocks",
-    "name": "בניית קירות"
-  },
-  {
-    "photo": "finishing",
-    "name": "יישום וגמר"
-  }
+  { "photo": "sanding", "name": "שיוף", "focus": [0.79, 0.31] },
+  { "photo": "drilling", "name": "קידוח", "focus": [0.30, 0.30] },
+  { "photo": "blocks", "name": "בניית קירות", "focus": [0.50, 0.55] },
+  { "photo": "finishing", "name": "יישום וגמר", "focus": [0.85, 0.70] }
 ];

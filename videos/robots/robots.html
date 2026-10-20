@@ -55,13 +55,14 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 <body>
 <div id="stage">
   <div class="layer" id="Lin"><div class="grid"></div><div class="tiles" id="tiles"></div><div class="shade" style="background:rgba(7,22,42,.55)"></div>
-    <div class="slam" id="h1" style="top:640px;font-size:150px">הכירו את</div>
-    <div class="slam o" id="h2" style="top:800px;font-size:210px">הצוות</div>
-    <div class="slam" id="h3" style="top:1000px;font-size:170px">החדש</div>
+    <div class="slam" id="h1" style="top:700px;font-size:170px">הכירו את</div>
+    <div class="slam o" id="h2" style="top:880px;font-size:220px">הרובוטים</div>
+    <div class="slam" id="h3" style="top:1080px;font-size:0"></div>
   </div>
   <div class="layer" id="Lph"><div class="grid"></div>
     <div class="idx" id="ri">01</div>
-    <div class="card"><img id="rbp"><img class="photo" id="rph"><div class="scan" id="rscan"></div></div>
+    <div class="card" id="rcard" style="overflow:hidden;border-radius:26px"><img id="rbp"><img class="photo" id="rph"><div class="scan" id="rscan"></div>
+      <div class="hudbox" id="fbox" style="width:300px;height:300px"><span class="lbl">SCAN</span></div></div>
     <div class="slam" id="rw" style="top:1390px;font-size:170px"></div>
   </div>
   <div class="layer" id="Llv"><img class="full" id="lv"><div class="shade"></div>
@@ -82,7 +83,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 </div>
 <script src="robots-data.js"></script>
 <script>
-const FPS = 30, PHOTO = 1.6, INTRO = 2.0, OUTRO = 4.0;
+const FPS = 30, PHOTO = 3.0, INTRO = 2.0, OUTRO = 4.0;
 const $ = (id) => document.getElementById(id);
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
@@ -132,7 +133,18 @@ window.render = async (t) => {
     $('rph').style.clipPath = `inset(0 0 ${(1 - reveal) * 100}% 0 round 26px)`;
     $('rscan').style.top = `${reveal * 820 - 200}px`;
     $('rscan').style.opacity = reveal > 0 && reveal < 1 ? 1 : 0;
-    $('rph').style.transform = $('rbp').style.transform = `scale(${1 + k * 0.03})`;
+    // דחיפת מצלמה לראש העובד
+    const push = ease((k - 1.35) / 1.1), z = 1 + k * 0.03 + push * 0.9;
+    const fx = r.focus[0] * 100, fy = r.focus[1] * 100;
+    $('rph').style.transformOrigin = $('rbp').style.transformOrigin = `${fx}% ${fy}%`;
+    $('rph').style.transform = $('rbp').style.transform = `scale(${z})`;
+    // תיבת סריקה על נקודת המיקוד (נשארת במקומה כי הזום סביבה)
+    const fb = $('fbox'), bk = ease((k - 1.15) / 0.3), j = (n) => (rnd(f * 3 + n) - 0.5) * 6;
+    const size = 300 - push * 40;
+    fb.style.left = `${r.focus[0] * 960 - size / 2 + j(1)}px`; fb.style.top = `${r.focus[1] * 820 - size / 2 + j(2)}px`;
+    fb.style.width = fb.style.height = `${size}px`; fb.style.opacity = bk;
+    $('rscan').style.opacity = (reveal > 0 && reveal < 1) || (k > 1.4 && k < 2.6) ? 1 : 0;
+    if (k > 1.4) $('rscan').style.top = `${((k - 1.4) * 700) % 1020 - 200}px`;
     $('ri').textContent = String(s.i + 1).padStart(2, '0');
     $('ri').style.opacity = ease(k / 0.3);
     $('rw').textContent = r.name;
@@ -174,6 +186,7 @@ window.render = async (t) => {
   $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
 };
 window.DURATION = DURATION;
+window.CUTS = CUTS;
 window.SIZE = [1080, 1920];
 </script>
 </body>
