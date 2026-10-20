@@ -39,6 +39,7 @@ for (const dir of dirs) {
 <base href="../">
 <title>${course.title}</title>
 <link rel="stylesheet" href="template/brochure.css">
+${course.theme ? `<style>:root{${Object.entries(course.theme).map(([k, v]) => `--${k}:${v};`).join('')}}</style>` : ''}
 </head><body><div id="root"></div>
 <script>window.COURSE = ${JSON.stringify(course)}; window.COURSE_BASE = ${JSON.stringify(rel)};</script>
 <script src="template/brochure.js"></script>

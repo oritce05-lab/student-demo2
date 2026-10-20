@@ -28,6 +28,18 @@ node render.mjs courses/site-supervisor courses/<קורס-נוסף>
 הסקריפט מתריע אם תוכן גולש מעמוד (`⚠ עמוד N: התוכן גולש`). במקרה כזה מקצרים טקסט, מקטינים `gap` של העמוד או מפצלים לשני עמודים.
 עם `SCREENSHOTS=1` נשמרות גם תמונות תצוגה לכל עמוד ב-`output/preview/`.
 
+## צבעים לכל קורס
+
+ברירת המחדל היא צבעי ידיעון CBT. לקורס עם צבעים אחרים מוסיפים ל-`course.json` שדה `theme`, למשל (כחול-כתום של בקר אתר):
+
+```json
+"theme": { "primary": "#133a63", "primary-2": "#1e4d7f", "accent": "#ee7d22",
+           "accent-light": "#f9a85a", "accent-soft": "#fde6cf", "paper": "#f3f4f6", "card": "#ffffff" }
+```
+
+`primary` – צבע ראשי (כותרות, פסים כהים) · `accent` – צבע הדגשה (מספרים, תוויות) · `accent-light` – הדגשה על רקע כהה · `paper` – רקע העמוד.
+לכרטיסי נושא בשני טורים: `"columns": 2` בבלוק `topics`.
+
 ## קורס חדש
 
 1. מעתיקים את `courses/site-supervisor` לתיקייה חדשה ומחליפים את התמונות.

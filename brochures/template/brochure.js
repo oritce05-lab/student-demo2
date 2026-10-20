@@ -178,7 +178,7 @@
   };
 
   // כרטיסי נושא קומפקטיים: מספר, אייקון, כותרת, פסקה
-  B.topics = (b) => `<div class="tcards">${b.items.map((t, i) => `<div class="tcard">
+  B.topics = (b) => `<div class="tcards ${b.columns ? 'cols' : ''}" style="${b.columns ? `display:grid;grid-template-columns:repeat(${b.columns},1fr)` : ''}">${b.items.map((t, i) => `<div class="tcard">
       <span class="bign">${t.num ?? pad2(i + 1)}</span>
       <div><div class="t">${t.icon ? icon(t.icon) : ''}${md(t.title)}</div>
         <p>${md(t.text)}</p>${t.tag ? `<span class="tag">${md(t.tag)}</span>` : ''}</div>
@@ -198,7 +198,7 @@
       <div class="body" style="padding-inline-start:var(--page-pad)">
         <div class="t">${icon('award')}${md(b.title)}</div>
         ${(b.paragraphs || []).map((p) => `<div class="p">${md(p)}</div>`).join('')}
-        ${b.small ? `<div class="small" style="color:#2b5d63">${md(b.small)}</div>` : ''}
+        ${b.small ? `<div class="small" style="color:var(--primary-2)">${md(b.small)}</div>` : ''}
         ${b.list ? `<div class="lt">${md(b.listTitle || '')}</div><div class="grid">${b.list.map((x) => `<span>${md(x)}</span>`).join('')}</div>` : ''}
       </div>
       ${b.photo ? `<div class="img" ${bg(b.photo, b.photoPos)}></div>` : ''}
