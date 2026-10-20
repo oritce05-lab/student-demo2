@@ -154,6 +154,7 @@ window.render = async (t) => {
     $('ri').textContent = String(s.i + 1).padStart(2, '0');
     $('ri').style.opacity = ease(k / 0.3);
     $('rw').textContent = r.name;
+    $('rw').style.fontSize = `${Math.min(104, Math.round(1650 / r.name.length))}px`;
     $('rk').textContent = r.kind || '';
     const kk = ease((k - 0.4) / 0.3); $('rk').style.opacity = kk * clamp((PHOTO - 0.05 - k) / 0.2); $('rk').style.transform = `translateY(${(1 - kk) * 20}px)`;
     slam($('rw'), k, 0.45, PHOTO - 0.05);
