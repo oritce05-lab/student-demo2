@@ -303,3 +303,77 @@ em { font-style: italic; }
 .logo-dark img { height: 11mm; }
 .logo-dark .w b { display: block; font-size: 26px; font-weight: 800; color: #fff; line-height: 1; }
 .logo-dark .w span { display: block; font-size: 9px; letter-spacing: 3.4px; color: #e9f1f1; direction: ltr; text-align: right; margin-top: 1mm; }
+
+/* ===== לוגו משותף (תמונה רחבה) ===== */
+.cover-panel .logo.wide { height: auto; width: 82mm; margin-bottom: 22mm; }
+.footer img { max-width: 62mm; object-fit: contain; }
+.logo-plate { background: #fff; border-radius: 2mm; padding: 2.5mm 6mm; }
+.logo-plate img { height: 9mm; display: block; }
+
+/* תגית יחידה בכותרת משנה */
+.h3.with-badge { display: flex; align-items: center; gap: 3mm; }
+.badge { background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: .8mm 3mm; border-radius: 1mm; border-inline-start: 3px solid var(--accent); letter-spacing: .3px; }
+
+/* ===== סגנון טכנולוגי: "style": "tech" ב-course.json ===== */
+.tech .page {
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(19, 58, 99, .10) .9px, transparent 1.2px);
+  background-size: 5mm 5mm;
+}
+/* משטחים כהים: רשת שרטוט + רשת צמתים בפינה */
+.tech .band-dark, .tech .box-dark, .tech .cover-bar, .tech .back, .tech .band-num {
+  position: relative;
+  background-color: var(--primary);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .055) 1px, transparent 1px);
+  background-size: 7mm 7mm;
+}
+.tech .band-dark > *, .tech .box-dark > *, .tech .cover-bar > *, .tech .band-num > * { position: relative; z-index: 1; }
+.tech .band-dark::after, .tech .box-dark::after, .tech .cover-bar::after, .tech .back .content::after {
+  content: '';
+  position: absolute;
+  left: 5mm; top: 4mm;
+  width: 30mm; height: 20mm;
+  opacity: .45;
+  pointer-events: none;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cg stroke='%235aa9ff' stroke-width='1.2' fill='none'%3E%3Cpath d='M10 60 35 30 65 45 95 15M35 30 50 10M65 45 80 70M95 15 112 40'/%3E%3C/g%3E%3Cg fill='%235aa9ff'%3E%3Ccircle cx='10' cy='60' r='3'/%3E%3Ccircle cx='35' cy='30' r='3.6'/%3E%3Ccircle cx='65' cy='45' r='3'/%3E%3Ccircle cx='50' cy='10' r='2.4'/%3E%3Ccircle cx='80' cy='70' r='2.4'/%3E%3Ccircle cx='112' cy='40' r='2.4'/%3E%3C/g%3E%3Ccircle cx='95' cy='15' r='4.2' fill='%23f39a3c'/%3E%3C/svg%3E");
+}
+.tech .box-dark::after { opacity: .3; top: 3mm; }
+.tech .back .content { position: relative; }
+.tech .back .content::after { top: auto; bottom: 4mm; width: 44mm; height: 30mm; opacity: .35; }
+
+/* תמונות: גוון כחול + מסגרת "כוונת" בפינות */
+.tech .cover-photo .img, .tech .split-photo .img, .tech .mod-head .photo, .tech .back .img, .tech .cert .img { position: relative; }
+.tech .cover-photo .img::after, .tech .split-photo .img::after, .tech .mod-head .photo::after, .tech .back .img::after, .tech .cert .img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(19, 58, 99, .55), rgba(19, 58, 99, .08) 55%, rgba(238, 125, 34, .22));
+}
+.tech .cover-photo .img::before, .tech .split-photo .img::before, .tech .back .img::before, .tech .cert .img::before, .tech .figure::before {
+  content: ''; position: absolute; inset: 4mm; z-index: 2; pointer-events: none;
+  --c: var(--accent); --l: 7mm; --w: 2px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat;
+}
+.tech .figure { position: relative; }
+.tech .figure::before { inset: -1.5mm; }
+
+/* תוויות: ריבוע הדגשה וריווח אותיות */
+.tech .eyebrow, .tech .mod-head .lbl { display: inline-flex; align-items: center; gap: 2mm; letter-spacing: 1.2px; }
+.tech .eyebrow::before, .tech .mod-head .lbl::before { content: ''; width: 2mm; height: 2mm; background: var(--accent); box-shadow: 3mm 0 0 -.5mm var(--accent-light); margin-inline-end: 1.5mm; }
+
+/* כרטיסים: פס עליון בגרדיאנט */
+.tech .tcard, .tech .icard:not(.plain), .tech .check, .tech .mcard, .tech .steps .st:not(.last) {
+  background: linear-gradient(90deg, var(--accent), var(--primary-3)) top / 100% 2.2px no-repeat, var(--card);
+  border-radius: 1.5mm;
+}
+/* מספרים גדולים */
+.tech .bign, .tech .cover-big .n, .tech .stats .s b { color: var(--accent); text-shadow: 0 0 6mm rgba(238, 125, 34, .18); }
+.tech .lined .item, .tech .stats .s { border-top: 2px solid; border-image: linear-gradient(90deg, var(--accent), var(--primary)) 1; }

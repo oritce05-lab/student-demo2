@@ -80,7 +80,7 @@
   B.text = (b) => `<div class="p ${b.cls || ''}">${md(b.text)}</div>`;
   B.note = (b) => `<div class="note ${b.cls || ''}">${md(b.text)}</div>`;
   B.small = (b) => `<div class="small ${b.cls || ''}">${md(b.text)}</div>`;
-  B.subheading = (b) => `<div class="h3 ${b.cls || ''}">${md(b.text)}${b.aside ? ` <span class="small" style="font-weight:400;margin-inline-start:3mm">${md(b.aside)}</span>` : ''}</div>`;
+  B.subheading = (b) => `<div class="h3 ${b.badge ? 'with-badge' : ''} ${b.cls || ''}">${b.badge ? `<span class="badge">${md(b.badge)}</span>` : ''}${md(b.text)}${b.aside ? ` <span class="small" style="font-weight:400;margin-inline-start:3mm">${md(b.aside)}</span>` : ''}</div>`;
 
   // כרטיסים עם קו עליון (רגעים / עקרונות ממוספרים)
   B.lined = (b) => `<div class="${b.cls || ''}">
@@ -240,14 +240,15 @@
   }
 
   // ---------- pages ----------
-  const logoDark = () => `<div class="logo-dark"><img src="assets/logo.png"><div class="w"><b>היחידה ללימודי חוץ</b><span>OASIS CAPITAL ISRAEL</span></div></div>`;
+  const LOGO = C.logo ? img(C.logo) : 'assets/logo-full.png';
+  const logoDark = () => C.logo ? `<div class="logo-plate"><img src="${LOGO}"></div>` : `<div class="logo-dark"><img src="assets/logo.png"><div class="w"><b>היחידה ללימודי חוץ</b><span>OASIS CAPITAL ISRAEL</span></div></div>`;
 
   function cover(p) {
     const c = C.cover;
     const long = c.titleLong ? 'long' : '';
     return `<section class="page"><div class="cover">
       <div class="cover-panel">
-        <img class="logo" src="assets/logo-full.png">
+        <img class="logo ${C.logo ? 'wide' : ''}" src="${LOGO}">
         <div class="cover-eyebrow">${md(c.eyebrow)}</div>
         <div class="cover-title ${long}">${lines(c.title)}</div>
         <div class="cover-sub">${lines(c.subtitle)}</div>
@@ -286,11 +287,12 @@
       <div class="page-body" style="${p.gap ? `gap:${p.gap}` : ''}">${p.blocks.map(block).join('')}</div>
       <div class="footer">
         <span>${md(C.footer)}<span class="num">${n}</span></span>
-        <img src="assets/logo-full.png">
+        <img src="${LOGO}">
       </div></section>`;
   }
 
   document.title = C.title;
+  if (C.style) document.body.classList.add(...C.style.split(' '));
   document.getElementById('root').innerHTML = C.pages.map((p, i) => {
     if (p.type === 'cover') return cover(p);
     if (p.type === 'back') return back(p);
