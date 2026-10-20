@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #07162a; --blue: #2f8cff; --cyan: #5ac8ff; --orange: #ff7a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; font-family: 'Heebo', sans-serif; color: #fff; }
+#stage { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; opacity: 0; }
+.full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.grid { position: absolute; inset: 0; background:
+  radial-gradient(ellipse at 50% 35%, rgba(47, 140, 255, .28), transparent 60%),
+  linear-gradient(rgba(90, 200, 255, .07) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(90, 200, 255, .07) 1px, transparent 1px), var(--navy);
+  background-size: auto, 54px 54px, 54px 54px, auto; }
+.vign { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, .65)); }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 30%, transparent 60%, rgba(0, 0, 0, .6)); }
+.slam { position: absolute; left: 0; right: 0; text-align: center; font-weight: 900; line-height: .95; letter-spacing: -2px; will-change: transform; }
+.o { color: var(--orange); }
+.hudbox { position: absolute; --c: var(--orange); --l: 60px; --w: 5px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat; }
+.hudbox .lbl { position: absolute; top: -58px; right: 0; direction: ltr; background: var(--orange); color: #000; font: 800 28px/1 'Heebo'; letter-spacing: 3px; padding: 10px 14px; }
+.hudbox .cross { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px; border: 3px solid rgba(255, 255, 255, .85); border-radius: 50%; }
+.hudbox .cross::before, .hudbox .cross::after { content: ''; position: absolute; background: rgba(255, 255, 255, .85); }
+.hudbox .cross::before { left: 50%; top: -16px; bottom: -16px; width: 3px; margin-left: -1.5px; }
+.hudbox .cross::after { top: 50%; left: -16px; right: -16px; height: 3px; margin-top: -1.5px; }
+.rec { position: absolute; top: 150px; left: 70px; direction: ltr; font: 800 30px/1 'Heebo'; letter-spacing: 4px; display: flex; align-items: center; gap: 14px; }
+.rec i { width: 20px; height: 20px; border-radius: 50%; background: #ff3b3b; }
+.tc { position: absolute; top: 150px; right: 70px; direction: ltr; font: 700 30px/1 'Heebo'; letter-spacing: 3px; color: rgba(255, 255, 255, .85); }
+.scan { position: absolute; left: 0; right: 0; height: 240px; background: linear-gradient(transparent, rgba(90, 200, 255, .25)); border-bottom: 3px solid rgba(140, 220, 255, .8); }
+.card { position: absolute; }
+.tri { position: absolute; top: 0; width: 640px; height: 1080px; object-fit: cover; }
+.card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.card .photo { border-radius: 26px; }
+.idx { position: absolute; top: 230px; right: 70px; direction: ltr; font-weight: 900; font-size: 210px; line-height: 1; color: transparent; -webkit-text-stroke: 4px rgba(90, 200, 255, .55); }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+#grain { position: absolute; inset: -200px; background: url('assets/grain.png'); opacity: .55; pointer-events: none; mix-blend-mode: overlay; }
+.wordmark { direction: ltr; display: flex; align-items: center; justify-content: center; gap: 26px; font-weight: 900; font-size: 150px; letter-spacing: -3px; }
+.wordmark .t { color: var(--blue); }
+.plate { background: #fff; border-radius: 22px; padding: 22px 40px; display: inline-block; }
+.plate img { height: 78px; display: block; }
+.url { direction: ltr; display: inline-block; border: 3px solid var(--orange); border-radius: 999px; padding: 16px 48px; font-size: 48px; font-weight: 800; color: #fff; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- הוק -->
+  <div class="layer" id="Lhook">
+    <img class="tri" id="vh" style="right:0"><img class="tri" id="vh2" style="right:640px"><img class="tri" id="vh3" style="right:1280px">
+    <div class="shade" style="background:rgba(0,0,0,.45)"></div>
+    <div class="slam" id="w1" style="top:250px;font-size:170px">פגשו</div>
+    <div class="slam" id="w2" style="top:430px;font-size:140px">את הפועל</div>
+    <div class="slam o" id="w3" style="top:590px;font-size:220px">החדש</div>
+  </div>
+  <!-- צילומי שטח -->
+  <div class="layer" id="Lf"><img class="full" id="vfb" style="filter:blur(40px) brightness(.35) saturate(1.3);transform:scale(1.2)"><div class="grid" style="opacity:.55"></div>
+    <div id="pan" style="position:absolute;left:220px;top:0;width:608px;height:1080px;overflow:hidden">
+      <img class="full" id="vf"><div class="shade"></div>
+      <div class="scan" id="scan"></div>
+      <div class="hudbox" id="box"><span class="lbl" id="boxl">TRACKING</span><span class="cross"></span></div>
+    </div>
+    <div id="det" style="position:absolute;left:1000px;top:250px;width:600px;height:600px;overflow:hidden;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.6)">
+      <img id="vd" style="position:absolute;width:1296px;height:2304px;max-width:none">
+      <div class="hudbox" style="inset:24px;--l:44px"><span class="lbl" style="top:0;right:0">DETAIL ×2</span></div>
+    </div>
+    <div class="rec" style="top:70px;left:70px"><i id="dot"></i>LIVE</div><div class="tc" id="tc" style="top:70px;right:70px"></div>
+    <div class="slam" id="wp" style="top:400px;left:900px;right:0;font-size:220px">מדויק<span class="o">.</span></div>
+  </div>
+  <!-- רובוטים -->
+  <div class="layer" id="Lr"><div class="grid"></div>
+    <div class="idx" id="ri" style="top:110px;right:140px">01</div>
+    <div class="card" style="left:120px;top:140px;width:1067px;height:800px"><img id="rbp"><img class="photo" id="rph"><div class="scan" id="rscan" style="height:160px"></div></div>
+    <div class="slam" id="rw" style="top:440px;left:1200px;right:40px;font-size:190px"></div>
+  </div>
+  <!-- סיום -->
+  <div class="layer" id="Lo"><div class="grid"></div>
+    <svg id="net" width="1920" height="1080" viewBox="0 0 1920 1080" style="position:absolute;inset:0"></svg>
+    <div style="position:absolute;left:0;right:0;top:250px;text-align:center">
+      <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
+      <div id="os" style="font-size:66px;font-weight:800;margin-top:30px">רובוטים <span class="o">בבנייה</span></div>
+      <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
+      <div id="ol" style="margin-top:80px"><span class="plate"><img src="assets/logos.png"></span></div>
+    </div>
+  </div>
+  <div class="vign"></div>
+  <div id="grain"></div>
+  <div id="flash"></div>
+</div>
+<script>
+const FPS = 30, DURATION = 24, BEAT = 0.5;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const CLIP = { a: 135, b: 195, c: 180, d: 150 };
+const frame = (c, lt) => `assets/clips-hd/${c}/${String(clamp(Math.floor(lt * FPS) + 1, 1, CLIP[c])).padStart(4, '0')}.jpg`;
+async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
+
+const CUTS = [2, 5, 8, 11, 14, 15.5, 17, 18.5, 20];
+// קטעי השטח: [התחלה, סוף, קליפ, נקודת התחלה בקליפ, מיקום תיבת המעקב]
+const SHOTS = [
+  [2, 5, 'b', 0.0, [34, 394, 293, 349]],
+  [5, 8, 'c', 0.6, [113, 265, 304, 315]],
+  [8, 11, 'd', 0.5, [56, 191, 315, 394]],
+  [11, 14, 'a', 0.3, [11, 495, 338, 248]],
+];
+const ROBOTS = [['sanding', 'שיוף'], ['drilling', 'קידוח'], ['blocks', 'בנייה'], ['finishing', 'גמר']];
+
+// כניסת מילה: נחיתה עם קפיצה + גליץ' צבעוני קצר
+function slam(el, t, at, out = 99) {
+  const k = t - at;
+  if (k < 0 || t > out) { el.style.opacity = 0; return 0; }
+  const s = 1.8 - 0.8 * back(k / 0.22);
+  const fadeOut = clamp((out - t) / 0.2);
+  el.style.opacity = clamp(k / 0.06) * fadeOut;
+  const g = k < 0.3 ? (1 - k / 0.3) * (6 + rnd(Math.floor(t * FPS)) * 16) : 0;
+  el.style.textShadow = g ? `${g}px 0 rgba(255,40,110,.85), ${-g}px 0 rgba(40,240,255,.85)` : 'none';
+  el.style.transform = `scale(${s}) translateX(${g ? (rnd(t * 99) - .5) * g : 0}px)`;
+  return k;
+}
+function shakeAmount(t, hits) {
+  let a = 0;
+  for (const h of hits) { const k = t - h; if (k >= 0 && k < 0.35) a = Math.max(a, (1 - k / 0.35) * 18); }
+  return a;
+}
+const nodes = Array.from({ length: 26 }, (_, i) => ({ x: 80 + rnd(i) * 1760, y: 60 + rnd(i + 50) * 960 }));
+
+window.render = async (t) => {
+  const f = Math.floor(t * FPS);
+  for (const id of ['Lhook', 'Lf', 'Lr', 'Lo']) $(id).style.opacity = 0;
+
+  // ---- הוק 0–2 ----
+  if (t < 2) {
+    $('Lhook').style.opacity = 1;
+    await setImg($('vh'), frame('b', 3.2 + t));
+    await setImg($('vh2'), frame('c', 1.0 + t));
+    await setImg($('vh3'), frame('a', 0.5 + t));
+    ['vh', 'vh2', 'vh3'].forEach((id, i) => { const k = ease((t - i * 0.12) / 0.4); $(id).style.opacity = k; $(id).style.transform = `translateY(${(1 - k) * (i % 2 ? -80 : 80)}px) scale(${1.15 - t * 0.04})`; });
+    slam($('w1'), t, 0.0); slam($('w2'), t, 0.5); slam($('w3'), t, 1.0);
+  }
+  // ---- שטח 2–14 ----
+  const shot = SHOTS.find((s) => t >= s[0] && t < s[1]);
+  if (shot) {
+    const [a, , clip, off, box] = shot, lt = t - a;
+    $('Lf').style.opacity = 1;
+    await setImg($('vf'), frame(clip, off + lt));
+    await setImg($('vfb'), frame(clip, off + lt));
+    await setImg($('vd'), frame(clip, off + lt));
+    const cx = (box[0] + box[2] / 2) / 0.563 * 1.2, cy = (box[1] + box[3] / 2) / 0.563 * 1.2;
+    $('vd').style.left = `${300 - cx}px`; $('vd').style.top = `${300 - cy}px`;
+    const showDet = !(t >= 7.9 && t < 10.4);
+    const dk = ease((lt - 0.2) / 0.4) * (showDet ? 1 : 0);
+    $('det').style.opacity = dk; $('det').style.transform = `translateX(${(1 - dk) * 80}px)`;
+    const beatK = (t % BEAT) / BEAT;
+    const punch = 1 + 0.035 * Math.exp(-beatK * 6);
+    $('vf').style.transform = `scale(${(1.08 + lt * 0.02) * punch})`;
+    const glitch = lt < 0.12;
+    $('vf').style.filter = glitch ? 'contrast(1.4) saturate(1.8) hue-rotate(-12deg)' : 'none';
+    $('scan').style.top = `${((lt * 900) % 2400) - 240}px`;
+    const bx = $('box'), jit = (n) => (rnd(f * 3 + n) - 0.5) * 8;
+    const grow = ease((lt - 0.15) / 0.35);
+    bx.style.left = `${box[0] + jit(1) + (1 - grow) * 60}px`; bx.style.top = `${box[1] + jit(2) + (1 - grow) * 60}px`;
+    bx.style.width = `${box[2] - (1 - grow) * 120}px`; bx.style.height = `${box[3] - (1 - grow) * 120}px`;
+    bx.style.opacity = grow * (f % 20 < 18 ? 1 : 0.6);
+    $('boxl').textContent = clip === 'a' ? 'HUBTECH · FIELD' : (lt > 1.5 ? 'LOCKED' : 'TRACKING');
+    $('dot').style.opacity = f % 30 < 18 ? 1 : 0.2;
+    const sec = Math.floor(t), fr = f % FPS;
+    $('tc').textContent = `00:${String(sec).padStart(2, '0')}:${String(fr).padStart(2, '0')}`;
+    slam($('wp'), t, 8.0, 10.3);
+  }
+  // ---- רובוטים 14–20 ----
+  if (t >= 14 && t < 20) {
+    $('Lr').style.opacity = 1;
+    const i = Math.floor((t - 14) / 1.5), k = t - 14 - i * 1.5, [img, word] = ROBOTS[i];
+    await setImg($('rbp'), `assets/${img}-bp.png`);
+    await setImg($('rph'), `assets/${img}.jpg`);
+    const draw = ease(k / 0.35), reveal = ease((k - 0.35) / 0.45);
+    $('rbp').style.opacity = draw * (1 - reveal * 0.85);
+    $('rbp').style.clipPath = `inset(0 ${(1 - draw) * 100}% 0 0)`;
+    $('rph').style.clipPath = `inset(0 0 ${(1 - reveal) * 100}% 0 round 26px)`;
+    $('rscan').style.top = `${reveal * 720 - 160}px`;
+    $('rscan').style.opacity = reveal > 0 && reveal < 1 ? 1 : 0;
+    const z = 1 + k * 0.03;
+    $('rph').style.transform = $('rbp').style.transform = `scale(${z})`;
+    $('ri').textContent = `0${i + 1}`;
+    $('ri').style.opacity = ease(k / 0.3);
+    $('rw').textContent = word;
+    slam($('rw'), k, 0.55, 1.45);
+  }
+  // ---- סיום 20–24 ----
+  if (t >= 20) {
+    const lt = t - 20;
+    $('Lo').style.opacity = clamp((24 - t) / 0.6);
+    const conv = ease(lt / 0.6);
+    let h = '';
+    nodes.forEach((n, i) => {
+      const x = n.x + (960 - n.x) * conv * 0.55, y = n.y + (360 - n.y) * conv * 0.55;
+      const m = nodes[(i + 5) % nodes.length], mx = m.x + (960 - m.x) * conv * 0.55, my = m.y + (360 - m.y) * conv * 0.55;
+      h += `<line x1="${x}" y1="${y}" x2="${mx}" y2="${my}" stroke="#2f8cff" stroke-opacity=".25" stroke-width="2"/>`;
+      h += `<circle cx="${x}" cy="${y}" r="${4 + (i % 3) * 2}" fill="${i % 6 ? '#2f8cff' : '#ff7a1a'}" fill-opacity=".8"/>`;
+    });
+    $('net').innerHTML = h;
+    slam($('wm'), t, 20.0);
+    for (const [id, at] of [['os', 20.6], ['ou', 21.2], ['ol', 21.8]]) {
+      const k = ease((t - at) / 0.4);
+      $(id).style.opacity = k; $(id).style.transform = `translateY(${(1 - k) * 40}px)`;
+    }
+  }
+
+  // ---- אפקטים גלובליים ----
+  let fl = 0;
+  for (const c of CUTS) { const k = t - c; if (k >= 0 && k < 0.18) fl = Math.max(fl, (1 - k / 0.18) * 0.85); }
+  for (const c of [0, 0.5, 1.0]) { const k = t - c; if (k >= 0 && k < 0.1) fl = Math.max(fl, (1 - k / 0.1) * 0.5); }
+  $('flash').style.opacity = fl;
+  const sh = shakeAmount(t, [0, 0.5, 1.0, 8.0, 20.0, 14.55, 16.05, 17.55, 19.05]);
+  $('stage').style.transform = sh ? `translate(${(rnd(f) - .5) * sh}px, ${(rnd(f + 7) - .5) * sh}px)` : 'none';
+  $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
+};
+window.DURATION = DURATION;
+window.SIZE = [1920, 1080];
+</script>
+</body>
+</html>

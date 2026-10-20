@@ -15,7 +15,8 @@ const args = process.argv.slice(2);
 const scene = args.find((a) => a.endsWith('.html')) || 'scene.html';
 const pi = args.indexOf('--preview');
 const previewTimes = pi >= 0 ? (args[pi + 1] || '1,3,6,9,12,15,18,21').split(',').map(Number) : null;
-const name = basename(scene, '.html') === 'reel' ? 'robots-reel' : 'robots-construction';
+const base = basename(scene, '.html');
+const name = base === 'scene' ? 'robots-construction' : `robots-${base}`;
 
 const browser = await pw.chromium.launch(existsSync('/opt/pw-browsers/chromium') ? { executablePath: '/opt/pw-browsers/chromium' } : {});
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
