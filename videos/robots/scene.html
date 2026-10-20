@@ -103,6 +103,7 @@ html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--
     <div class="abs" style="right:150px;top:380px;width:960px">
       <div class="eyebrow" id="s4e">מהמעבדה לאתר</div>
       <div class="title" id="s4t" style="margin-top:24px">טכנולוגיה<br><span class="hl">שעובדת בשטח</span></div>
+      <div class="sub" id="s4s" style="margin-top:30px">פיילוטים ואתרי בטא באתרי בנייה פעילים</div>
     </div>
   </section>
 
@@ -137,7 +138,7 @@ html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--
     <div class="abs" style="right:150px;top:250px;width:900px">
       <div class="wordmark" id="wm"><svg width="130" height="100" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="5" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="9"/><circle cx="40" cy="40" r="10"/><circle cx="66" cy="22" r="9"/><circle cx="52" cy="70" r="7"/></g><circle cx="96" cy="58" r="12" fill="#ee7d22"/></svg><span><span class="h">HUB</span><span class="t">TECH</span></span></div>
       <div class="sub" id="s7s" style="margin-top:20px;font-size:44px">המרכז להטמעת טכנולוגיות בענף הבנייה</div>
-      <div id="s7c" style="margin-top:50px"><span class="chip">רובוטים בבנייה · מהמעבדה לאתר</span></div>
+      <div id="s7c" style="margin-top:50px"><span class="chip" style="direction:ltr">hubtech.co.il</span></div>
       <div id="s7l" style="margin-top:90px;display:inline-block" class="plate"><img src="assets/logos.png"></div>
     </div>
   </section>
@@ -225,7 +226,7 @@ window.render = async (t) => {
     const f = frame('a', lt);
     await setImg($('v4'), f);
     $('bg4').style.backgroundImage = `url('${f}')`;
-    enter($('p4'), lt, 0, 80); enter($('s4e'), lt, 0.4); enter($('s4t'), lt, 0.7);
+    enter($('p4'), lt, 0, 80); enter($('s4e'), lt, 0.4); enter($('s4t'), lt, 0.7); enter($('s4s'), lt, 1.2);
   }
   // 5 – ארבעה רובוטים, 3 שניות לכל אחד
   lt = t - S.s5[0];
