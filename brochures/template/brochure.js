@@ -217,7 +217,7 @@
       <div class="steps" style="grid-template-columns:repeat(${b.items.length},1fr)">${b.items.map((s, i) => `<div class="st ${i === b.items.length - 1 ? 'last' : ''}"><b>${i + 1}</b><span>${md(s)}</span></div>`).join('')}</div>
       ${b.text ? `<div class="p" style="margin-top:2.5mm">${md(b.text)}</div>` : ''}</div>`;
 
-  B.image = (b) => `<div class="figure"><img src="${img(b.src)}" style="${b.height ? `height:${b.height};object-fit:cover;object-position:${b.pos || 'center'}` : ''}">${b.caption ? `<div class="cap">${md(b.caption)}</div>` : ''}</div>`;
+  B.image = (b) => `<div class="figure"><div class="frame"><img src="${img(b.src)}" style="${b.height ? `height:${b.height};object-fit:cover;object-position:${b.pos || 'center'}` : ''}"></div>${b.caption ? `<div class="cap">${md(b.caption)}</div>` : ''}</div>`;
 
   B.reading = (b) => `<div>
       <div class="h3" style="font-size:19px;margin-bottom:3mm">${md(b.title)} ${b.note ? `<span class="small" style="font-weight:400;margin-inline-start:3mm">${md(b.note)}</span>` : ''}</div>

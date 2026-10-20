@@ -349,7 +349,7 @@ em { font-style: italic; }
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(160deg, rgba(19, 58, 99, .55), rgba(19, 58, 99, .08) 55%, rgba(238, 125, 34, .22));
 }
-.tech .cover-photo .img::before, .tech .split-photo .img::before, .tech .back .img::before, .tech .cert .img::before, .tech .figure::before {
+.tech .cover-photo .img::before, .tech .split-photo .img::before, .tech .back .img::before, .tech .cert .img::before, .tech .figure .frame::before {
   content: ''; position: absolute; inset: 4mm; z-index: 2; pointer-events: none;
   --c: var(--accent); --l: 7mm; --w: 2px;
   background:
@@ -362,8 +362,8 @@ em { font-style: italic; }
     linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
     linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat;
 }
-.tech .figure { position: relative; }
-.tech .figure::before { inset: -1.5mm; }
+.figure .frame { position: relative; }
+.tech .figure .frame::before { inset: -1.5mm; }
 
 /* תוויות: ריבוע הדגשה וריווח אותיות */
 .tech .eyebrow, .tech .mod-head .lbl { display: inline-flex; align-items: center; gap: 2mm; letter-spacing: 1.2px; }
