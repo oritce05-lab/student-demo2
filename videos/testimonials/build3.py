@@ -1,7 +1,7 @@
 # המלצות v3 – חיתוך שתיקות ארוכות בתוך קטע (רק בשתיקה), כתוביות לפי זמן מקור, מוזיקה music3.py.
 # המלצות – עריכה בפורמט שאלה–תשובה, אנכי 1080x1920 (כמו המקור), כתוביות בעברית, מוזיקה קצבית ברקע.
 # קודם: python3 transcribe… (לא חובה), node captions.mjs ; אחר כך: python3 build2.py
-import json, subprocess, wave
+import json, subprocess, sys, wave
 import numpy as np
 from PIL import Image
 E = json.load(open('edit.json'))
@@ -77,12 +77,16 @@ for j, (s0, s1, sp) in enumerate(cap_list):
 fc.append(f'[{ec}:v]fps={FPS},scale={W}:{H},setsar=1,format=yuv420p,trim=0:{END_CARD + XF},setpts=PTS-STARTPTS,settb=1/{FPS}[ecv]')
 fc.append(f'[{last}][ecv]xfade=transition=fade:duration={XF}:offset={total - XF:.3f}[v]')
 full = total + END_CARD
-subprocess.run(['python3', '-I', 'music3.py', f'{full:.2f}', 'work/music.wav'], check=True)
-inputs += ['-i', 'work/music.wav']
-fc.append(f"[{k}:a]volume='if(lt(t,{total - XF:.2f}),0.15,0.15+0.35*min(1,(t-{total - XF:.2f})/0.6))':eval=frame[mus]")
+NOMUSIC = '--no-music' in sys.argv   # גרסה בלי מוזיקת רקע: רק הדיבור
 fc.append(f'[speech]apad=pad_dur={END_CARD + 1}[sp]')
-fc.append('[sp][mus]amix=inputs=2:duration=shortest:normalize=0,alimiter=limit=0.95[a]')
-out = 'output/testimonials-tiktok.mp4'
+if NOMUSIC:
+    fc.append('[sp]alimiter=limit=0.95[a]')
+else:
+    subprocess.run(['python3', '-I', 'music3.py', f'{full:.2f}', 'work/music.wav'], check=True)
+    inputs += ['-i', 'work/music.wav']
+    fc.append(f"[{k}:a]volume='if(lt(t,{total - XF:.2f}),0.15,0.15+0.35*min(1,(t-{total - XF:.2f})/0.6))':eval=frame[mus]")
+    fc.append('[sp][mus]amix=inputs=2:duration=shortest:normalize=0,alimiter=limit=0.95[a]')
+out = 'output/testimonials-tiktok-nomusic.mp4' if NOMUSIC else 'output/testimonials-tiktok.mp4'
 subprocess.run(['ffmpeg', '-y', '-v', 'error', *inputs, '-filter_complex', ';'.join(fc), '-map', '[v]', '-map', '[a]', '-t', f'{full:.2f}',
                 '-c:v', 'libx264', '-crf', '19', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out], check=True)
 print('✓', out, round(full, 1), 's')
