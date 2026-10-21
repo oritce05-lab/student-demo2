@@ -1,11 +1,12 @@
 window.EDIT = {
- "total": 34.5,
+ "total": 38.1,
+ "calm": true,
  "segments": [
   {
    "type": "title",
    "dur": 2.5,
    "bg": [
-    87.0,
+    86.6,
     2.5
    ],
    "top": [
@@ -25,74 +26,58 @@ window.EDIT = {
   },
   {
    "type": "clip",
-   "from": 87.0,
-   "dur": 7.5,
+   "from": 86.5,
+   "dur": 16.5,
    "head": "האדם מול המכונה",
    "under": [
     [
-     0,
+     0.6,
      "איש עבודה מנוסה"
     ],
     [
-     2.0,
+     2.6,
      "מול מפעיל רובוט מקצועי"
     ],
     [
-     5.0,
+     5.6,
      "המשימה: צביעת קיר"
+    ],
+    [
+     8.3,
+     ""
     ]
    ],
-   "t": 2.5,
-   "out": 7.5,
-   "dir": "assets/teaser-duel/01",
-   "frames": 226
-  },
-  {
-   "type": "clip",
-   "from": 95.0,
-   "dur": 3.0,
    "top": [
     [
-     0.1,
+     8.5,
      "האדם או הרובוט?"
-    ]
-   ],
-   "t": 10.0,
-   "out": 3.0,
-   "dir": "assets/teaser-duel/02",
-   "frames": 90
-  },
-  {
-   "type": "clip",
-   "from": 99.5,
-   "dur": 3.5,
-   "top": [
+    ],
     [
-     0.2,
+     13.3,
      "3"
     ],
     [
-     1.0,
+     14.0,
      "2"
     ],
     [
-     1.8,
+     14.7,
      "1"
     ],
     [
-     2.6,
+     15.5,
      "צאו לדרך!"
     ]
    ],
-   "t": 13.0,
-   "out": 3.5,
-   "dir": "assets/teaser-duel/03",
-   "frames": 106
+   "t": 2.5,
+   "out": 16.5,
+   "dir": "assets/teaser-duel/01",
+   "frames": 496
   },
   {
    "type": "clip",
    "from": 103.0,
-   "dur": 8.0,
+   "dur": 9.4,
    "speed": 2,
    "timer": [
     0,
@@ -104,33 +89,33 @@ window.EDIT = {
      "ההתמודדות ×2"
     ]
    ],
-   "t": 16.5,
-   "out": 4.0,
-   "dir": "assets/teaser-duel/04",
-   "frames": 120
+   "t": 19.0,
+   "out": 4.7,
+   "dir": "assets/teaser-duel/02",
+   "frames": 141
   },
   {
    "type": "clip",
-   "from": 112.0,
-   "dur": 10.5,
+   "from": 112.4,
+   "dur": 10.9,
    "timer": [
     120,
     125
    ],
    "top": [
     [
-     2.2,
+     2.1,
      "הרובוט סיים"
     ],
     [
-     8.0,
+     7.6,
      "והאדם? עוד עובד"
     ]
    ],
-   "t": 20.5,
-   "out": 10.5,
-   "dir": "assets/teaser-duel/05",
-   "frames": 316
+   "t": 23.7,
+   "out": 10.9,
+   "dir": "assets/teaser-duel/03",
+   "frames": 328
   },
   {
    "type": "end",
@@ -141,7 +126,7 @@ window.EDIT = {
      "המכונה ניצחה"
     ]
    ],
-   "t": 31.0,
+   "t": 34.6,
    "out": 3.5
   }
  ]

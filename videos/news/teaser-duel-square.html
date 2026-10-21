@@ -150,7 +150,7 @@ window.render = async (t) => {
 
   const u = current(s.under, k);
   $('undert').textContent = u ? u[1] : '';
-  $('under').style.opacity = u ? 1 : 0;
+  $('under').style.opacity = u && u[1] ? 1 : 0;
   if (u) { const kk = back((k - u[0]) / 0.3); $('undert').style.transform = `translateY(${(1 - kk) * 60}px)`; $('undert').style.opacity = clamp((k - u[0]) / 0.08); }
 
   // שעון התחרות

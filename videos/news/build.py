@@ -36,7 +36,7 @@ for i, s in enumerate(spec['segments']):
         d_dir = f'{root}/{i:02d}'
         os.makedirs(d_dir, exist_ok=True)
         sp = s.get('speed', 1)
-        run('ffmpeg', '-y', '-ss', str(a), '-t', str(d), '-i', src, '-vf', f'setpts=PTS/{sp},fps={FPS},{CROP}', '-q:v', '3', f'{d_dir}/%04d.jpg')
+        if not os.environ.get('AUDIO_ONLY'): run('ffmpeg', '-y', '-ss', str(a), '-t', str(d), '-i', src, '-vf', f'setpts=PTS/{sp},fps={FPS},{CROP}', '-q:v', '3', f'{d_dir}/%04d.jpg')
         s['dir'] = d_dir
         s['frames'] = len(os.listdir(d_dir))
     n = int(out_dur * SR)

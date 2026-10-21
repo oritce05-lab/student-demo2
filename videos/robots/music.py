@@ -66,13 +66,10 @@ def lowpass(x, a):
     return y
 
 
-# מבנה: 0–2 הוק (מכות), 2–20 גרוב, 20–24 סיום
-for b in range(4):  # הוק: מכה על כל פעמה
-    place(impact(0.9), b * BEAT, 0.9)
-place(riser(2.0 - 0.05), 0.0, 0.5)
-
+# מבנה: גרוב מההתחלה (בלי מכות פתיחה), סיום עם מכה אחת
+# פתיחה בלי מכות תופים: הגרוב מתחיל מהפעמה הראשונה ונכנס בהדרגה
 beats = int(DUR / BEAT)
-for b in range(4, beats):
+for b in range(0, beats):
     at = b * BEAT
     if at >= END:
         break
@@ -83,7 +80,7 @@ for b in range(4, beats):
 
 # בס בשמיניות עם דאקינג מהקיק
 roots = [55.0, 43.65, 65.41, 49.0]  # A1 F1 C2 G1
-for bar in range(1, int(END / (4 * BEAT)) + 1):
+for bar in range(0, int(END / (4 * BEAT)) + 1):
     f = roots[bar % 4]
     for e in range(8):
         at = bar * 4 * BEAT + e * BEAT / 2
@@ -104,19 +101,20 @@ for k in range(int((END - DUR / 2) / (BEAT / 4))):
 # מעברים
 place(riser(1.5), END - 1.5, 0.45)
 for at in HITS:
-    place(impact(1.2), at, 0.45)
+    if at >= 3.0:
+        place(impact(1.2), at, 0.45)
 place(impact(3.5), END, 1.0)
 
 # דאקינג (sidechain) מהקיק
 duck = np.ones(N)
-for b in range(4, int(END / BEAT)):
+for b in range(0, int(END / BEAT)):
     i = int(b * BEAT * SR)
     L = int(0.22 * SR)
     duck[i:i + L] = np.minimum(duck[i:i + L], np.linspace(0.35, 1, L))
 out *= duck * 0.5 + 0.5
 
-# סיום: דעיכה
-fade = np.clip((DUR - t_all) / 2.5, 0, 1)
+# כניסה הדרגתית ודעיכה בסוף
+fade = np.clip((DUR - t_all) / 2.5, 0, 1) * np.clip(t_all / 1.5, 0, 1)
 out *= fade
 out = np.tanh(out * 1.4)
 out /= np.max(np.abs(out)) * 1.05
