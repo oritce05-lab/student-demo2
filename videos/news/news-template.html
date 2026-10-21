@@ -62,13 +62,16 @@ body.square #under span { font-size: 40px; padding: 10px 24px; }
 body.square #timer, body.square #timer.with-under { top: 272px; left: 40px; right: auto; font-size: 64px; background: rgba(7, 22, 42, .82); padding: 6px 24px; border-radius: 14px; border: 2px solid rgba(90, 200, 255, .5); }
 body.square #brand { bottom: 28px; } body.square #brand .wordmark { font-size: 56px; } body.square #brand svg { width: 72px; height: 54px; }
 body.square #endcard { gap: 34px; } body.square #endcard .big { font-size: 120px; }
+.tag { position: absolute; z-index: 4; opacity: 0; display: flex; flex-direction: column; align-items: center; }
+.tag .pin { width: 0; height: 0; border: 14px solid transparent; border-bottom: 18px solid var(--orange); margin-bottom: -2px; }
+.tag .box { background: rgba(7, 22, 42, .9); border: 2px solid var(--orange); border-radius: 12px; padding: 8px 18px; text-align: center; font-size: 27px; font-weight: 800; line-height: 1.25; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
 #grain { position: absolute; inset: -200px; background: url('../robots/assets/grain.png'); opacity: .45; pointer-events: none; mix-blend-mode: overlay; }
 </style>
 </head>
 <body>
 <div id="stage">
   <div class="grid"></div>
-  <div id="band"><img id="v"><div class="hud"></div></div>
+  <div id="band"><img id="v"><div class="hud"></div><div class="tag" id="tag"><div class="pin"></div><div class="box" id="tagt"></div></div></div>
   <div class="edge" id="e1" style="top:644px"></div><div class="edge" id="e2" style="top:1270px"></div>
   <div class="slot" id="top"></div>
   <div class="slot" id="head"><span id="headt"></span></div>
@@ -148,6 +151,12 @@ window.render = async (t) => {
   hd.textContent = showHead ? s.head : '';
   if (showHead) slamStyle(hd, k - (s.headAt || 0));
 
+  // תגית שמוצמדת לאדם בפריים
+  const tg = s.tag, tv = tg && tg.show.some(([a, b]) => k >= a && k < b);
+  if (tg) { $('tagt').innerHTML = tg.text; Object.assign($('tag').style, { left: `${tg.x}px`, top: `${tg.y}px` }); }
+  const tk = tv ? Math.min(...tg.show.filter(([a, b]) => k >= a && k < b).map(([a, b]) => Math.min(ease((k - a) / 0.4), clamp((b - k) / 0.3)))) : 0;
+  $('tag').style.opacity = tk;
+  $('tag').style.transform = `translateY(${(1 - tk) * 16}px)`;
   const u = current(s.under, k);
   $('undert').textContent = u ? u[1] : '';
   $('under').style.opacity = u && u[1] ? 1 : 0;

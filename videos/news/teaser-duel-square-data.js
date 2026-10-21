@@ -1,6 +1,7 @@
 window.EDIT = {
  "total": 38.1,
- "calm": true, "square": true,
+ "calm": true,
+ "square": true,
  "segments": [
   {
    "type": "title",
@@ -72,7 +73,22 @@ window.EDIT = {
    "t": 2.5,
    "out": 16.5,
    "dir": "assets/teaser-duel/01",
-   "frames": 496
+   "frames": 496,
+   "tag": {
+    "text": "מדריך ראשי להכשרת<br>מפעילי הרובוטיקה",
+    "x": 40,
+    "y": 330,
+    "show": [
+     [
+      0.6,
+      8.3
+     ],
+     [
+      11.6,
+      16.5
+     ]
+    ]
+   }
   },
   {
    "type": "clip",
