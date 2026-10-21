@@ -50,6 +50,18 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--
 .plate { background: #fff; border-radius: 22px; padding: 22px 40px; }
 .plate img { height: 78px; display: block; }
 #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+body.square, body.square html { height: 1080px; }
+body.square #band { top: 250px; }
+body.square #e1 { top: 244px !important; } body.square #e2 { top: 870px !important; }
+body.square #top { top: 20px; height: 220px; }
+body.square #top .big { font-size: 110px; } body.square #top .mid { font-size: 76px; }
+body.square #head { top: 70px; } body.square #head span { font-size: 78px; }
+body.square #credit { top: 884px; right: 30px; font-size: 24px; }
+body.square #under { top: 272px; left: auto; right: 40px; text-align: right; }
+body.square #under span { font-size: 40px; padding: 10px 24px; }
+body.square #timer, body.square #timer.with-under { top: 272px; left: 40px; right: auto; font-size: 64px; background: rgba(7, 22, 42, .82); padding: 6px 24px; border-radius: 14px; border: 2px solid rgba(90, 200, 255, .5); }
+body.square #brand { bottom: 28px; } body.square #brand .wordmark { font-size: 56px; } body.square #brand svg { width: 72px; height: 54px; }
+body.square #endcard { gap: 34px; } body.square #endcard .big { font-size: 120px; }
 #grain { position: absolute; inset: -200px; background: url('../robots/assets/grain.png'); opacity: .45; pointer-events: none; mix-blend-mode: overlay; }
 </style>
 </head>
@@ -83,7 +95,11 @@ const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return 
 async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
 const SEG = EDIT.segments;
 
+const CALM = !!EDIT.calm;
+if (EDIT.square) document.body.classList.add('square');
+if (EDIT.square) { document.documentElement.style.height = '1080px'; document.body.style.height = '1080px'; }
 function slamStyle(el, k) {
+  if (CALM) { const e = ease(k / 0.45); el.style.opacity = e; el.style.textShadow = '0 6px 30px rgba(0,0,0,.6)'; el.style.transform = `translateY(${(1 - e) * 30}px)`; return; }
   el.style.opacity = clamp(k / 0.06);
   const g = k < 0.3 ? (1 - k / 0.3) * (6 + rnd(Math.floor(k * 97)) * 14) : 0;
   el.style.textShadow = g ? `${g}px 0 rgba(255,40,110,.85), ${-g}px 0 rgba(40,240,255,.85)` : 'none';
@@ -103,8 +119,8 @@ window.render = async (t) => {
     const n = clamp(Math.floor(k * FPS) + 1, 1, s.frames);
     await setImg($('v'), `${s.dir}/${String(n).padStart(4, '0')}.jpg`);
     const bk = (t % 0.5) / 0.5;
-    $('v').style.transform = `scale(${1.03 + k * 0.006 + 0.02 * Math.exp(-bk * 6)})`;
-    $('v').style.filter = s.type === 'title' ? 'brightness(.45) saturate(.8)' : (k < 0.1 ? 'contrast(1.35) saturate(1.6)' : 'none');
+    $('v').style.transform = CALM ? `scale(${1.02 + k * 0.004})` : `scale(${1.03 + k * 0.006 + 0.02 * Math.exp(-bk * 6)})`;
+    $('v').style.filter = s.type === 'title' ? 'brightness(.45) saturate(.8)' : (!CALM && k < 0.1 ? 'contrast(1.35) saturate(1.6)' : 'none');
   }
   $('band').style.opacity = $('e1').style.opacity = $('e2').style.opacity = $('credit').style.opacity = isEnd ? 0 : 1;
   $('brand').style.opacity = isEnd ? 0 : 1;
@@ -136,7 +152,7 @@ window.render = async (t) => {
   const u = current(s.under, k);
   $('undert').textContent = u ? u[1] : '';
   $('under').style.opacity = u ? 1 : 0;
-  if (u) { const kk = back((k - u[0]) / 0.3); $('undert').style.transform = `translateY(${(1 - kk) * 60}px)`; $('undert').style.opacity = clamp((k - u[0]) / 0.08); }
+  if (u) { const kk = CALM ? ease((k - u[0]) / 0.45) : back((k - u[0]) / 0.3); $('undert').style.transform = `translateY(${(1 - kk) * 60}px)`; $('undert').style.opacity = clamp((k - u[0]) / 0.08); }
 
   // שעון התחרות
   if (s.timer) {
@@ -160,14 +176,14 @@ window.render = async (t) => {
   // הבזק במעברים + רעידה בכניסת כותרת
   let fl = 0;
   SEG.forEach((x) => { const d = t - x.t; if (d >= 0 && d < 0.15 && x.t > 0) fl = Math.max(fl, (1 - d / 0.15) * 0.75); });
-  $('flash').style.opacity = fl;
+  $('flash').style.opacity = CALM ? 0 : fl;
   let sh = 0;
-  if (ev) { const d = k - ev[0]; if (d < 0.3) sh = (1 - d / 0.3) * 16; }
+  if (ev && !CALM) { const d = k - ev[0]; if (d < 0.3) sh = (1 - d / 0.3) * 16; }
   $('stage').style.transform = sh ? `translate(${(rnd(f) - .5) * sh}px, ${(rnd(f + 7) - .5) * sh}px)` : 'none';
   $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
 };
 window.DURATION = EDIT.total;
-window.SIZE = [1080, 1920];
+window.SIZE = EDIT.square ? [1080, 1080] : [1080, 1920];
 </script>
 </body>
 </html>

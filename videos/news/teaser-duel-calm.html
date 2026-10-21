@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('../robots/assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #07162a; --blue: #2f8cff; --orange: #ff7a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); font-family: 'Heebo', sans-serif; color: #fff; }
+#stage { position: absolute; inset: 0; overflow: hidden; }
+.grid { position: absolute; inset: 0; background:
+  radial-gradient(ellipse at 50% 20%, rgba(47, 140, 255, .30), transparent 55%),
+  radial-gradient(ellipse at 50% 95%, rgba(255, 122, 26, .16), transparent 50%),
+  linear-gradient(rgba(90, 200, 255, .07) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(90, 200, 255, .07) 1px, transparent 1px), var(--navy);
+  background-size: auto, auto, 54px 54px, 54px 54px, auto; }
+/* פס הווידאו */
+#band { position: absolute; left: 0; top: 650px; width: 1080px; height: 620px; overflow: hidden; background: #000; }
+#band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#band .hud { position: absolute; inset: 18px; --c: var(--orange); --l: 56px; --w: 5px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat; }
+.edge { position: absolute; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--blue), var(--orange)); }
+/* טקסטים */
+.slot { position: absolute; left: 40px; right: 40px; text-align: center; }
+#top { top: 230px; height: 380px; display: flex; flex-direction: column; justify-content: center; }
+#head { top: 420px; }
+#head span { display: inline-block; font-size: 92px; font-weight: 900; line-height: 1.1; }
+#under { top: 1330px; }
+#under span { display: inline-block; background: var(--orange); color: #07162a; font-size: 58px; font-weight: 900; padding: 14px 36px; border-radius: 14px; }
+.big { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+.mid { font-size: 112px; font-weight: 900; line-height: 1.05; }
+.o { color: var(--orange); }
+#timer { position: absolute; top: 1330px; left: 0; right: 0; text-align: center; direction: ltr; font-size: 120px; font-weight: 900; letter-spacing: 4px; color: #fff; text-shadow: 0 0 40px rgba(47, 140, 255, .7); }
+#timer.with-under { top: 1450px; }
+#credit { position: absolute; top: 1290px; right: 40px; direction: rtl; font-size: 28px; font-weight: 700; color: rgba(255, 255, 255, .6); }
+#brand { position: absolute; bottom: 150px; left: 0; right: 0; display: flex; justify-content: center; }
+.wordmark { direction: ltr; display: flex; align-items: center; gap: 18px; font-weight: 900; font-size: 74px; letter-spacing: -1px; }
+.wordmark .t { color: var(--blue); }
+#endcard { position: absolute; inset: 0; opacity: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 46px; }
+#endcard .wordmark { font-size: 150px; letter-spacing: -3px; gap: 26px; }
+.url { direction: ltr; display: inline-block; border: 3px solid var(--orange); border-radius: 999px; padding: 16px 48px; font-size: 52px; font-weight: 800; }
+.plate { background: #fff; border-radius: 22px; padding: 22px 40px; }
+.plate img { height: 78px; display: block; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+body.square, body.square html { height: 1080px; }
+body.square #band { top: 250px; }
+body.square #e1 { top: 244px !important; } body.square #e2 { top: 870px !important; }
+body.square #top { top: 20px; height: 220px; }
+body.square #top .big { font-size: 110px; } body.square #top .mid { font-size: 76px; }
+body.square #head { top: 70px; } body.square #head span { font-size: 78px; }
+body.square #credit { top: 884px; right: 30px; font-size: 24px; }
+body.square #under { top: 272px; left: auto; right: 40px; text-align: right; }
+body.square #under span { font-size: 40px; padding: 10px 24px; }
+body.square #timer, body.square #timer.with-under { top: 272px; left: 40px; right: auto; font-size: 64px; background: rgba(7, 22, 42, .82); padding: 6px 24px; border-radius: 14px; border: 2px solid rgba(90, 200, 255, .5); }
+body.square #brand { bottom: 28px; } body.square #brand .wordmark { font-size: 56px; } body.square #brand svg { width: 72px; height: 54px; }
+body.square #endcard { gap: 34px; } body.square #endcard .big { font-size: 120px; }
+#grain { position: absolute; inset: -200px; background: url('../robots/assets/grain.png'); opacity: .45; pointer-events: none; mix-blend-mode: overlay; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="grid"></div>
+  <div id="band"><img id="v"><div class="hud"></div></div>
+  <div class="edge" id="e1" style="top:644px"></div><div class="edge" id="e2" style="top:1270px"></div>
+  <div class="slot" id="top"></div>
+  <div class="slot" id="head"><span id="headt"></span></div>
+  <div id="credit">כפי ששודר בחדשות 12</div>
+  <div id="timer"></div>
+  <div class="slot" id="under"><span id="undert"></span></div>
+  <div id="brand"><div class="wordmark"><svg width="96" height="72" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="7" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div></div>
+  <div id="endcard">
+    <div id="endtop"></div>
+    <div class="wordmark" id="ewm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
+    <div id="eurl"><span class="url">hubtech.co.il</span></div>
+    <div id="elogo" class="plate"><img src="../robots/assets/logos.png"></div>
+  </div>
+  <div id="grain"></div><div id="flash"></div>
+</div>
+<script src="teaser-duel-calm-data.js"></script>
+<script>
+const FPS = 30;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
+const SEG = EDIT.segments;
+
+const CALM = !!EDIT.calm;
+if (EDIT.square) document.body.classList.add('square');
+if (EDIT.square) { document.documentElement.style.height = '1080px'; document.body.style.height = '1080px'; }
+function slamStyle(el, k) {
+  el.style.opacity = clamp(k / 0.06);
+  const g = k < 0.3 ? (1 - k / 0.3) * (6 + rnd(Math.floor(k * 97)) * 14) : 0;
+  el.style.textShadow = g ? `${g}px 0 rgba(255,40,110,.85), ${-g}px 0 rgba(40,240,255,.85)` : 'none';
+  el.style.transform = `scale(${1.7 - 0.7 * back(k / 0.22)})`;
+}
+// אירועי טקסט: האחרון שהתחיל מוצג
+function current(events, k) { let e = null; (events || []).forEach((x) => { if (k >= x[0]) e = x; }); return e; }
+
+window.render = async (t) => {
+  const f = Math.floor(t * FPS);
+  const s = SEG.find((x) => t >= x.t && t < x.t + x.out) || SEG[SEG.length - 1];
+  const k = t - s.t;
+  const isEnd = s.type === 'end';
+
+  // וידאו
+  if (s.dir) {
+    const n = clamp(Math.floor(k * FPS) + 1, 1, s.frames);
+    await setImg($('v'), `${s.dir}/${String(n).padStart(4, '0')}.jpg`);
+    const bk = (t % 0.5) / 0.5;
+    $('v').style.transform = CALM ? `scale(${1.03 + k * 0.006})` : `scale(${1.03 + k * 0.006 + 0.02 * Math.exp(-bk * 6)})`;
+    $('v').style.filter = s.type === 'title' ? 'brightness(.45) saturate(.8)' : (k < 0.1 ? 'contrast(1.35) saturate(1.6)' : 'none');
+  }
+  $('band').style.opacity = $('e1').style.opacity = $('e2').style.opacity = $('credit').style.opacity = isEnd ? 0 : 1;
+  $('brand').style.opacity = isEnd ? 0 : 1;
+  $('endcard').style.opacity = isEnd ? 1 : 0;
+
+  // כותרת עליונה: אירועי top מחליפים זה את זה; head = כותרת קבועה לקטע
+  const ev = current(s.top, k);
+  const topEl = $('top');
+  if (!isEnd && ev) {
+    const key = `${SEG.indexOf(s)}:${ev[0]}`;
+    if (topEl.dataset.key !== key) {
+      topEl.dataset.key = key;
+      const short = ev[1].length <= 6;
+      // בפתיחה: כל השורות שכבר הופיעו נשארות
+      const lines = s.type === 'title' ? s.top.filter((x) => k >= x[0]) : [ev];
+      topEl.innerHTML = lines.map((x, i) => `<div class="${x[1].length <= 8 ? 'big' : 'mid'} ${i === lines.length - 1 && s.type === 'title' && i > 0 ? 'o' : ''}">${x[1]}</div>`).join('');
+    }
+    const last = topEl.lastElementChild;
+    [...topEl.children].forEach((c) => { c.style.opacity = 1; c.style.transform = 'none'; c.style.textShadow = 'none'; });
+    slamStyle(last, k - ev[0]);
+  } else if (!isEnd) { topEl.innerHTML = ''; topEl.dataset.key = ''; }
+  $('top').style.display = isEnd ? 'none' : 'flex';
+
+  const hd = $('headt');
+  const showHead = s.head && !ev && k >= (s.headAt || 0);
+  hd.textContent = showHead ? s.head : '';
+  if (showHead) slamStyle(hd, k - (s.headAt || 0));
+
+  const u = current(s.under, k);
+  $('undert').textContent = u ? u[1] : '';
+  $('under').style.opacity = u ? 1 : 0;
+  if (u) { const kk = back((k - u[0]) / 0.3); $('undert').style.transform = `translateY(${(1 - kk) * 60}px)`; $('undert').style.opacity = clamp((k - u[0]) / 0.08); }
+
+  // שעון התחרות
+  if (s.timer) {
+    const p = clamp(k / s.out), sec = Math.round(s.timer[0] + (s.timer[1] - s.timer[0]) * p);
+    $('timer').textContent = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
+    $('timer').style.opacity = 1;
+    $('timer').className = u ? 'with-under' : '';
+  } else $('timer').style.opacity = 0;
+
+  // כרטיס סיום
+  if (isEnd) {
+    const e = current(s.top, k);
+    $('endtop').innerHTML = e ? `<div class="${e[1].length <= 12 ? 'big' : 'mid'} o" style="text-align:center">${e[1]}</div>` : '';
+    if (e) slamStyle($('endtop').firstElementChild, k - e[0]);
+    for (const [id, at] of [['ewm', 0.5], ['eurl', 0.9], ['elogo', 1.3]]) {
+      const kk = ease((k - at) / 0.4); $(id).style.opacity = kk; $(id).style.transform = `translateY(${(1 - kk) * 40}px)`;
+    }
+    $('stage').style.opacity = clamp((EDIT.total - t) / 0.5);
+  } else $('stage').style.opacity = 1;
+
+  // הבזק במעברים + רעידה בכניסת כותרת
+  let fl = 0;
+  SEG.forEach((x) => { const d = t - x.t; if (d >= 0 && d < 0.15 && x.t > 0) fl = Math.max(fl, (1 - d / 0.15) * 0.75); });
+  $('flash').style.opacity = fl;
+  let sh = 0;
+  if (ev) { const d = k - ev[0]; if (d < 0.3) sh = (1 - d / 0.3) * 16; }
+  $('stage').style.transform = sh ? `translate(${(rnd(f) - .5) * sh}px, ${(rnd(f + 7) - .5) * sh}px)` : 'none';
+  $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
+};
+window.DURATION = EDIT.total;
+window.SIZE = EDIT.square ? [1080, 1080] : [1080, 1920];
+</script>
+</body>
+</html>

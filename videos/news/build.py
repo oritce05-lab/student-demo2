@@ -8,6 +8,8 @@ name = os.path.splitext(os.path.basename(spec_path))[0]
 spec = json.load(open(spec_path))
 FPS, SR = 30, 44100
 CROP = 'crop=620:356:74:0,scale=1080:-2:flags=lanczos,unsharp=5:5:0.5,eq=contrast=1.05:saturation=1.08'
+if spec.get('layout') == 'wide':
+    CROP = 'scale=1920:1080:flags=lanczos,unsharp=5:5:0.5,eq=contrast=1.05:saturation=1.08'
 root = f'assets/{name}'
 os.makedirs(root, exist_ok=True)
 
@@ -63,5 +65,5 @@ os.makedirs('../robots/assets', exist_ok=True)
 with wave.open(f'assets/music-{name}.wav', 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes((mix * 32767).astype(np.int16).tobytes())
-open(f'{name}-data.js', 'w').write('window.EDIT = ' + json.dumps({'total': total, 'segments': spec['segments']}, ensure_ascii=False, indent=1) + ';\n')
+open(f'{name}-data.js', 'w').write('window.EDIT = ' + json.dumps({'total': total, 'calm': True, 'segments': spec['segments']}, ensure_ascii=False, indent=1) + ';\n')
 print(name, f'{total:.1f}s', [round(c, 2) for c in cuts])

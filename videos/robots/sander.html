@@ -147,7 +147,7 @@ window.render = async (t) => {
     const i = Math.floor((t - LIVE_AT) / CUT), k = t - LIVE_AT - i * CUT, [clip, txt] = LIVE[i];
     $('Lv').style.opacity = 1;
     await live(clip, k);
-    $('lv').style.transform = `scale(${(1.06 + k * 0.03) * (1 + 0.035 * Math.exp(-bk * 6))})`;
+    $('lv').style.transform = `scale(${1.06 + k * 0.03})`;
     $('lv').style.filter = k < 0.1 ? 'contrast(1.4) saturate(1.8) hue-rotate(-12deg)' : 'none';
     $('lscan').style.top = `${((k * 900) % 2400) - 240}px`;
     $('ldot').style.opacity = f % 30 < 18 ? 1 : 0.25;
