@@ -2,3 +2,5 @@ brochures/output/preview/
 videos/robots/assets/clips/
 videos/robots/output/preview-*.jpg
 videos/robots/assets/clips-hd/
+videos/news/assets/teaser-*/
+videos/news/output/preview-*.jpg
