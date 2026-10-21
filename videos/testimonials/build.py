@@ -2,6 +2,7 @@
 # חיתוך רק בתוך שתיקות (≥0.4 שנ', מקוצרות ל-0.18 שנ'), זום מתחלף עדין להסתרת החיתוכים,
 # מעבר רך בין הדוברים, ניקוי רעשים, איזון עוצמות ומוזיקה עדינה ברקע.
 import subprocess, sys
+VERTICAL = '--tiktok' in sys.argv  # גרסה אנכית 1080x1920
 from PIL import Image
 U = '/root/.claude/uploads/c00d9c52-64e7-5c47-9b43-a60e46d2a6ce/'
 CLIPS = {
@@ -14,14 +15,15 @@ CLIPS = {
 ORDER = ['man', 'woman']
 XF = 0.6          # מעבר בין הדוברים
 END_CARD = 3.0
-W, H = 1920, 1080
+W, H = (1080, 1920) if VERTICAL else (1920, 1080)
 
 # כרטיס סיום: לוגו היחידה על רקע לבן
 img = Image.new('RGB', (W, H), 'white')
 logo = Image.open('../../brochures/assets/logo-full.png').convert('RGBA')
-logo.thumbnail((1100, 400))
+logo.thumbnail((900 if VERTICAL else 1100, 400))
 img.paste(logo, ((W - logo.width) // 2, (H - logo.height) // 2), logo)
-img.save('endcard.png')
+EC = 'endcard-v.png' if VERTICAL else 'endcard.png'
+img.save(EC)
 
 inputs, fc, people = [], [], []
 for pi, name in enumerate(ORDER):
@@ -31,7 +33,15 @@ for pi, name in enumerate(ORDER):
     for si, (a, b) in enumerate(segs):
         z = 1.0 if si % 2 == 0 else 1.07
         sw, sh = int(W * z) // 2 * 2, int(H * z) // 2 * 2
-        fc.append(f'[{pi}:v]trim={a}:{b},setpts=PTS-STARTPTS,fps=30,scale={sw}:{sh}:flags=lanczos,crop={W}:{H},setsar=1,format=yuv420p,settb=1/30[v{pi}_{si}]')
+        if VERTICAL:
+            # מרכז: חיתוך 3:4 של הדובר; למעלה ולמטה: אותו צילום מטושטש וכהה
+            cw = 540 / z
+            fc.append(f'[{pi}:v]trim={a}:{b},setpts=PTS-STARTPTS,fps=30,split[sa{pi}_{si}][sb{pi}_{si}]')
+            fc.append(f'[sa{pi}_{si}]crop={cw:.0f}:{576 / z:.0f}:(iw-{cw:.0f})/2:(ih-{576 / z:.0f})/2,scale=1080:1152:flags=lanczos,unsharp=5:5:0.5,setsar=1[fg{pi}_{si}]')
+            fc.append(f'[sb{pi}_{si}]scale=-2:1920,crop=1080:1920,boxblur=28:2,eq=brightness=-0.18:saturation=0.9,setsar=1[bg{pi}_{si}]')
+            fc.append(f'[bg{pi}_{si}][fg{pi}_{si}]overlay=0:384,format=yuv420p,settb=1/30[v{pi}_{si}]')
+        else:
+            fc.append(f'[{pi}:v]trim={a}:{b},setpts=PTS-STARTPTS,fps=30,scale={sw}:{sh}:flags=lanczos,crop={W}:{H},setsar=1,format=yuv420p,settb=1/30[v{pi}_{si}]')
         fc.append(f'[{pi}:a]atrim={a}:{b},asetpts=PTS-STARTPTS,afade=t=in:d=0.03,afade=t=out:st={b - a - 0.04:.2f}:d=0.04[a{pi}_{si}]')
         labels.append(f'[v{pi}_{si}][a{pi}_{si}]')
     fc.append(f'{"".join(labels)}concat=n={len(segs)}:v=1:a=1[pvc{pi}][pa_raw{pi}]')
@@ -42,7 +52,7 @@ for pi, name in enumerate(ORDER):
 
 d0, d1 = people
 total = d0 + d1 - XF
-inputs += ['-loop', '1', '-t', str(END_CARD + 1), '-i', 'endcard.png']
+inputs += ['-loop', '1', '-t', str(END_CARD + 1), '-i', EC]
 ei = len(ORDER)
 fc.append(f'[pv0][pv1]xfade=transition=fade:duration={XF}:offset={d0 - XF:.3f}[vp]')
 fc.append(f'[pa0][pa1]acrossfade=d={XF}[speech]')
@@ -58,6 +68,6 @@ fc.append(f'[speech]apad=pad_dur={END_CARD + 1}[sp]')
 fc.append('[sp][mus]amix=inputs=2:duration=shortest:normalize=0,alimiter=limit=0.95[a]')
 cmd = ['ffmpeg', '-y', '-v', 'error', *inputs, '-filter_complex', ';'.join(fc), '-map', '[v]', '-map', '[a]',
        '-t', f'{full:.2f}', '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-pix_fmt', 'yuv420p',
-       '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', 'output/testimonials.mp4']
+       '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', 'output/testimonials-tiktok.mp4' if VERTICAL else 'output/testimonials.mp4']
 subprocess.run(cmd, check=True)
-print('✓ output/testimonials.mp4', round(full, 1), 's')
+print('✓', cmd[-1], round(full, 1), 's')
