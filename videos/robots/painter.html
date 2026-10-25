@@ -72,29 +72,29 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
   <div class="layer" id="Lv"><img class="full" id="lv"><div class="shade"></div>
     <div class="scan" id="lscan" style="height:240px"></div>
     <div class="live" id="lbadge"><i id="ldot"></i>TIMELAPSE</div>
-    <div class="slam" id="hk1" style="top:640px;font-size:150px">רובוט אחד</div>
-    <div class="slam o" id="hk2" style="top:820px;font-size:190px">שעה אחת</div>
-    <div id="clock"><div class="t" id="ct">00:00</div><div class="l">דקות עבודה</div></div>
+    <div class="slam" id="hk1" style="top:640px;font-size:150px">קיר לשפכטל?</div>
+    <div class="slam o" id="hk2" style="top:820px;font-size:190px">תנו לרובוט</div>
+    <div id="clock"><div class="t" id="ct" style="font-size:100px;direction:rtl">35 מ״ר ב-30 דקות</div></div>
     <div class="bens" id="ben" style="right:0;left:0;top:1380px;align-items:center"></div>
     <div id="prog"><i id="pg"></i></div>
   </div>
   <div class="layer" id="Lph"><div class="grid"></div>
     <div class="card"><img id="rbp" src="assets/yellow-bp.png"><img class="photo" id="rph" src="assets/yellow.jpg"><div class="scan" id="rscan"></div></div>
     <div class="kind" id="rk" style="top:1330px;font-size:54px">רובוט</div>
-    <div class="slam" id="rw" style="top:1400px;font-size:150px">לצביעת קירות</div>
+    <div class="slam" id="rw" style="top:1400px;font-size:150px">לשפכטל קירות</div>
   </div>
   <div class="layer" id="Lba">
     <div class="ba"><img src="assets/paint-after.jpg"></div>
     <div class="ba" id="bab"><img src="assets/paint-before.jpg"></div>
     <div id="baline"></div><div class="shade"></div>
     <div class="tag" id="tb" style="right:60px;background:rgba(7,22,42,.85)">לפני</div>
-    <div class="tag" id="ta" style="left:60px;background:var(--orange)">אחרי</div>
-    <div class="slam" id="bat" style="top:1450px;font-size:120px">שעה <span class="o">אחת</span> של עבודה</div>
+    <div class="tag" id="ta" style="left:60px;background:var(--orange)">תוך כדי</div>
+    <div class="slam" id="bat" style="top:1450px;font-size:120px">רואים את <span class="o">ההבדל?</span></div>
   </div>
   <div class="layer" id="Lo"><div class="grid"></div>
     <div style="position:absolute;left:0;right:0;top:700px;text-align:center">
       <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
-      <div id="os" style="font-size:66px;font-weight:800;margin-top:30px">הרובוט <span class="o">צובע</span> בשבילכם</div>
+      <div id="os" style="font-size:66px;font-weight:800;margin-top:30px">שפכטל <span class="o">ברובוט</span></div>
       <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
       <div id="ol" style="margin-top:240px"><span class="plate"><img src="assets/logos.png"></span></div>
     </div>
@@ -109,10 +109,10 @@ const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
 const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
 const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
-// טיים-לפס של שעת עבודה (27 שנ' מקור -> 12 שנ'), מתחלף בין שוט רחב לתקריב על הרובוט
+// טיים-לפס של רובוט השפכטל (35 מ״ר ב-30 דקות) מתוך העבודה (שנ' 3–24.5 מהמקור -> 12 שנ'; הצילום קטוע, בלי טענות על זמן או סיום), מתחלף בין שוט רחב לתקריב על הרובוט
 const LIVE = [
-  ['wide', 'צובע את הקיר לבד'],
-  ['close', 'שכבה אחידה מלמעלה עד למטה'],
+  ['wide', 'מורח שפכטל לבד'],
+  ['close', 'שכבה אחידה וחלקה'],
   ['wide', 'העובד רק מפקח'],
   ['close', 'חוסך זמן וכוח אדם'],
 ];
@@ -169,11 +169,8 @@ window.render = async (t) => {
     $('lv').style.transform = `scale(${(shot === 'close' ? 1.7 : 1.04) + k * 0.025})`;
     $('lscan').style.top = `${((k * 900) % 2400) - 240}px`;
     $('lbadge').style.opacity = 1; $('ldot').style.opacity = f % 30 < 18 ? 1 : 0.25;
-    // שעון: 00:00 -> 60:00 (דקות:שניות של השעה)
-    const sec = Math.min(3600, Math.round(T / (LIVE.length * CUT) * 3600));
-    $('ct').textContent = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
     const ck = ease(T / 0.4); $('clock').style.opacity = ck; $('clock').style.transform = `translateY(${(1 - ck) * -60}px)`;
-    $('prog').style.opacity = 1; $('pg').style.width = `${clamp(T / (LIVE.length * CUT)) * 100}%`;
+    
     const b = $('ben');
     if (b.dataset.i !== String(i)) { b.dataset.i = i; b.innerHTML = `<div class="ben" style="font-size:58px;padding:18px 34px"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:56px;height:56px"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>${txt}</div>`; }
     b.style.opacity = 1;
