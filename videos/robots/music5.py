@@ -9,6 +9,8 @@ BPM = 132
 BEAT = 60 / BPM
 DUR = float(sys.argv[1]) if len(sys.argv) > 1 else 24.0
 OUT = sys.argv[2] if len(sys.argv) > 2 else 'assets/music-painter.wav'
+# soft: גיטרה נקייה יותר, תופים רכים ועוצמה כללית נמוכה (לבקשה "פחות רועש")
+SOFT = len(sys.argv) > 3 and sys.argv[3] == 'soft'
 END = DUR - 3.0
 N = int(SR * DUR)
 out = np.zeros(N)
@@ -44,9 +46,9 @@ def power(root, length, mute=False):
         for det in (0.997, 1.003):
             ph = 2 * np.pi * f * det * t
             s = s + (2 * ((ph / (2 * np.pi)) % 1) - 1)   # סאו
-    s = np.tanh(s * (2.5 if mute else 4.0))
+    s = np.tanh(s * ((1.2 if mute else 1.6) if SOFT else (2.5 if mute else 4.0)))
     e = env(n, 0.003, 22 if mute else 1.2)
-    return lowpass(s * e, 0.22 if mute else 0.35)
+    return lowpass(s * e, (0.10 if mute else 0.14) if SOFT else (0.22 if mute else 0.35))
 
 
 def kick():
@@ -101,12 +103,12 @@ while bar * BAR < END:
     if bar >= 1:
         for q in range(4):
             at = a + q * BEAT
-            place(kick(), at, 0.85 if q in (0, 2) else 0.0)
-            if q in (1, 3): place(snare(), at, 0.55)
+            place(kick(), at, (0.6 if SOFT else 0.85) if q in (0, 2) else 0.0)
+            if q in (1, 3): place(snare(), at, 0.3 if SOFT else 0.55)
             place(hat(q == 3 and bar % 2), at + E8, 0.2)
             place(hat(), at, 0.14)
         place(kick(), a + 2.5 * BEAT, 0.6)
-        if bar % 4 == 1: place(crash(), a, 0.35)
+        if bar % 4 == 1: place(crash(), a, 0.15 if SOFT else 0.35)
     if bar == 0:
         # מילוי תופים קצר בסוף בר הפתיחה במקום מכה בהתחלה
         for k in range(4): place(snare(), a + 3 * BEAT + k * BEAT / 4, 0.18 + 0.08 * k)
@@ -115,12 +117,17 @@ while bar * BAR < END:
 # סיום: אקורד E5 ארוך + קראש
 place(power(82.41, 2.6), END, 0.4)
 place(bass(82.41, 2.0), END, 0.5)
-place(kick(), END, 0.9); place(crash(), END, 0.5)
+place(kick(), END, 0.6 if SOFT else 0.9); place(crash(), END, 0.2 if SOFT else 0.5)
 
 t_all = np.arange(N) / SR
 out *= np.clip((DUR - t_all) / 1.4, 0, 1) * np.clip(t_all / 0.5, 0, 1)
-out = np.tanh(out * 1.3)
-out /= np.max(np.abs(out)) * 1.05
+if SOFT:
+    # תופים וגיטרות כבר רכים; מנרמלים לשיא נמוך (בערך ‎-9dB) בלי דחיסה
+    out = lowpass(out, 0.5)
+    out = out / np.max(np.abs(out)) * 0.35
+else:
+    out = np.tanh(out * 1.3)
+    out /= np.max(np.abs(out)) * 1.05
 stereo = np.stack([out, np.roll(out, 200)], axis=1)
 with wave.open(OUT, 'wb') as w:
     w.setnchannels(2)
