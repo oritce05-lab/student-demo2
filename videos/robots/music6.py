@@ -99,7 +99,7 @@ place(bass(RT[0], 1.6), END, 0.6); place(bell(784.0, 2.0), END, 0.2)
 
 t_all = np.arange(N) / SR
 out *= np.clip((DUR - t_all) / 1.5, 0, 1) * np.clip(t_all / 0.5, 0, 1)
-out = out / np.max(np.abs(out)) * 0.8       # עוצמה מתונה (בערך ‎-19 LUFS), בלי דחיסה
+out = out / np.max(np.abs(out)) * 0.32      # מוזיקת רקע שקטה (בערך ‎-27 LUFS)
 stereo = np.stack([out, np.roll(out, 160)], axis=1)
 with wave.open(OUT, 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
