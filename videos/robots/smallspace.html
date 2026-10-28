@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #07162a; --blue: #2f8cff; --orange: #ff7a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; font-family: 'Heebo', sans-serif; color: #fff; }
+#stage { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; opacity: 0; }
+.full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.grid { position: absolute; inset: 0; background:
+  radial-gradient(ellipse at 50% 35%, rgba(47, 140, 255, .28), transparent 60%),
+  linear-gradient(rgba(90, 200, 255, .07) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(90, 200, 255, .07) 1px, transparent 1px), var(--navy);
+  background-size: auto, 54px 54px, 54px 54px, auto; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 30%, transparent 60%, rgba(0, 0, 0, .65)); }
+.vign { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, .65)); }
+.slam { position: absolute; left: 0; right: 0; text-align: center; font-weight: 900; line-height: .95; letter-spacing: -2px; }
+.o { color: var(--orange); }
+.hudbox { position: absolute; --c: var(--orange); --l: 60px; --w: 5px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat; }
+.hudbox .lbl { position: absolute; top: -58px; right: 0; direction: ltr; background: var(--orange); color: #000; font: 800 28px/1 'Heebo'; letter-spacing: 3px; padding: 10px 14px; }
+.scan { position: absolute; left: 0; right: 0; height: 200px; background: linear-gradient(transparent, rgba(90, 200, 255, .25)); border-bottom: 3px solid rgba(140, 220, 255, .8); }
+.card { position: absolute; left: 60px; top: 470px; width: 960px; height: 820px; }
+.card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.card .photo { border-radius: 26px; }
+.idx { position: absolute; top: 210px; right: 70px; direction: ltr; font-weight: 900; font-size: 210px; line-height: 1; color: transparent; -webkit-text-stroke: 4px rgba(90, 200, 255, .55); }
+.live { position: absolute; top: 140px; left: 60px; direction: ltr; display: flex; align-items: center; gap: 16px; background: #e8243c; padding: 14px 26px; border-radius: 10px; font: 900 44px/1 'Heebo'; letter-spacing: 5px; }
+.live i { width: 22px; height: 22px; border-radius: 50%; background: #fff; }
+.pip { position: absolute; right: 50px; bottom: 330px; width: 330px; height: 260px; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); border: 4px solid var(--orange); }
+.pip img { width: 100%; height: 100%; object-fit: contain; }
+.pname { position: absolute; right: 50px; bottom: 230px; width: 330px; text-align: center; font-size: 56px; font-weight: 900; text-shadow: 0 4px 20px rgba(0, 0, 0, .8); }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+#grain { position: absolute; inset: -200px; background: url('assets/grain.png'); opacity: .5; pointer-events: none; mix-blend-mode: overlay; }
+.wordmark { direction: ltr; display: flex; align-items: center; justify-content: center; gap: 26px; font-weight: 900; font-size: 150px; letter-spacing: -3px; }
+.wordmark .t { color: var(--blue); }
+.plate { background: #fff; border-radius: 22px; padding: 22px 40px; display: inline-block; }
+.plate img { height: 78px; display: block; }
+.url { direction: ltr; display: inline-block; border: 3px solid var(--orange); border-radius: 999px; padding: 16px 48px; font-size: 48px; font-weight: 800; }
+.tiles { position: absolute; left: 60px; right: 60px; top: 560px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tiles div { background: #fff; border-radius: 22px; height: 330px; overflow: hidden; }
+.tiles img { width: 100%; height: 100%; object-fit: contain; }
+.kind { position: absolute; left: 0; right: 0; text-align: center; font-weight: 800; color: var(--orange); letter-spacing: 2px; }
+.bens { position: absolute; display: flex; flex-direction: column; gap: 14px; z-index: 3; }
+.ben { display: inline-flex; align-items: center; gap: 16px; background: rgba(7, 22, 42, .88); border: 2px solid rgba(90, 200, 255, .5); border-inline-start: 8px solid var(--orange); border-radius: 16px; font-weight: 900; box-shadow: 0 14px 40px rgba(0, 0, 0, .5); }
+.ben svg { stroke: var(--orange); flex-shrink: 0; }
+.card { overflow: hidden; border-radius: 26px; }
+.sub { position: absolute; left: 0; right: 0; text-align: center; font-weight: 800; font-size: 64px; text-shadow: 0 6px 24px rgba(0, 0, 0, .85); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="Lv"><img class="full" id="lv"><div class="shade"></div>
+    <div class="scan" id="lscan" style="height:240px"></div>
+    <div class="live" id="lbadge"><i id="ldot"></i>LIVE</div>
+    <div class="slam" id="hk1" style="top:640px;font-size:160px">חלל קטן?</div>
+    <div class="slam o" id="hk2" style="top:830px;font-size:190px">אין בעיה</div>
+    <div class="kind" id="tk" style="top:600px;font-size:60px;text-shadow:0 4px 20px rgba(0,0,0,.9)">רובוט קומפקטי</div>
+    <div class="slam" id="tw" style="top:690px;font-size:130px">לעבודות גמר</div>
+    <div class="slam o" id="tw2" style="top:840px;font-size:120px">בחללים קטנים</div>
+    <div class="bens" id="ben" style="right:0;left:0;top:1380px;align-items:center"></div>
+  </div>
+  <div class="layer" id="Lo"><div class="grid"></div>
+    <div style="position:absolute;left:0;right:0;top:700px;text-align:center">
+      <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
+      <div id="os" style="font-size:66px;font-weight:800;margin-top:30px">רובוטים <span class="o">לחללים קטנים</span></div>
+      <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
+      <div id="ol" style="margin-top:240px"><span class="plate"><img src="assets/logos.png"></span></div>
+    </div>
+  </div>
+  <div class="vign"></div><div id="grain"></div><div id="flash"></div>
+</div>
+<script>
+const FPS = 30;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
+// רובוט קומפקטי לחללים קטנים – יתרונות מקטלוג המוצרים (בלי מספרי דגמים) ומהצילומים
+// [תיקיית פריימים, מספר פריימים, טקסט]
+const LIVE = [
+  ['m2', 97, 'עובר בדלתות ובמעברים צרים'],
+  ['m3', 96, 'שליטה מרחוק באפליקציה'],
+  ['m4', 96, 'נכנס למעלית בקלות'],
+  ['m5', 96, 'קל ונייד, 80 ק״ג בלבד'],
+  ['m6', 96, 'ניווט LiDAR חכם, עוקף מכשולים'],
+];
+const HOOK = 2.4, TITLE = 2.8, CUT = 3.0, OUTRO = 3.5;
+const LIVE_AT = HOOK + TITLE, OUT_AT = LIVE_AT + LIVE.length * CUT, DURATION = OUT_AT + OUTRO;
+const CUTS = [HOOK, LIVE_AT, ...LIVE.map((_, i) => LIVE_AT + i * CUT).slice(1), OUT_AT];
+const frame = (c, n, k) => `assets/clips-hd/${c}/${String(clamp(Math.floor(k * FPS) + 1, 1, n)).padStart(4, '0')}.jpg`;
+
+function slam(el, t, at, out = 1e9) {
+  const k = t - at;
+  if (k < 0 || t > out) { el.style.opacity = 0; return; }
+  el.style.opacity = clamp(k / 0.06) * clamp((out - t) / 0.15);
+  const g = k < 0.3 ? (1 - k / 0.3) * (6 + rnd(Math.floor(t * FPS)) * 16) : 0;
+  el.style.textShadow = g ? `${g}px 0 rgba(255,40,110,.85), ${-g}px 0 rgba(40,240,255,.85)` : '0 6px 30px rgba(0,0,0,.7)';
+  el.style.transform = `scale(${1.8 - 0.8 * back(k / 0.22)})`;
+}
+
+window.render = async (t) => {
+  const f = Math.floor(t * FPS);
+  for (const id of ['Lv', 'Lo']) $(id).style.opacity = 0;
+  for (const id of ['hk1', 'hk2', 'tk', 'tw', 'tw2']) $(id).style.opacity = 0;
+  $('ben').style.opacity = 0;
+
+  if (t < LIVE_AT) {
+    $('Lv').style.opacity = 1;
+    const title = t >= HOOK, k = title ? t - HOOK : t;
+    await setImg($('lv'), frame(title ? 'm1' : 'm0', title ? 90 : 82, k));
+    $('lv').style.transform = `scale(${1.15 - k * 0.04})`;
+    $('lv').style.filter = 'brightness(.62)';
+    $('lbadge').style.opacity = 0;
+    if (!title) { slam($('hk1'), t, 0.1); slam($('hk2'), t, 0.9); }
+    else {
+      const kk = ease((k - 0.1) / 0.3); $('tk').style.opacity = kk; $('tk').style.transform = `translateY(${(1 - kk) * 30}px)`;
+      slam($('tw'), k, 0.3, TITLE - 0.05); slam($('tw2'), k, 0.8, TITLE - 0.05);
+    }
+  }
+
+  if (t >= LIVE_AT && t < OUT_AT) {
+    const i = Math.floor((t - LIVE_AT) / CUT), k = t - LIVE_AT - i * CUT, [clip, n, txt] = LIVE[i];
+    $('Lv').style.opacity = 1;
+    await setImg($('lv'), frame(clip, n, k));
+    $('lv').style.transform = `scale(${1.04 + k * 0.025})`;
+    $('lv').style.filter = k < 0.1 ? 'contrast(1.3) saturate(1.6)' : 'none';
+    $('lscan').style.top = `${((k * 900) % 2400) - 240}px`;
+    $('lbadge').style.opacity = 1; $('ldot').style.opacity = f % 30 < 18 ? 1 : 0.25;
+    const b = $('ben');
+    if (b.dataset.i !== String(i)) { b.dataset.i = i; b.innerHTML = `<div class="ben" style="font-size:58px;padding:18px 34px"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:56px;height:56px"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>${txt}</div>`; }
+    b.style.opacity = 1;
+    slam(b.firstElementChild, k, 0.25, CUT - 0.05);
+  }
+
+  if (t >= OUT_AT) {
+    $('Lo').style.opacity = clamp((DURATION - t) / 0.6);
+    slam($('wm'), t, OUT_AT);
+    for (const [id, at] of [['os', 0.6], ['ou', 1.2], ['ol', 1.8]]) {
+      const kk = ease((t - OUT_AT - at) / 0.4); $(id).style.opacity = kk; $(id).style.transform = `translateY(${(1 - kk) * 40}px)`;
+    }
+  }
+  let fl = 0;
+  for (const c of [...CUTS, 0.1, 0.9]) { const d = t - c; if (d >= 0 && d < 0.15) fl = Math.max(fl, (1 - d / 0.15) * 0.8); }
+  $('flash').style.opacity = fl;
+  let sh = 0;
+  for (const c of [0.1, 0.9, HOOK + 0.3, OUT_AT, ...LIVE.map((_, i) => LIVE_AT + i * CUT + 0.25)]) { const d = t - c; if (d >= 0 && d < 0.35) sh = Math.max(sh, (1 - d / 0.35) * 14); }
+  $('stage').style.transform = sh ? `translate(${(rnd(f) - .5) * sh}px, ${(rnd(f + 7) - .5) * sh}px)` : 'none';
+  $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
+};
+window.DURATION = DURATION;
+window.CUTS = CUTS;
+window.SIZE = [1080, 1920];
+</script>
+</body>
+</html>
