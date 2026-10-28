@@ -36,12 +36,14 @@ def _clean(value: Any) -> Any:
     return value
 
 
-def _history(symbol: str, period: str = "1y", interval: str = "1d") -> pd.DataFrame:
+def _history(symbol: str, period: str = "1y", interval: str = "1d", auto_adjust: bool = True) -> pd.DataFrame:
+    """Price bars. auto_adjust=True folds dividends into past prices (right for returns);
+    False keeps the traded prices (right for "price moved X% today")."""
     if period not in VALID_PERIODS:
         raise ToolError(f"Invalid period '{period}'. Use one of: {', '.join(VALID_PERIODS)}")
     if interval not in VALID_INTERVALS:
         raise ToolError(f"Invalid interval '{interval}'. Use one of: {', '.join(VALID_INTERVALS)}")
-    df = yf.Ticker(symbol).history(period=period, interval=interval, auto_adjust=True)
+    df = yf.Ticker(symbol).history(period=period, interval=interval, auto_adjust=auto_adjust)
     if df.empty:
         raise ToolError(f"No price data found for '{symbol}'. Check the ticker (TASE stocks end with .TA).")
     return df

@@ -276,6 +276,8 @@ IMPORT_COLUMNS = {
     "quantity": ["כמות", "יתרה", "quantity", "shares", "units"],
     "cost_ils": ["עלות", "שווי עלות", "עלות מתואמת", "cost", "cost basis"],
     "value_ils": ["שווי שוק", "שווי", "שווי אחזקה", "market value", "value"],
+    "avg_price": ["שער קנייה ממוצע", "מחיר קנייה ממוצע", "שער עלות", "avg price", "average price", "avg_price"],
+    "purchase_date": ["תאריך קנייה", "תאריך רכישה", "purchase date", "purchase_date", "date bought"],
 }
 
 
@@ -318,6 +320,15 @@ def _number(value) -> float | None:
         return None
 
 
+def _date(value) -> str | None:
+    if value is None or str(value).strip().lower() in ("", "nan", "none"):
+        return None
+    try:
+        return market_data.pd.to_datetime(str(value).strip(), dayfirst=True).strftime("%Y-%m-%d")
+    except (ValueError, TypeError):
+        return None
+
+
 def import_holdings_file(path: str) -> dict:
     """Replace current holdings with a snapshot exported from the broker (CSV or Excel)."""
     file = Path(path).expanduser()
@@ -345,6 +356,9 @@ def import_holdings_file(path: str) -> dict:
             "name": name if name.lower() != "nan" else None,
             "security_id": security_id if security_id.lower() != "nan" else None,
             "last_value_ils": _number(row[found["value_ils"]]) if found["value_ils"] else None,
+            # Average purchase price in the security's own currency (agorot for TASE), when the export has it.
+            "avg_price": _number(row[found["avg_price"]]) if found["avg_price"] else None,
+            "purchase_date": _date(row[found["purchase_date"]]) if found["purchase_date"] else None,
         }
 
     portfolio = load_portfolio()

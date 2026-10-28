@@ -12,12 +12,52 @@ from datetime import date
 import anthropic
 
 from . import market_data, portfolio
+from .config import MODEL
 from .market_data import ToolError
 
-TOOLS = {**market_data.TOOLS, **portfolio.TOOLS}
-TOOL_DEFINITIONS = [*market_data.TOOL_DEFINITIONS, *portfolio.TOOL_DEFINITIONS]
 
-MODEL = "claude-opus-5-5"
+
+def get_portfolio_analysis() -> dict:
+    """Live valuation in ILS and USD, returns since purchase, and market/currency/sector exposure."""
+    from .valuation import exposures, value_portfolio
+
+    valuation = value_portfolio()
+    keep = ("symbol", "name", "market", "quantity", "price", "currency", "change_pct", "verified", "as_of",
+            "value_ils", "value_usd", "weight_pct", "return_native_pct", "return_ils_pct", "gain_ils", "sector")
+    return {
+        **{k: valuation[k] for k in ("as_of", "usd_ils", "total_value_ils", "total_value_usd", "cash_ils",
+                                     "limitations")},
+        "positions": [{k: market_data._clean(p.get(k)) for k in keep} for p in valuation["positions"]],
+        "exposures": exposures(valuation),
+    }
+
+
+def get_alert_log(limit: int = 30) -> dict:
+    from .monitor import load_state
+
+    state = load_state()
+    return {"recent_alerts": state["log"][-limit:], "pending_events": [e["title"] for e in state["pending"]]}
+
+
+TOOLS = {**market_data.TOOLS, **portfolio.TOOLS,
+         "get_portfolio_analysis": get_portfolio_analysis, "get_alert_log": get_alert_log}
+TOOL_DEFINITIONS = [
+    *market_data.TOOL_DEFINITIONS,
+    *portfolio.TOOL_DEFINITIONS,
+    {
+        "name": "get_portfolio_analysis",
+        "description": "Full live analysis of the user's portfolio: value in ILS and USD, today's moves (verified or "
+                       "not), returns since purchase in original currency and in ILS, and exposure by market, "
+                       "currency and sector, plus data limitations.",
+        "input_schema": {"type": "object", "properties": {}},
+    },
+    {
+        "name": "get_alert_log",
+        "description": "Alerts the monitoring system sent recently (price moves, SEC filings, risk) and queued events.",
+        "input_schema": {"type": "object", "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 200}}},
+    },
+]
+
 
 SYSTEM_PROMPT = """You are an experienced, fee-conscious investment advisor working one-on-one with a private investor in \
 Israel. You know the investor's situation (see the profile below and the get_profile tool) and give concrete, \
@@ -53,6 +93,9 @@ Ask how much uninvested cash is in the account and record it as a deposit if the
 - For "what should I buy this month?": check the profile and portfolio, run plan_monthly_purchase, and present the \
 orders as a short checklist the user can execute at their broker, with each ticker and its full fund name.
 - Record trades and deposits with record_transaction only when the user says they actually did them.
+- When explaining portfolio data, keep daily, weekly and since-purchase changes apart, and returns in the original \
+currency apart from returns in shekels after the USD/ILS move. If cost data is missing, say the profit/loss cannot be \
+computed rather than estimating it. Label facts, assessments and forecasts.
 - Fetch fresh data with tools before quoting prices or figures, and say where each figure came from. TASE tickers end \
 with ".TA" and are quoted in agorot.
 - You can also analyze individual stocks with the market-data tools; present bullish and bearish points and say \
@@ -135,10 +178,6 @@ class StockAgent:
 
 
 def main() -> None:
-    if len(sys.argv) > 2 and sys.argv[1] == "import":
-        content, is_error = run_tool("import_holdings_file", {"path": sys.argv[2]})
-        print(content)
-        sys.exit(1 if is_error else 0)
     agent = StockAgent()
     print("יועץ השקעות AI | Investment Advisor  (exit / יציאה to quit)\n")
     if len(sys.argv) > 1:
