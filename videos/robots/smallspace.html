@@ -68,6 +68,9 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
     <div class="kind" id="tk" style="top:600px;font-size:60px;text-shadow:0 4px 20px rgba(0,0,0,.9)">רובוט קומפקטי</div>
     <div class="slam" id="tw" style="top:690px;font-size:130px">לעבודות גמר</div>
     <div class="slam o" id="tw2" style="top:840px;font-size:120px">בחללים קטנים</div>
+    <div class="kind" id="ak" style="top:1520px;font-size:50px;left:auto;right:auto;width:100%"><span style="background:rgba(7,22,42,.88);border-inline-start:8px solid var(--orange);border-radius:14px;padding:12px 30px;color:#fff"></span></div>
+    <div class="slam" id="aw" style="top:1320px;font-size:170px"></div>
+    <div class="slam" id="a4" style="top:700px;font-size:150px">4 פעולות<br><span class="o">ברובוט 1</span></div>
     <div class="bens" id="ben" style="right:0;left:0;top:1380px;align-items:center"></div>
   </div>
   <div class="layer" id="Lo"><div class="grid"></div>
@@ -93,13 +96,19 @@ async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = 
 const LIVE = [
   ['m2', 97, 'עובר בדלתות ובמעברים צרים'],
   ['m3', 96, 'שליטה מרחוק באפליקציה'],
-  ['m4', 96, 'נכנס למעלית בקלות'],
   ['m5', 96, 'קל ונייד, 80 ק״ג בלבד'],
   ['m6', 96, 'ניווט LiDAR חכם, עוקף מכשולים'],
 ];
-const HOOK = 2.4, TITLE = 2.8, CUT = 3.0, OUTRO = 3.5;
-const LIVE_AT = HOOK + TITLE, OUT_AT = LIVE_AT + LIVE.length * CUT, DURATION = OUT_AT + OUTRO;
-const CUTS = [HOOK, LIVE_AT, ...LIVE.map((_, i) => LIVE_AT + i * CUT).slice(1), OUT_AT];
+// מה הרובוט עושה: 4 פעולות, כל אחת עם צילום עבודה אמיתי (צבע – תמונת הקטלוג)
+const ACTS = [
+  ['x1', 80, 'שפכטל', 'מורח שכבה אחידה וחלקה'],
+  ['x2', 92, 'טיח', 'מיישם על הקיר בדיוק'],
+  ['x3', 93, 'ליטוש', 'גימור חלק ומושלם'],
+  ['photo', 0, 'צבע', 'צובע את הקיר לבד'],
+];
+const HOOK = 2.4, TITLE = 2.8, A_INTRO = 1.4, ACT = 1.8, CUT = 3.0, OUTRO = 3.5;
+const ACTS_AT = HOOK + TITLE, LIVE_AT = ACTS_AT + A_INTRO + ACTS.length * ACT, OUT_AT = LIVE_AT + LIVE.length * CUT, DURATION = OUT_AT + OUTRO;
+const CUTS = [HOOK, ACTS_AT, ...ACTS.map((_, i) => ACTS_AT + A_INTRO + i * ACT), LIVE_AT, ...LIVE.map((_, i) => LIVE_AT + i * CUT).slice(1), OUT_AT];
 const frame = (c, n, k) => `assets/clips-hd/${c}/${String(clamp(Math.floor(k * FPS) + 1, 1, n)).padStart(4, '0')}.jpg`;
 
 function slam(el, t, at, out = 1e9) {
@@ -114,10 +123,10 @@ function slam(el, t, at, out = 1e9) {
 window.render = async (t) => {
   const f = Math.floor(t * FPS);
   for (const id of ['Lv', 'Lo']) $(id).style.opacity = 0;
-  for (const id of ['hk1', 'hk2', 'tk', 'tw', 'tw2']) $(id).style.opacity = 0;
+  for (const id of ['hk1', 'hk2', 'tk', 'tw', 'tw2', 'ak', 'aw', 'a4']) $(id).style.opacity = 0;
   $('ben').style.opacity = 0;
 
-  if (t < LIVE_AT) {
+  if (t < ACTS_AT) {
     $('Lv').style.opacity = 1;
     const title = t >= HOOK, k = title ? t - HOOK : t;
     await setImg($('lv'), frame(title ? 'm1' : 'm0', title ? 90 : 82, k));
@@ -130,6 +139,25 @@ window.render = async (t) => {
       slam($('tw'), k, 0.3, TITLE - 0.05); slam($('tw2'), k, 0.8, TITLE - 0.05);
     }
   }
+
+  if (t >= ACTS_AT && t < LIVE_AT) {
+    const T = t - ACTS_AT;
+    $('Lv').style.opacity = 1; $('lbadge').style.opacity = 0;
+    if (T < A_INTRO) {
+      await setImg($('lv'), frame('x1', 80, T));
+      $('lv').style.transform = `scale(${1.1 - T * 0.03})`; $('lv').style.filter = 'brightness(.45)';
+      slam($('a4'), T, 0.05, A_INTRO - 0.03);
+    } else {
+      const i = Math.floor((T - A_INTRO) / ACT), k = T - A_INTRO - i * ACT, [c, n, name, sub] = ACTS[i];
+      await setImg($('lv'), c === 'photo' ? 'assets/yellow.jpg' : frame(c, n, k));
+      $('lv').style.transform = c === 'photo' ? `scale(${1.15 + k * 0.06})` : `scale(${1.04 + k * 0.03})`;
+      $('lv').style.transformOrigin = c === 'photo' ? '72% 35%' : '50% 50%';
+      $('lv').style.filter = k < 0.1 ? 'contrast(1.3) saturate(1.6)' : 'brightness(.92)';
+      $('ak').firstElementChild.textContent = `${i + 1}/4 · ${sub}`;
+      const kk = ease((k - 0.35) / 0.3); $('ak').style.opacity = kk; $('ak').style.transform = `translateY(${(1 - kk) * 30}px)`;
+      $('aw').textContent = name; slam($('aw'), k, 0.05, ACT - 0.03);
+    }
+  } else $('lv').style.transformOrigin = '50% 50%';
 
   if (t >= LIVE_AT && t < OUT_AT) {
     const i = Math.floor((t - LIVE_AT) / CUT), k = t - LIVE_AT - i * CUT, [clip, n, txt] = LIVE[i];
