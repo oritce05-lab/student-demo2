@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #07162a; --blue: #2f8cff; --orange: #ff7a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; font-family: 'Heebo', sans-serif; color: #fff; }
+#stage { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; opacity: 0; }
+.full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.grid { position: absolute; inset: 0; background:
+  radial-gradient(ellipse at 50% 35%, rgba(47, 140, 255, .28), transparent 60%),
+  linear-gradient(rgba(90, 200, 255, .07) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(90, 200, 255, .07) 1px, transparent 1px), var(--navy);
+  background-size: auto, 54px 54px, 54px 54px, auto; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 30%, transparent 60%, rgba(0, 0, 0, .65)); }
+.vign { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, .65)); }
+.slam { position: absolute; left: 0; right: 0; text-align: center; font-weight: 900; line-height: .95; letter-spacing: -2px; }
+.o { color: var(--orange); }
+.hudbox { position: absolute; --c: var(--orange); --l: 60px; --w: 5px;
+  background:
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat; }
+.hudbox .lbl { position: absolute; top: -58px; right: 0; direction: ltr; background: var(--orange); color: #000; font: 800 28px/1 'Heebo'; letter-spacing: 3px; padding: 10px 14px; }
+.scan { position: absolute; left: 0; right: 0; height: 200px; background: linear-gradient(transparent, rgba(90, 200, 255, .25)); border-bottom: 3px solid rgba(140, 220, 255, .8); }
+.card { position: absolute; left: 60px; top: 470px; width: 960px; height: 820px; }
+.card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.card .photo { border-radius: 26px; }
+.idx { position: absolute; top: 210px; right: 70px; direction: ltr; font-weight: 900; font-size: 210px; line-height: 1; color: transparent; -webkit-text-stroke: 4px rgba(90, 200, 255, .55); }
+.live { position: absolute; top: 140px; left: 60px; direction: ltr; display: flex; align-items: center; gap: 16px; background: #e8243c; padding: 14px 26px; border-radius: 10px; font: 900 44px/1 'Heebo'; letter-spacing: 5px; }
+.live i { width: 22px; height: 22px; border-radius: 50%; background: #fff; }
+.pip { position: absolute; right: 50px; bottom: 330px; width: 330px; height: 260px; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); border: 4px solid var(--orange); }
+.pip img { width: 100%; height: 100%; object-fit: contain; }
+.pname { position: absolute; right: 50px; bottom: 230px; width: 330px; text-align: center; font-size: 56px; font-weight: 900; text-shadow: 0 4px 20px rgba(0, 0, 0, .8); }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+#grain { position: absolute; inset: -200px; background: url('assets/grain.png'); opacity: .5; pointer-events: none; mix-blend-mode: overlay; }
+.wordmark { direction: ltr; display: flex; align-items: center; justify-content: center; gap: 26px; font-weight: 900; font-size: 150px; letter-spacing: -3px; }
+.wordmark .t { color: var(--blue); }
+.plate { background: #fff; border-radius: 22px; padding: 22px 40px; display: inline-block; }
+.plate img { height: 78px; display: block; }
+.url { direction: ltr; display: inline-block; border: 3px solid var(--orange); border-radius: 999px; padding: 16px 48px; font-size: 48px; font-weight: 800; }
+.tiles { position: absolute; left: 60px; right: 60px; top: 560px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tiles div { background: #fff; border-radius: 22px; height: 330px; overflow: hidden; }
+.tiles img { width: 100%; height: 100%; object-fit: contain; }
+.kind { position: absolute; left: 0; right: 0; text-align: center; font-weight: 800; color: var(--orange); letter-spacing: 2px; }
+.bens { position: absolute; display: flex; flex-direction: column; gap: 14px; z-index: 3; }
+.ben { display: inline-flex; align-items: center; gap: 16px; background: rgba(7, 22, 42, .88); border: 2px solid rgba(90, 200, 255, .5); border-inline-start: 8px solid var(--orange); border-radius: 16px; font-weight: 900; box-shadow: 0 14px 40px rgba(0, 0, 0, .5); }
+.ben svg { stroke: var(--orange); flex-shrink: 0; }
+.card { overflow: hidden; border-radius: 26px; }
+.kin { position: absolute; left: 0; right: 0; top: 760px; text-align: center; font-weight: 900; font-size: 190px; line-height: 1; letter-spacing: -3px; }
+.trk { position: absolute; left: 250px; top: 430px; width: 580px; height: 1000px; --c: #5ac8ff; }
+.trk .lbl { background: #5ac8ff; letter-spacing: 4px; }
+.dim { position: absolute; left: 250px; width: 580px; top: 1450px; height: 4px; background: var(--orange); }
+.dim:before, .dim:after { content: ''; position: absolute; top: -14px; width: 4px; height: 32px; background: var(--orange); }
+.dim:before { left: 0; } .dim:after { right: 0; }
+.dim span { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); white-space: nowrap; font: 900 44px/1 'Heebo'; color: var(--orange); }
+.idx { top: 150px; right: 60px; font-size: 230px; }
+.coords { position: absolute; left: 60px; bottom: 90px; direction: ltr; font: 700 30px/1.4 monospace; color: rgba(140, 220, 255, .8); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="Lv"><img class="full" id="lv"><div class="shade"></div>
+    <div class="scan" id="lscan" style="height:240px"></div>
+    <div class="live" id="lbadge"><i id="ldot"></i>LIVE</div>
+    <div class="kin" id="kin"></div>
+    <div class="hudbox trk" id="trk"><div class="lbl">COMPACT ROBOT</div></div>
+    <div class="dim" id="dim"></div>
+    <div class="kind" id="rk" style="top:1560px;font-size:56px;text-shadow:0 4px 20px rgba(0,0,0,.9)">רובוט קומפקטי</div>
+    <div class="slam" id="rw" style="top:1630px;font-size:104px">לעבודות גמר <span class="o">בדירות</span></div>
+    <div class="idx" id="idx">01</div>
+    <div class="bens" id="ben" style="right:0;left:0;top:1420px;align-items:center"></div>
+    <div class="coords" id="crd"></div>
+  </div>
+  <div class="layer" id="Lo"><div class="grid"></div>
+    <div style="position:absolute;left:0;right:0;top:560px;text-align:center">
+      <div class="slam" id="cta" style="position:relative;font-size:84px;margin-bottom:60px">רוצים לראות אותו <span class="o">בפעולה?</span></div>
+      <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
+      <div id="os" style="font-size:66px;font-weight:800;margin-top:30px">רובוטים <span class="o">לחללים קטנים</span></div>
+      <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
+      <div id="ol" style="margin-top:240px"><span class="plate"><img src="assets/logos.png"></span></div>
+    </div>
+  </div>
+  <div class="vign"></div><div id="grain"></div><div id="flash"></div>
+</div>
+<script>
+const FPS = 30;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const rnd = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
+// גרסה שיווקית 2: פתיחה קינטית, דרופ במוזיקה בזמן החשיפה, סריקת HUD, ספיד-ראמפ בכל חיתוך.
+// יתרונות מקטלוג המוצרים (רובוט קומפקטי, בלי מספרי דגמים); בלי טענות שלא רואים בצילום.
+const KIN = [['n1', 36, 'דלת צרה?'], ['n2', 34, 'מסדרון צר?'], ['n3', 36, 'חדר קטן?']];
+const LIVE = [
+  ['b1', 107, 'עובר בדלתות ובמעברים צרים'],
+  ['b2', 104, 'שליטה מרחוק באפליקציה'],
+  ['b3', 107, 'ניווט LiDAR, עוקף מכשולים'],
+  ['b4', 104, 'קל ונייד, אדם אחד מעביר אותו'],
+  ['b5', 104, 'שיוף, צביעה וחיטוי ברובוט אחד'],
+];
+const K = 0.9, DROP = KIN.length * K + 1.05, REVEAL = 2.85, CUT = 2.8, OUTRO = 3.8;
+const LIVE_AT = DROP + REVEAL, OUT_AT = LIVE_AT + LIVE.length * CUT, DURATION = OUT_AT + OUTRO;
+const CUTS = [K, 2 * K, 3 * K, DROP, LIVE_AT, ...LIVE.map((_, i) => LIVE_AT + i * CUT).slice(1), OUT_AT];
+const frame = (c, n, k) => `assets/clips-hd/${c}/${String(clamp(Math.floor(k * FPS) + 1, 1, n)).padStart(4, '0')}.jpg`;
+// ספיד-ראמפ: 0.35 שנ' ראשונות במהירות כפולה ואז רגיל
+const ramp = (k) => (k < 0.35 ? k * 2.2 : 0.77 + (k - 0.35));
+
+function slam(el, t, at, out = 1e9) {
+  const k = t - at;
+  if (k < 0 || t > out) { el.style.opacity = 0; return; }
+  el.style.opacity = clamp(k / 0.06) * clamp((out - t) / 0.15);
+  const g = k < 0.3 ? (1 - k / 0.3) * (6 + rnd(Math.floor(t * FPS)) * 16) : 0;
+  el.style.textShadow = g ? `${g}px 0 rgba(255,40,110,.85), ${-g}px 0 rgba(40,240,255,.85)` : '0 6px 30px rgba(0,0,0,.7)';
+  el.style.transform = `scale(${1.8 - 0.8 * back(k / 0.22)})`;
+}
+
+window.render = async (t) => {
+  const f = Math.floor(t * FPS);
+  $('Lv').style.opacity = 0; $('Lo').style.opacity = 0;
+  for (const id of ['kin', 'trk', 'dim', 'rk', 'rw', 'idx', 'ben', 'lbadge', 'lscan', 'crd']) $(id).style.opacity = 0;
+  $('lv').style.opacity = 1;
+
+  if (t < DROP) {
+    $('Lv').style.opacity = 1;
+    const i = Math.floor(t / K);
+    if (i < KIN.length) {
+      const k = t - i * K, [c, n, txt] = KIN[i];
+      await setImg($('lv'), frame(c, n, k));
+      $('lv').style.transform = `scale(${1.25 - k * 0.12}) rotate(${(i % 2 ? -1 : 1) * 1.5}deg)`;
+      $('lv').style.filter = 'brightness(.5) saturate(.7)';
+      $('kin').textContent = txt; $('kin').className = 'kin' + (i === 2 ? ' o' : '');
+      slam($('kin'), k, 0.02, K - 0.03);
+    } else {
+      // מסך כהה לפני הדרופ
+      const k = t - KIN.length * K;
+      $('lv').style.opacity = 0;
+      $('kin').innerHTML = 'בשבילו<br><span class="o">זה מספיק</span>'; $('kin').className = 'kin';
+      $('kin').style.top = '680px';
+      slam($('kin'), k, 0.05, DROP - KIN.length * K - 0.02);
+    }
+  } else $('kin').style.top = '760px';
+
+  if (t >= DROP && t < LIVE_AT) {
+    const k = t - DROP;
+    $('Lv').style.opacity = 1;
+    await setImg($('lv'), frame('n4', 96, ramp(k)));
+    $('lv').style.transform = `scale(${1.12 - k * 0.03})`;
+    $('lv').style.filter = k < 0.12 ? 'contrast(1.5) saturate(2) brightness(1.3)' : 'brightness(.85)';
+    // תיבת מעקב נסגרת על הרובוט + קו מידה
+    const b = ease(k / 0.45);
+    $('trk').style.opacity = clamp(k / 0.1) * (k < 0.5 ? (f % 4 < 2 ? 1 : 0.4) : 1);
+    $('trk').style.transform = `scale(${1.6 - 0.6 * b})`;
+    $('lscan').style.opacity = 1; $('lscan').style.top = `${((k * 1400) % 2400) - 240}px`;
+    const d = ease((k - 0.5) / 0.5); $('dim').style.opacity = d; $('dim').style.transform = `scaleX(${d})`;
+    $('rk').style.opacity = ease((k - 0.9) / 0.3);
+    slam($('rw'), k, 1.1, REVEAL - 0.05);
+    $('crd').style.opacity = 1; $('crd').textContent = `SCAN ${String(Math.min(100, Math.floor(k / 1.2 * 100))).padStart(3, '0')}%  LiDAR ● SLAM`;
+  }
+
+  if (t >= LIVE_AT && t < OUT_AT) {
+    const i = Math.floor((t - LIVE_AT) / CUT), k = t - LIVE_AT - i * CUT, [clip, n, txt] = LIVE[i];
+    $('Lv').style.opacity = 1;
+    await setImg($('lv'), frame(clip, n, ramp(k)));
+    $('lv').style.transform = `scale(${(k < 0.35 ? 1.14 - k * 0.2 : 1.07) + k * 0.02})`;
+    $('lv').style.filter = k < 0.1 ? 'contrast(1.4) saturate(1.8)' : 'none';
+    $('lscan').style.opacity = 1; $('lscan').style.top = `${((k * 900) % 2400) - 240}px`;
+    $('lbadge').style.opacity = 1; $('ldot').style.opacity = f % 30 < 18 ? 1 : 0.25;
+    $('idx').textContent = String(i + 1).padStart(2, '0');
+    const ik = ease(k / 0.3); $('idx').style.opacity = ik; $('idx').style.transform = `translateX(${(1 - ik) * -80}px)`;
+    const b = $('ben');
+    if (b.dataset.i !== String(i)) { b.dataset.i = i; b.innerHTML = `<div class="ben" style="font-size:58px;padding:18px 34px"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:56px;height:56px"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>${txt}</div>`; }
+    b.style.opacity = 1;
+    slam(b.firstElementChild, k, 0.3, CUT - 0.05);
+  }
+
+  if (t >= OUT_AT) {
+    $('Lo').style.opacity = clamp((DURATION - t) / 0.6);
+    slam($('cta'), t, OUT_AT + 0.05);
+    slam($('wm'), t, OUT_AT + 0.7);
+    for (const [id, at] of [['os', 1.2], ['ou', 1.7], ['ol', 2.2]]) {
+      const kk = ease((t - OUT_AT - at) / 0.4); $(id).style.opacity = kk; $(id).style.transform = `translateY(${(1 - kk) * 40}px)`;
+    }
+  }
+  let fl = 0;
+  for (const c of CUTS) { const d = t - c; if (d >= 0 && d < 0.15) fl = Math.max(fl, (1 - d / 0.15) * (c === DROP ? 1 : 0.7)); }
+  $('flash').style.opacity = fl;
+  let sh = 0;
+  for (const c of [DROP, OUT_AT, ...LIVE.map((_, i) => LIVE_AT + i * CUT + 0.3)]) { const d = t - c; if (d >= 0 && d < 0.35) sh = Math.max(sh, (1 - d / 0.35) * (c === DROP ? 26 : 12)); }
+  $('stage').style.transform = sh ? `translate(${(rnd(f) - .5) * sh}px, ${(rnd(f + 7) - .5) * sh}px)` : 'none';
+  $('grain').style.transform = `translate(${rnd(f) * -180}px, ${rnd(f + 3) * -180}px)`;
+};
+window.DURATION = DURATION;
+window.DROP = DROP;
+window.CUTS = CUTS;
+window.SIZE = [1080, 1920];
+</script>
+</body>
+</html>
