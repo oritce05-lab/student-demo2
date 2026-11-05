@@ -42,9 +42,8 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
   </div>
   <div class="layer" id="Lo"><div class="grid"></div>
     <div style="position:absolute;left:0;right:0;top:520px;text-align:center">
-      <div id="fut" style="font-size:70px;font-weight:900;margin-bottom:70px">העתיד כבר כאן – <span class="o">והוא רובוטי</span></div>
       <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
-      <div id="os" style="font-size:50px;font-weight:700;margin-top:30px;line-height:1.3">המרכז לחדשנות וטכנולוגיות מתקדמות<br><span class="o">בענף הבנייה</span></div>
+      
       <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
       <div id="ol" style="margin-top:240px"><span class="plate"><img src="assets/logos.png"></span></div>
     </div>
@@ -60,14 +59,14 @@ async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = 
 // סרטון סיפור רגוע: עמית ורובוט הגמר במסדרון צפוף. בלי קול מקורי, מוזיקה עדינה.
 // כל מקטע: [תיקיית פריימים, מספר פריימים, משך, שורות טקסט [[סוג, טקסט, זמן כניסה]]]
 const SEG = [
-  ['am1', 108, 3.4, [['h', 'מסדרון צפוף.', 0.3], ['h', 'דירת מגורים <span class="o">שלמה.</span>', 1.2]]],
-  ['am2', 114, 3.6, [['h', '<span style="font-size:84px">שפכטל · ליטוש · צבע</span>', 0.3], ['s', 'בכל חללי הדירה', 1.0]]],
-  ['am3', 92, 3.0, [['h', 'מהירות. אחידות.<br><span class="o">דיוק.</span>', 0.3]]],
-  ['am4', 120, 3.8, [['k', 'תכירו את', 0.3], ['h', 'עמית', 0.6], ['s', 'חייל משוחרר, שלא הגיע מענף הבנייה', 1.4]]],
-  ['am5', 75, 2.5, [['h', 'עבר הכשרה', 0.2], ['s', 'ולמד להפעיל את הרובוט', 0.8]]],
-  ['am6', 108, 3.5, [['s', 'והגיע לתוצאה', 0.3], ['h', 'שקשה להאמין <span class="o">שרובוט ביצע</span>', 0.8]]],
+  ['am1', 108, 3.4, [['h', 'ככה נראית<br>רמת גימור', 0.3], ['s', '<span class="o">של הדור הבא בענף הבנייה!</span>', 1.2]]],
+  ['am2', 114, 3.6, [['h', 'דירת מגורים שלמה', 0.3], ['s', 'כל החללים, כולל מסדרון צפוף ומאתגר', 1.0]]],
+  ['am3', 92, 3.0, [['h', '<span style="font-size:84px">שפכטל · ליטוש · צבע</span>', 0.3], ['s', 'באמצעות רובוטיקה מתקדמת', 0.9]]],
+  ['am4', 120, 3.8, [['h', 'מהירות.', 0.3], ['h', 'אחידות.', 0.9], ['h', '<span class="o">דיוק.</span>', 1.5]]],
+  ['am5', 75, 2.5, [['s', 'ברמה', 0.2], ['h', 'מרשימה <span class="o">במיוחד</span>', 0.6]]],
+  ['am6', 108, 3.5, []],
 ];
-const XF = 0.4, CARD = 3.6, OUTRO = 4.2;
+const XF = 0.4, CARD = 0, OUTRO = 4.2;   // בלי כרטיס טקסט – רק המלל שהתבקש
 let acc = 0; const START = SEG.map((s) => { const a = acc; acc += s[2]; return a; });
 const CARD_AT = acc, OUT_AT = CARD_AT + CARD, DURATION = OUT_AT + OUTRO;
 const frame = (c, n, k) => `assets/clips-hd/${c}/${String(clamp(Math.floor(k * FPS) + 1, 1, n)).padStart(4, '0')}.jpg`;
@@ -91,10 +90,10 @@ window.render = async (t) => {
     }
     const els = [...box.children];
     lines.forEach((l, j) => soft(els[j], k - l[2]));
-    soft(els[els.length - 1], k - lines[0][2] - 0.2);
+    if (lines.length) soft(els[els.length - 1], k - lines[0][2] - 0.2); else els[0].style.opacity = 0;
     box.style.opacity = clamp((d - k) / 0.35);
   }
-  if (t >= CARD_AT) {
+  if (CARD && t >= CARD_AT) {
     const k = t - CARD_AT;
     $('card').style.opacity = clamp(k / XF) * clamp((CARD + XF - k) / XF);
     soft($('c1'), k - 0.4); soft($('c2'), k - 1.3);
@@ -102,7 +101,7 @@ window.render = async (t) => {
   if (t >= OUT_AT) {
     const k = t - OUT_AT;
     $('Lo').style.opacity = clamp(k / XF) * clamp((DURATION - t) / 0.7);
-    for (const [id, at] of [['fut', 0.3], ['wm', 1.0], ['os', 1.5], ['ou', 2.0], ['ol', 2.4]]) soft($(id), k - at);
+    for (const [id, at] of [['wm', 0.4], ['ou', 1.0], ['ol', 1.5]]) soft($(id), k - at);
   }
 };
 window.DURATION = DURATION;
