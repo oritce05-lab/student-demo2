@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Heebo'; src: url('assets/Heebo.ttf') format('truetype'); font-weight: 100 900; }
+:root { --navy: #07162a; --blue: #2f8cff; --orange: #ff7a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; font-family: 'Heebo', sans-serif; color: #fff; }
+#stage { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; opacity: 0; }
+.full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.grid { position: absolute; inset: 0; background:
+  radial-gradient(ellipse at 50% 35%, rgba(47, 140, 255, .28), transparent 60%),
+  linear-gradient(rgba(90, 200, 255, .07) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(90, 200, 255, .07) 1px, transparent 1px), var(--navy);
+  background-size: auto, 54px 54px, 54px 54px, auto; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .35), transparent 25%, transparent 50%, rgba(0, 0, 0, .78)); }
+.o { color: var(--orange); }
+.txt { position: absolute; left: 70px; right: 70px; bottom: 300px; text-align: right; }
+.txt .k { font-size: 56px; font-weight: 800; color: var(--orange); margin-bottom: 10px; text-shadow: 0 3px 16px rgba(0, 0, 0, .9); }
+.txt .h { font-size: 104px; font-weight: 900; line-height: 1.08; text-shadow: 0 6px 30px rgba(0, 0, 0, .6); }
+.txt .s { font-size: 54px; font-weight: 600; margin-top: 18px; line-height: 1.25; text-shadow: 0 4px 20px rgba(0, 0, 0, .8); }
+.txt .bar { width: 120px; height: 8px; border-radius: 9px; background: var(--orange); margin-top: 30px; }
+.line { opacity: 0; }
+#card .big { position: absolute; left: 80px; right: 80px; top: 720px; text-align: center; font-weight: 900; font-size: 96px; line-height: 1.15; }
+.wordmark { direction: ltr; display: flex; align-items: center; justify-content: center; gap: 26px; font-weight: 900; font-size: 150px; letter-spacing: -3px; }
+.wordmark .t { color: var(--blue); }
+.plate { background: #fff; border-radius: 22px; padding: 22px 40px; display: inline-block; }
+.plate img { height: 78px; display: block; }
+.url { direction: ltr; display: inline-block; border: 3px solid var(--orange); border-radius: 999px; padding: 16px 48px; font-size: 48px; font-weight: 800; }
+.vign { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, .5)); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="Lv" style="opacity:1"><img class="full" id="lp"><img class="full" id="lv"><div class="shade"></div>
+    <div class="txt" id="txt"></div>
+  </div>
+  <div class="layer" id="card"><div class="grid"></div>
+    <div class="big"><div class="line" id="c1">לא חייבים להגיע מענף הבנייה</div><div class="line o" id="c2" style="margin-top:20px">כדי להיות חלק מהעתיד שלו</div></div>
+  </div>
+  <div class="layer" id="Lo"><div class="grid"></div>
+    <div style="position:absolute;left:0;right:0;top:520px;text-align:center">
+      <div id="fut" style="font-size:70px;font-weight:900;margin-bottom:70px">העתיד כבר כאן – <span class="o">והוא רובוטי</span></div>
+      <div class="wordmark" id="wm"><svg width="150" height="114" viewBox="0 0 120 90"><g stroke="#2f8cff" stroke-width="6" fill="none"><path d="M14 22 40 40 66 22 92 50M40 40 52 70"/></g><g fill="#2f8cff"><circle cx="14" cy="22" r="10"/><circle cx="40" cy="40" r="11"/><circle cx="66" cy="22" r="10"/><circle cx="52" cy="70" r="8"/></g><circle cx="96" cy="58" r="13" fill="#ff7a1a"/></svg><span>HUB<span class="t">TECH</span></span></div>
+      <div id="os" style="font-size:50px;font-weight:700;margin-top:30px;line-height:1.3">המרכז לחדשנות וטכנולוגיות מתקדמות<br><span class="o">בענף הבנייה</span></div>
+      <div id="ou" style="margin-top:70px"><span class="url">hubtech.co.il</span></div>
+      <div id="ol" style="margin-top:240px"><span class="plate"><img src="assets/logos.png"></span></div>
+    </div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script>
+const FPS = 30;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+async function setImg(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode().catch(() => {}); } }
+// סרטון סיפור רגוע: עמית ורובוט הגמר במסדרון צפוף. בלי קול מקורי, מוזיקה עדינה.
+// כל מקטע: [תיקיית פריימים, מספר פריימים, משך, שורות טקסט [[סוג, טקסט, זמן כניסה]]]
+const SEG = [
+  ['am1', 108, 3.4, [['h', 'מסדרון צפוף.', 0.3], ['h', 'דירת מגורים <span class="o">שלמה.</span>', 1.2]]],
+  ['am2', 114, 3.6, [['h', '<span style="font-size:84px">שפכטל · ליטוש · צבע</span>', 0.3], ['s', 'בכל חללי הדירה', 1.0]]],
+  ['am3', 92, 3.0, [['h', 'מהירות. אחידות.<br><span class="o">דיוק.</span>', 0.3]]],
+  ['am4', 120, 3.8, [['k', 'תכירו את', 0.3], ['h', 'עמית', 0.6], ['s', 'חייל משוחרר, שלא הגיע מענף הבנייה', 1.4]]],
+  ['am5', 75, 2.5, [['h', 'עבר הכשרה', 0.2], ['s', 'ולמד להפעיל את הרובוט', 0.8]]],
+  ['am6', 108, 3.5, [['s', 'והגיע לתוצאה', 0.3], ['h', 'שקשה להאמין <span class="o">שרובוט ביצע</span>', 0.8]]],
+];
+const XF = 0.4, CARD = 3.6, OUTRO = 4.2;
+let acc = 0; const START = SEG.map((s) => { const a = acc; acc += s[2]; return a; });
+const CARD_AT = acc, OUT_AT = CARD_AT + CARD, DURATION = OUT_AT + OUTRO;
+const frame = (c, n, k) => `assets/clips-hd/${c}/${String(clamp(Math.floor(k * FPS) + 1, 1, n)).padStart(4, '0')}.jpg`;
+const soft = (el, k, d = 0.6) => { const e = ease(k / d); el.style.opacity = e; el.style.transform = `translateY(${(1 - e) * 36}px)`; };
+
+window.render = async (t) => {
+  $('card').style.opacity = 0; $('Lo').style.opacity = 0;
+  if (t < CARD_AT + XF) {
+    const i = Math.min(SEG.length - 1, START.findLastIndex((a) => t >= a)), k = t - START[i], [c, n, d, lines] = SEG[i];
+    await setImg($('lv'), frame(c, n, k));
+    $('lv').style.transform = `scale(${1.03 + k * 0.012})`;
+    // מעבר רך: הפריים האחרון של המקטע הקודם נמוג
+    if (i > 0 && k < XF) {
+      const p = SEG[i - 1]; await setImg($('lp'), frame(p[0], p[1], p[2]));
+      $('lp').style.opacity = 1; $('lv').style.opacity = ease(k / XF);
+    } else { $('lp').style.opacity = 0; $('lv').style.opacity = 1; }
+    const box = $('txt');
+    if (box.dataset.i !== String(i)) {
+      box.dataset.i = i;
+      box.innerHTML = lines.map(([cls, tx]) => `<div class="line ${cls}">${tx}</div>`).join('') + '<div class="line bar"></div>';
+    }
+    const els = [...box.children];
+    lines.forEach((l, j) => soft(els[j], k - l[2]));
+    soft(els[els.length - 1], k - lines[0][2] - 0.2);
+    box.style.opacity = clamp((d - k) / 0.35);
+  }
+  if (t >= CARD_AT) {
+    const k = t - CARD_AT;
+    $('card').style.opacity = clamp(k / XF) * clamp((CARD + XF - k) / XF);
+    soft($('c1'), k - 0.4); soft($('c2'), k - 1.3);
+  }
+  if (t >= OUT_AT) {
+    const k = t - OUT_AT;
+    $('Lo').style.opacity = clamp(k / XF) * clamp((DURATION - t) / 0.7);
+    for (const [id, at] of [['fut', 0.3], ['wm', 1.0], ['os', 1.5], ['ou', 2.0], ['ol', 2.4]]) soft($(id), k - at);
+  }
+};
+window.DURATION = DURATION;
+window.SIZE = [1080, 1920];
+</script>
+</body>
+</html>
